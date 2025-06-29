@@ -242,11 +242,18 @@ window.loginWithGoogle = async function () {
 };
 
 onAuthStateChanged(auth, (user) => {
+  const isAdmin = user?.email === "admin@gmail.com";
   const authSection = document.getElementById("auth-section");
   const userInfo = document.getElementById("user-info");
   if (user) {
     authSection.innerHTML = `<button onclick="logout()">🚪 Đăng xuất</button>`;
-    document.getElementById("upload-section").classList.remove("hidden");
+    if (isAdmin) {
+      document.getElementById("upload-section").classList.remove("hidden");
+      document.getElementById("upload-btn").classList.remove("hidden");
+    } else {
+      document.getElementById("upload-section").classList.add("hidden");
+      document.getElementById("upload-btn").classList.add("hidden");
+    }
     const name = user.displayName || "Người dùng";
     const photo = user.photoURL || "https://www.gravatar.com/avatar?d=mp";
     userInfo.innerHTML = `<img src="${photo}" alt="avatar"><span>${name}</span>`;
