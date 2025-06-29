@@ -118,7 +118,7 @@
     <section id="login-section" class="hidden">
       <h2 class="center">Đăng nhập</h2>
       <div class="admin-panel">
-        <input type="email" id="login-email" placeholder="Email">
+        <input type="email" id="login-email" placeholder="Tên tài khoản (không cần email)">
         <input type="password" id="login-pass" placeholder="Mật khẩu">
         <button onclick="login()">➡️ Đăng nhập</button>
         <button onclick="signup()">📝 Đăng ký</button>
@@ -168,7 +168,8 @@
     }
 
     window.login = async function () {
-      const email = document.getElementById("login-email").value;
+      const username = document.getElementById("login-email").value;
+      const email = username + "@app.local";
       const pass = document.getElementById("login-pass").value;
       try {
         await signInWithEmailAndPassword(auth, email, pass);
@@ -180,7 +181,8 @@
     };
 
     window.signup = async function () {
-      const email = document.getElementById("login-email").value;
+      const username = document.getElementById("login-email").value;
+      const email = username + "@app.local";
       const pass = document.getElementById("login-pass").value;
       try {
         await createUserWithEmailAndPassword(auth, email, pass);
