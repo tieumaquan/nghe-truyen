@@ -5,37 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Audio Truyện Online</title>
   <style>
-body { font-family: Arial; background: #fff5f9; margin: 0; color: #333; }
-    header, nav, section { padding: 1rem; }
-    header { background: #f76da4; color: white; display: flex; justify-content: space-between; align-items: center; }
-    nav { background: #fdd2e0; display: flex; justify-content: center; gap: 1rem; }
-    button { padding: 0.5rem 1rem; border: none; background: #f76da4; color: white; border-radius: 5px; cursor: pointer; }
-    .hidden { display: none; }
-    .story { background: white; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; border: 1px solid #ccc; }
-    .story img { width: 100%; border-radius: 10px; }
-    .story audio { width: 100%; }
-
-:root {
+    :root {
       --main-color: #f76da4;
       --light-color: #fdd2e0;
       --bg-color: #fff5f9;
       --text-color: #333;
     }
+
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: var(--bg-color);
+      background: var(--bg-color);
+      margin: 0;
       color: var(--text-color);
     }
+
+    header, nav, section { padding: 1rem; }
+
     header {
-      background-color: var(--main-color);
-      padding: 1rem;
+      background: var(--main-color);
       color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: relative;
     }
+
+    nav {
+      background: var(--light-color);
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
     .menu-toggle {
       font-size: 1.8rem;
       cursor: pointer;
@@ -44,12 +45,12 @@ body { font-family: Arial; background: #fff5f9; margin: 0; color: #333; }
       color: white;
       margin-right: 1rem;
     }
+
     .nav-menu {
       position: absolute;
       top: 100%;
       right: 0;
       width: 220px;
-      min-height: 70vh;
       background-color: #f8c7d8;
       color: black;
       display: none;
@@ -62,82 +63,92 @@ body { font-family: Arial; background: #fff5f9; margin: 0; color: #333; }
       transform: translateX(100%);
       transition: opacity 0.3s ease, transform 0.3s ease;
     }
+
     .nav-menu.show {
       display: flex;
       opacity: 1;
       transform: translateX(0);
     }
-    main {
-      padding: 1rem;
-    }
-    .story {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      background-color: white;
-    }
-    .story img {
-      max-width: 100%;
-      border-radius: 10px;
-    }
-    .admin-panel {
-      background-color: #ffeef2;
-      padding: 1rem;
-      border-radius: 10px;
-      margin-top: 2rem;
-    }
-    .hidden {
-      display: none;
-    }
-    .center {
-      text-align: center;
-    }
-    button {
-      background-color: var(--main-color);
-      border: none;
-      color: white;
-      padding: 0.5rem 1rem;
-      margin-top: 0.5rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+
     .user-info {
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
+
     .user-info img {
       width: 32px;
       height: 32px;
       border-radius: 50%;
     }
+
     .equal-width-buttons {
       display: flex;
       flex-direction: column;
       align-items: stretch;
       width: 100%;
     }
+
     .equal-width-buttons > button {
       width: 100%;
       margin-bottom: 10px;
       padding: 10px;
       font-size: 16px;
     }
-</style>
+
+    .hidden { display: none; }
+
+    .story {
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+    }
+
+    .story img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .story audio {
+      width: 100%;
+    }
+
+    .admin-panel {
+      background-color: #ffeef2;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 2rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: var(--main-color);
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-<header><h1>📚 Audio Truyện</h1>
-<div class="user-info" id="user-info"></div>
-<button class="menu-toggle" onclick="toggleMenu()">☰</button>
-<div class="nav-menu" id="menu">
+<body>
+  <header>
+    <h1>📚 Audio Truyện</h1>
+    <div class="user-info" id="user-info"></div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="nav-menu" id="menu">
       <div class="equal-width-buttons">
         <button id="upload-btn" onclick="showSection('upload')" class="hidden">➕ Thêm truyện</button>
-<button id="backup-btn" onclick="backupData()" class="hidden">💾 Backup dữ liệu</button>
-<input type="file" id="restore-input" class="hidden" onchange="restoreData(event)" accept=".json">
-<button id="restore-btn" onclick="document.getElementById('restore-input').click()" class="hidden">📥 Khôi phục dữ liệu</button>
+        <button id="backup-btn" onclick="backupData()" class="hidden">💾 Backup dữ liệu</button>
+        <input type="file" id="restore-input" class="hidden" onchange="restoreData(event)" accept=".json">
+        <button id="restore-btn" onclick="document.getElementById('restore-input').click()" class="hidden">📥 Khôi phục dữ liệu</button>
         <button onclick="toggleTheme()">🎨 Đổi màu web</button>
-        <button id="auth-button" onclick="loginWithGoogle()">🔓 Đăng nhập Google</button>
-      </div></header>
+        <button id="auth-button">🔓 Đăng nhập Google</button>
+      </div>
+    </div>
+  </header>
+
   <nav>
     <button onclick="showSection('home')">🏠 Trang chủ</button>
     <button onclick="showSection('search')">🔍 Tìm truyện</button>
@@ -147,17 +158,33 @@ body { font-family: Arial; background: #fff5f9; margin: 0; color: #333; }
   </nav>
 
   <main>
-    <section id="home-section"><h2>🎧 Tất cả truyện</h2><div id="home-list"></div></section>
+    <section id="home-section">
+      <h2>🎧 Tất cả truyện</h2>
+      <div id="home-list"></div>
+    </section>
+
     <section id="search-section" class="hidden">
       <h2>🔍 Tìm kiếm</h2>
       <input id="search-input" placeholder="Nhập tên truyện..." oninput="searchStories()">
       <div id="search-list"></div>
     </section>
-    <section id="follow-section" class="hidden"><h2>❤️ Truyện theo dõi</h2><div id="follow-list"></div></section>
-    <section id="tusach-section" class="hidden"><h2>📁 Tủ truyện</h2><div id="tusach-list"></div></section>
-    <section id="history-section" class="hidden"><h2>🕓 Lịch sử nghe</h2><div id="history-list"></div></section>
-  
-<section id="upload-section" class="hidden">
+
+    <section id="follow-section" class="hidden">
+      <h2>❤️ Truyện theo dõi</h2>
+      <div id="follow-list"></div>
+    </section>
+
+    <section id="tusach-section" class="hidden">
+      <h2>📁 Tủ truyện</h2>
+      <div id="tusach-list"></div>
+    </section>
+
+    <section id="history-section" class="hidden">
+      <h2>🕓 Lịch sử nghe</h2>
+      <div id="history-list"></div>
+    </section>
+
+    <section id="upload-section" class="hidden">
       <h2>Thêm truyện mới (Admin)</h2>
       <div class="admin-panel">
         <input type="text" id="story-title" placeholder="Tên truyện">
@@ -174,395 +201,238 @@ body { font-family: Arial; background: #fff5f9; margin: 0; color: #333; }
         <button onclick="uploadStory()">📤 Tải lên</button>
       </div>
     </section>
-</main>
+  </main>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithPopup, onAuthStateChanged, signOut, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getDatabase, ref, onValue, push, set, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
+      authDomain: "nghe-truyen-6dac9.firebaseapp.com",
+      databaseURL: "https://nghe-truyen-6dac9-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "nghe-truyen-6dac9",
+      storageBucket: "nghe-truyen-6dac9.appspot.com",
+      messagingSenderId: "798859322959",
+      appId: "1:798859322959:web:a52112ab9d27c0cc1602c3a"
+    };
 
-const app = initializeApp({
-  apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
-  authDomain: "nghe-truyen-6dac9.firebaseapp.com",
-  databaseURL: "https://nghe-truyen-6dac9-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "nghe-truyen-6dac9"
-});
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
 
-const db = getDatabase(app);
-let allStories = [];
+    let allStories = [];
 
-function showSection(id) {
-  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
-  document.getElementById(id + "-section").classList.remove("hidden");
-  if (id === 'follow') renderFollowed();
-  if (id === 'tusach') renderTusach();
-  if (id === 'history') renderHistory();
-}
+    function showSection(id) {
+      document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+      document.getElementById(id + "-section").classList.remove("hidden");
+      if (id === "follow") renderFollowed();
+      if (id === "tusach") renderTusach();
+      if (id === "history") renderHistory();
+    }
 
-function renderStory(story, buttons = true) {
-  return `
-    <div class="story">
-      <h3>${story.title}</h3>
-      <img src="${story.imgUrl}" alt="ảnh"/>
-      <p><b>Tác giả:</b> ${story.author}</p>
-      <p>${story.desc}</p>
-      <audio controls src="${story.audioUrl}" onplay="addToHistory('${story.id}')"></audio>
-      ${buttons ? `
-      <button onclick="addToFollow('${story.id}')">❤️ Theo dõi</button>
-      <button onclick="addToTusach('${story.id}')">📁 Thêm vào tủ</button>` : ''}
-    </div>
-  `;
-}
+    function renderStory(story, buttons = true) {
+      return `
+        <div class="story">
+          <h3>${story.title}</h3>
+          <img src="${story.imgUrl}" alt="ảnh"/>
+          <p><b>Tác giả:</b> ${story.author}</p>
+          <p>${story.desc}</p>
+          <audio controls src="${story.audioUrl}" onplay="addToHistory('${story.id}')"></audio>
+          ${buttons ? `
+            <button onclick="addToFollow('${story.id}')">❤️ Theo dõi</button>
+            <button onclick="addToTusach('${story.id}')">📁 Thêm vào tủ</button>` : ''}
+        </div>
+      `;
+    }
 
-function loadStories() {
-  onValue(ref(db, 'stories'), snapshot => {
-    const data = snapshot.val();
-    allStories = Object.entries(data || {}).map(([id, val]) => ({ id, ...val })).reverse();
-    document.getElementById("home-list").innerHTML = allStories.map(s => renderStory(s)).join("");
-  });
-}
+    function loadStories() {
+      onValue(ref(db, 'stories'), snapshot => {
+        const data = snapshot.val() || {};
+        allStories = Object.entries(data).map(([id, val]) => ({ id, ...val })).reverse();
+        document.getElementById("home-list").innerHTML = allStories.map(s => renderStory(s)).join("");
+      });
+    }
 
-function searchStories() {
-  const text = document.getElementById("search-input").value.toLowerCase();
-  const result = allStories.filter(s => s.title.toLowerCase().includes(text));
-  document.getElementById("search-list").innerHTML = result.map(s => renderStory(s)).join("");
-}
+    function searchStories() {
+      const text = document.getElementById("search-input").value.toLowerCase();
+      const result = allStories.filter(s => s.title.toLowerCase().includes(text));
+      document.getElementById("search-list").innerHTML = result.map(s => renderStory(s)).join("");
+    }
 
-function addToFollow(id) {
-  let list = JSON.parse(localStorage.getItem("follow") || "[]");
-  if (!list.includes(id)) list.push(id);
-  localStorage.setItem("follow", JSON.stringify(list));
-  alert("Đã theo dõi");
-}
+    function addToFollow(id) {
+      let list = JSON.parse(localStorage.getItem("follow") || "[]");
+      if (!list.includes(id)) list.push(id);
+      localStorage.setItem("follow", JSON.stringify(list));
+      alert("Đã theo dõi");
+    }
 
-function addToTusach(id) {
-  let list = JSON.parse(localStorage.getItem("tusach") || "[]");
-  if (!list.includes(id)) list.push(id);
-  localStorage.setItem("tusach", JSON.stringify(list));
-  alert("Đã thêm vào tủ truyện");
-}
+    function addToTusach(id) {
+      let list = JSON.parse(localStorage.getItem("tusach") || "[]");
+      if (!list.includes(id)) list.push(id);
+      localStorage.setItem("tusach", JSON.stringify(list));
+      alert("Đã thêm vào tủ truyện");
+    }
 
-function addToHistory(id) {
-  let list = JSON.parse(localStorage.getItem("history") || "[]");
-  list = list.filter(i => i !== id);
-  list.unshift(id);
-  if (list.length > 20) list = list.slice(0, 20);
-  localStorage.setItem("history", JSON.stringify(list));
-}
+    function addToHistory(id) {
+      let list = JSON.parse(localStorage.getItem("history") || "[]");
+      list = list.filter(i => i !== id);
+      list.unshift(id);
+      if (list.length > 20) list = list.slice(0, 20);
+      localStorage.setItem("history", JSON.stringify(list));
+    }
 
-function renderFollowed() {
-  const ids = JSON.parse(localStorage.getItem("follow") || "[]");
-  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
-  document.getElementById("follow-list").innerHTML = html || "<p>Chưa theo dõi truyện nào</p>";
-}
+    function renderFollowed() {
+      const ids = JSON.parse(localStorage.getItem("follow") || "[]");
+      const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
+      document.getElementById("follow-list").innerHTML = html || "<p>Chưa theo dõi truyện nào</p>";
+    }
 
-function renderTusach() {
-  const ids = JSON.parse(localStorage.getItem("tusach") || "[]");
-  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
-  document.getElementById("tusach-list").innerHTML = html || "<p>Chưa có truyện trong tủ</p>";
-}
+    function renderTusach() {
+      const ids = JSON.parse(localStorage.getItem("tusach") || "[]");
+      const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
+      document.getElementById("tusach-list").innerHTML = html || "<p>Chưa có truyện trong tủ</p>";
+    }
 
-function renderHistory() {
-  const ids = JSON.parse(localStorage.getItem("history") || "[]");
-  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
-  document.getElementById("history-list").innerHTML = html || "<p>Chưa có lịch sử nghe</p>";
-}
+    function renderHistory() {
+      const ids = JSON.parse(localStorage.getItem("history") || "[]");
+      const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
+      document.getElementById("history-list").innerHTML = html || "<p>Chưa có lịch sử nghe</p>";
+    }
 
-window.showSection = showSection;
-window.addToFollow = addToFollow;
-window.addToTusach = addToTusach;
-window.addToHistory = addToHistory;
+    async function uploadStory() {
+      const title = document.getElementById("story-title").value;
+      const desc = document.getElementById("story-desc").value;
+      const author = document.getElementById("story-author").value;
+      const genre = document.getElementById("story-genre").value;
+      const chapters = document.getElementById("story-chapters").value;
+      const status = document.getElementById("story-status").value;
+      const imgFile = document.getElementById("story-img").files[0];
+      const audioFile = document.getElementById("story-audio").files[0];
 
+      if (!title || !desc || !author || !genre || !chapters || !status || !imgFile || !audioFile) {
+        alert("Điền đầy đủ thông tin!");
+        return;
+      }
 
-window.backupData = async function () {
-  try {
-    const snapshot = await get(ref(database, 'stories'));
-    const data = snapshot.val() || {};
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "backup_stories.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  } catch (e) {
-    alert("Lỗi backup: " + e.message);
-  }
-};
+      const imgRef = sRef(storage, 'images/' + imgFile.name);
+      const audioRef = sRef(storage, 'audio/' + audioFile.name);
 
-window.restoreData = async function (event) {
-  const file = event.target.files[0];
-  if (!file) return;
+      await uploadBytes(imgRef, imgFile);
+      await uploadBytes(audioRef, audioFile);
 
-  try {
-    const text = await file.text();
-    const data = JSON.parse(text);
-    if (confirm("Khôi phục sẽ ghi đè dữ liệu hiện tại. Bạn có chắc?")) {
-      await set(ref(database, 'stories'), data);
-      alert("Khôi phục thành công!");
+      const imgUrl = await getDownloadURL(imgRef);
+      const audioUrl = await getDownloadURL(audioRef);
+
+      await push(ref(db, 'stories'), {
+        title, desc, author, genre, chapters, status, imgUrl, audioUrl, createdAt: Date.now()
+      });
+
+      alert("Tải truyện thành công!");
+      ["story-title", "story-desc", "story-author", "story-genre", "story-chapters"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+      document.getElementById("story-status").value = "Đang ra";
+      document.getElementById("story-img").value = "";
+      document.getElementById("story-audio").value = "";
+      showSection("home");
+    }
+
+    async function backupData() {
+      const snapshot = await get(ref(db, 'stories'));
+      const data = snapshot.val() || {};
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "backup_stories.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function restoreData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (confirm("Khôi phục sẽ ghi đè dữ liệu hiện tại. Bạn có chắc?")) {
+        await set(ref(db, 'stories'), data);
+        alert("Khôi phục thành công!");
+        location.reload();
+      }
+    }
+
+    function toggleMenu() {
+      document.getElementById("menu").classList.toggle("show");
+    }
+
+    function toggleTheme() {
+      alert("Tính năng này đang được phát triển!");
+    }
+
+    async function loginWithGoogle() {
+      try {
+        await signInWithPopup(auth, new GoogleAuthProvider());
+        showSection("home");
+      } catch (e) {
+        alert("Lỗi đăng nhập Google: " + e.message);
+      }
+    }
+
+    async function logout() {
+      await signOut(auth);
+      alert("Đã đăng xuất");
       location.reload();
     }
-  } catch (e) {
-    alert("Lỗi khôi phục: " + e.message);
-  }
-};
 
-loadStories();
-</script>
-<script type="module">
+    onAuthStateChanged(auth, (user) => {
+      const isAdmin = user?.email === "sumi22122005@gmail.com";
+      const userInfo = document.getElementById("user-info");
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+      if (user) {
+        document.getElementById("auth-button").innerText = "🚪 Đăng xuất";
+        document.getElementById("auth-button").onclick = logout;
+        userInfo.innerHTML = `<img src="${user.photoURL || ''}" alt="avatar"><span>${user.displayName || 'Người dùng'}</span>`;
 
-const app = initializeApp({
-  apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
-  authDomain: "nghe-truyen-6dac9.firebaseapp.com",
-  databaseURL: "https://nghe-truyen-6dac9-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "nghe-truyen-6dac9"
-});
+        ["upload-btn", "backup-btn", "restore-btn", "upload-section"].forEach(id => {
+          document.getElementById(id)?.classList.toggle("hidden", !isAdmin);
+        });
+      } else {
+        document.getElementById("auth-button").innerText = "🔓 Đăng nhập Google";
+        document.getElementById("auth-button").onclick = loginWithGoogle;
+        document.getElementById("upload-section").classList.add("hidden");
+        userInfo.innerHTML = "";
+      }
+    });
 
-const db = getDatabase(app);
-let allStories = [];
+    // Khởi tạo
+    loadStories();
 
-function showSection(id) {
-  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
-  document.getElementById(id + "-section").classList.remove("hidden");
-  if (id === 'follow') renderFollowed();
-  if (id === 'tusach') renderTusach();
-  if (id === 'history') renderHistory();
-}
+    // Gắn hàm ra global scope
+    window.showSection = showSection;
+    window.uploadStory = uploadStory;
+    window.backupData = backupData;
+    window.restoreData = restoreData;
+    window.toggleMenu = toggleMenu;
+    window.loginWithGoogle = loginWithGoogle;
+    window.addToFollow = addToFollow;
+    window.addToTusach = addToTusach;
+    window.addToHistory = addToHistory;
+  </script>
 
-function renderStory(story, buttons = true) {
-  return `
-    <div class="story">
-      <h3>${story.title}</h3>
-      <img src="${story.imgUrl}" alt="ảnh"/>
-      <p><b>Tác giả:</b> ${story.author}</p>
-      <p>${story.desc}</p>
-      <audio controls src="${story.audioUrl}" onplay="addToHistory('${story.id}')"></audio>
-      ${buttons ? `
-      <button onclick="addToFollow('${story.id}')">❤️ Theo dõi</button>
-      <button onclick="addToTusach('${story.id}')">📁 Thêm vào tủ</button>` : ''}
-    </div>
-  `;
-}
-
-function loadStories() {
-  onValue(ref(db, 'stories'), snapshot => {
-    const data = snapshot.val();
-    allStories = Object.entries(data || {}).map(([id, val]) => ({ id, ...val })).reverse();
-    document.getElementById("home-list").innerHTML = allStories.map(s => renderStory(s)).join("");
-  });
-}
-
-function searchStories() {
-  const text = document.getElementById("search-input").value.toLowerCase();
-  const result = allStories.filter(s => s.title.toLowerCase().includes(text));
-  document.getElementById("search-list").innerHTML = result.map(s => renderStory(s)).join("");
-}
-
-function addToFollow(id) {
-  let list = JSON.parse(localStorage.getItem("follow") || "[]");
-  if (!list.includes(id)) list.push(id);
-  localStorage.setItem("follow", JSON.stringify(list));
-  alert("Đã theo dõi");
-}
-
-function addToTusach(id) {
-  let list = JSON.parse(localStorage.getItem("tusach") || "[]");
-  if (!list.includes(id)) list.push(id);
-  localStorage.setItem("tusach", JSON.stringify(list));
-  alert("Đã thêm vào tủ truyện");
-}
-
-function addToHistory(id) {
-  let list = JSON.parse(localStorage.getItem("history") || "[]");
-  list = list.filter(i => i !== id);
-  list.unshift(id);
-  if (list.length > 20) list = list.slice(0, 20);
-  localStorage.setItem("history", JSON.stringify(list));
-}
-
-function renderFollowed() {
-  const ids = JSON.parse(localStorage.getItem("follow") || "[]");
-  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
-  document.getElementById("follow-list").innerHTML = html || "<p>Chưa theo dõi truyện nào</p>";
-}
-
-function renderTusach() {
-  const ids = JSON.parse(localStorage.getItem("tusach") || "[]");
-  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
-  document.getElementById("tusach-list").innerHTML = html || "<p>Chưa có truyện trong tủ</p>";
-}
-
-function renderHistory() {
-  const ids = JSON.parse(localStorage.getItem("history") || "[]");
-  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
-  document.getElementById("history-list").innerHTML = html || "<p>Chưa có lịch sử nghe</p>";
-}
-
-window.showSection = showSection;
-window.addToFollow = addToFollow;
-window.addToTusach = addToTusach;
-window.addToHistory = addToHistory;
-
-loadStories();
-
-
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithPopup, onAuthStateChanged, signOut, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-import { getDatabase, ref, push, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
-  authDomain: "nghe-truyen-6dac9.firebaseapp.com",
-  projectId: "nghe-truyen-6dac9",
-  storageBucket: "nghe-truyen-6dac9.appspot.com",
-  messagingSenderId: "798859322959",
-  appId: "1:798859322959:web:a52112ab9d27c0cc1602c3a",
-  databaseURL: "https://nghe-truyen-6dac9-default-rtdb.asia-southeast1.firebasedatabase.app"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const storage = getStorage(app);
-const database = getDatabase(app);
-
-function showSection(id) {
-  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
-  document.getElementById(id + "-section").classList.remove("hidden");
-}
-
-window.uploadStory = async function () {
-  const title = document.getElementById("story-title").value;
-  const desc = document.getElementById("story-desc").value;
-  const author = document.getElementById("story-author").value;
-  const genre = document.getElementById("story-genre").value;
-  const chapters = document.getElementById("story-chapters").value;
-  const status = document.getElementById("story-status").value;
-  const imgFile = document.getElementById("story-img").files[0];
-  const audioFile = document.getElementById("story-audio").files[0];
-
-  if (!title || !desc || !author || !genre || !chapters || !status || !imgFile || !audioFile) {
-    alert("Điền đầy đủ thông tin!");
-    return;
-  }
-
-  const imgRef = sRef(storage, 'images/' + imgFile.name);
-  const audioRef = sRef(storage, 'audio/' + audioFile.name);
-
-  await uploadBytes(imgRef, imgFile);
-  await uploadBytes(audioRef, audioFile);
-
-  const imgUrl = await getDownloadURL(imgRef);
-  const audioUrl = await getDownloadURL(audioRef);
-
-  await push(ref(database, 'stories'), {
-    title, desc, author, genre, chapters, status, imgUrl, audioUrl, createdAt: Date.now()
-  });
-
-  alert("Tải truyện thành công!");
-  document.getElementById("story-title").value = "";
-  document.getElementById("story-desc").value = "";
-  document.getElementById("story-author").value = "";
-  document.getElementById("story-genre").value = "";
-  document.getElementById("story-chapters").value = "";
-  document.getElementById("story-status").value = "Đang ra";
-  document.getElementById("story-img").value = "";
-  document.getElementById("story-audio").value = "";
-  showSection("home");
-};
-
-function displayStories() {
-  const list = document.getElementById("story-list");
-  onValue(ref(database, 'stories'), (snapshot) => {
-    list.innerHTML = '';
-    const data = snapshot.val();
-    if (data) {
-      Object.values(data).reverse().forEach(story => {
-        const div = document.createElement("div");
-        div.className = "story";
-        div.innerHTML = `
-          <h3>${story.title}</h3>
-          <img src="${story.imgUrl}" alt="Ảnh truyện" />
-          <p><strong>Tác giả:</strong> ${story.author || "Chưa rõ"}</p>
-          <p><strong>Thể loại:</strong> ${story.genre || "..."}</p>
-          <p><strong>Số chương:</strong> ${story.chapters || "?"}</p>
-          <p><strong>Trạng thái:</strong> ${story.status || "?"}</p>
-          <p>${story.desc}</p>
-          <audio controls src="${story.audioUrl}"></audio>
-        `;
-        list.appendChild(div);
-      });
-    } else {
-      list.innerHTML = "<p>Chưa có truyện nào.</p>";
-    }
-  });
-}
-
-window.toggleMenu = function () {
-  document.getElementById("menu").classList.toggle("show");
-};
-
-window.loginWithGoogle = async function () {
-  try {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-    showSection("home");
-  } catch (e) {
-    alert("Lỗi đăng nhập Google: " + e.message);
-  }
-};
-
-onAuthStateChanged(auth, (user) => {
-  const isAdmin = user?.email === "sumi22122005@gmail.com";
-  const userInfo = document.getElementById("user-info");
-  if (user) {
-    document.getElementById("auth-button").innerText = "🚪 Đăng xuất";
-    document.getElementById("auth-button").onclick = logout;
-    if (isAdmin) {
-  ["upload-section", "upload-btn", "backup-btn", "restore-btn"].forEach(id => {
-    document.getElementById(id)?.classList.remove("hidden");
-  });
-    } else {
-  ["upload-section", "upload-btn", "backup-btn", "restore-btn"].forEach(id => {
-    document.getElementById(id)?.classList.add("hidden");
-  });
-    }
-    const name = user.displayName || "Người dùng";
-    const photo = user.photoURL || "https://www.gravatar.com/avatar?d=mp";
-    userInfo.innerHTML = `<img src="${photo}" alt="avatar"><span>${name}</span>`;
-  } else {
-    document.getElementById("auth-button").innerText = "🔓 Đăng nhập Google";
-    document.getElementById("auth-button").onclick = loginWithGoogle;
-    document.getElementById("upload-section").classList.add("hidden");
-    userInfo.innerHTML = "";
-  }
-});
-
-window.logout = async function () {
-  await signOut(auth);
-  alert("Đã đăng xuất");
-  location.reload();
-};
-
-displayStories();
-
-</script>
-
-<script>
-  window.toggleMenu = function () {
-    document.getElementById("menu").classList.toggle("show");
-  };
-  document.addEventListener('click', function (event) {
-    const menu = document.getElementById("menu");
-    const toggle = document.querySelector(".menu-toggle");
-    if (!menu.contains(event.target) && !toggle.contains(event.target)) {
-      menu.classList.remove("show");
-    }
-  });
-</script>
-
+  <script>
+    // Đóng menu khi click ra ngoài
+    document.addEventListener('click', function (event) {
+      const menu = document.getElementById("menu");
+      const toggle = document.querySelector(".menu-toggle");
+      if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+        menu.classList.remove("show");
+      }
+    });
+  </script>
+</body>
 </html>
