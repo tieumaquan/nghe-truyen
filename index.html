@@ -310,9 +310,9 @@ onAuthStateChanged(auth, (user) => {
     });
 
     window.logout = async function () {
-      await signOut, GoogleAuthProvider, signInWithPopup(auth);
-      alert("Đã đăng xuất");
-    };
+  await signOut(auth);
+  alert("Đã đăng xuất");
+};
 
     window.showLogin = function () {
       showSection("login");
