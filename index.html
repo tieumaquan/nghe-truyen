@@ -144,7 +144,7 @@
         <input type="file" id="restore-input" class="hidden" onchange="restoreData(event)" accept=".json">
         <button id="restore-btn" onclick="document.getElementById('restore-input').click()" class="hidden">📥 Khôi phục dữ liệu</button>
         <button onclick="toggleTheme()">🎨 Đổi màu web</button>
-        <button id="auth-button">🔓 Đăng nhập Google</button>
+        <button id="auth-button">🔐 Đăng nhập / Đăng ký với Google</button>
       </div>
     </div>
   </header>
@@ -207,7 +207,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithPopup, onAuthStateChanged, signOut, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getDatabase, ref, onValue, push, set, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+    import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
@@ -319,7 +319,7 @@
       const audioRef = sRef(storage, 'audio/' + audioFile.name);
 
       await uploadBytes(imgRef, imgFile);
-      await uploadBytes(audioRef, audioFile);
+      await uploadBytesResumable(audioRef, audioFile);
 
       const imgUrl = await getDownloadURL(imgRef);
       const audioUrl = await getDownloadURL(audioRef);
@@ -400,7 +400,7 @@
           document.getElementById(id)?.classList.toggle("hidden", !isAdmin);
         });
       } else {
-        document.getElementById("auth-button").innerText = "🔓 Đăng nhập Google";
+        document.getElementById("auth-button").innerText = "🔐 Đăng nhập / Đăng ký với Google";
         document.getElementById("auth-button").onclick = loginWithGoogle;
         document.getElementById("upload-section").classList.add("hidden");
         userInfo.innerHTML = "";
