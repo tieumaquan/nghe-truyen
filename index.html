@@ -304,50 +304,32 @@
     }
 
     async function uploadStory() {
-      const user = auth.currentUser;
-      if (!user || user.email !== "sumi22122005@gmail.com") {
-        alert("Chỉ quản trị viên mới có quyền thêm truyện.");
-        return;
-      }
-
-      const title = document.getElementById("story-title").value || "Không tên";
-      const desc = document.getElementById("story-desc").value || "";
-      const author = document.getElementById("story-author").value || "Chưa rõ";
-      const genre = document.getElementById("story-genre").value || "";
-      const chapters = document.getElementById("story-chapters").value || "";
-      const status = document.getElementById("story-status").value || "Đang ra";
+      const title = document.getElementById("story-title").value;
+      const desc = document.getElementById("story-desc").value;
+      const author = document.getElementById("story-author").value;
+      const genre = document.getElementById("story-genre").value;
+      const chapters = document.getElementById("story-chapters").value;
+      const status = document.getElementById("story-status").value;
       const imgFile = document.getElementById("story-img").files[0];
       const audioFile = document.getElementById("story-audio").files[0];
-      const youtubeLink = document.getElementById("story-youtube").value.trim();
 
-      let imgUrl = "";
-      let audioUrl = "";
+      
 
-      if (!audioFile && !youtubeLink) {
-        const proceed = confirm("⚠️ Truyện chưa có audio hoặc link YouTube. Vẫn muốn thêm?");
-        if (!proceed) return;
-      }
+      const imgRef = sRef(storage, 'images/' + imgFile.name);
+      const audioRef = sRef(storage, 'audio/' + audioFile.name);
 
-      if (imgFile) {
-        const imgRef = sRef(storage, 'images/' + imgFile.name);
-        await uploadBytesResumable(imgRef, imgFile);
-        imgUrl = await getDownloadURL(imgRef);
-      }
+      await uploadBytes(imgRef, imgFile);
+      await uploadBytesResumable(audioRef, audioFile);
 
-      if (youtubeLink) {
-        audioUrl = youtubeLink;
-      } else if (audioFile) {
-        const audioRef = sRef(storage, 'audio/' + audioFile.name);
-        await uploadBytesResumable(audioRef, audioFile);
-        audioUrl = await getDownloadURL(audioRef);
-      }
+      const imgUrl = await getDownloadURL(imgRef);
+      const audioUrl = await getDownloadURL(audioRef);
 
       await push(ref(db, 'stories'), {
         title, desc, author, genre, chapters, status, imgUrl, audioUrl, createdAt: Date.now()
       });
 
       alert("Tải truyện thành công!");
-      ["story-title", "story-desc", "story-author", "story-genre", "story-chapters", "story-youtube"].forEach(id => {
+      ["story-title", "story-desc", "story-author", "story-genre", "story-chapters"].forEach(id => {
         document.getElementById(id).value = "";
       });
       document.getElementById("story-status").value = "Đang ra";
@@ -427,6 +409,7 @@
 
     // Khởi tạo
     loadStories();
+    showSection("home");
 
     // Gắn hàm ra global scope
     window.showSection = showSection;
