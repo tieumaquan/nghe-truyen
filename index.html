@@ -81,22 +81,56 @@
     button:hover {
       opacity: 0.9;
     }
-  </style>
+  
+/* MENU 3 GẠCH NGANG */
+.menu-toggle {
+  font-size: 1.8rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: white;
+  margin-right: 1rem;
+}
+.nav-menu {
+  display: none;
+  flex-direction: column;
+  background-color: var(--light-color);
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 200px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 99;
+  border-radius: 0 0 0 10px;
+
+  pointer-events: auto;}
+.nav-menu.show {
+  display: flex;
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>📚 Audio Truyện Online</h1>
-  </header>
+  <header style="display: flex; justify-content: space-between; align-items: center; position: relative;">
+  <h1>📚 Audio Truyện Online</h1>
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
 
-  <nav>
-    <div>
-      <button onclick="showSection('home')">🏠 Trang chủ</button>
-      <button onclick="showSection('upload')">➕ Thêm truyện</button>
-    </div>
+  <div class="nav-menu" id="menu">
+    <button onclick="showSection('home')">🏠 Trang chủ</button>
+    <button id="upload-btn" onclick="showSection('upload')" class="hidden">➕ Thêm truyện</button>
     <div id="auth-section">
       <button onclick="showLogin()">🔐 Đăng nhập</button>
     </div>
-  </nav>
+  </div>
+</header>
+
+  <div class="nav-menu" id="menu">
+  <button onclick="showSection('home')">🏠 Trang chủ</button>
+  <button id="upload-btn" onclick="showSection('upload')" class="hidden">➕ Thêm truyện</button>
+  <div id="auth-section">
+    <button onclick="showLogin()">🔐 Đăng nhập</button>
+  </div>
+</div>
 
   <main>
     <section id="home-section">
@@ -118,10 +152,11 @@
     <section id="login-section" class="hidden">
       <h2 class="center">Đăng nhập</h2>
       <div class="admin-panel">
-        <input type="email" id="login-email" placeholder="Tên tài khoản (không cần email)">
+        <input type="email" id="login-email" placeholder="Email">
         <input type="password" id="login-pass" placeholder="Mật khẩu">
         <button onclick="login()">➡️ Đăng nhập</button>
         <button onclick="signup()">📝 Đăng ký</button>
+        <button onclick="loginWithGoogle()">🔓 Đăng nhập bằng Google</button>
       </div>
     </section>
   </main>
@@ -132,7 +167,7 @@
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
       onAuthStateChanged,
-      signOut
+      signOut, GoogleAuthProvider, signInWithPopup
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
       getStorage,
@@ -148,7 +183,7 @@
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXA1NUeh0c-eP0lP6s",
+      apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
       authDomain: "nghe-truyen-6dac9.firebaseapp.com",
       projectId: "nghe-truyen-6dac9",
       storageBucket: "nghe-truyen-6dac9.appspot.com",
@@ -168,29 +203,29 @@
     }
 
     window.login = async function () {
-      const username = document.getElementById("login-email").value;
-      const email = username + "@app.local";
-      const pass = document.getElementById("login-pass").value;
-      try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        alert("Đăng nhập thành công!");
-        showSection("home");
-      } catch (e) {
-        alert("Sai thông tin đăng nhập");
-      }
-    };
+  const emailInput = document.getElementById("login-email").value.trim();
+  const pass = document.getElementById("login-pass").value;
+  const email = emailInput.includes("@") ? emailInput : `${emailInput}@gmail.com`;
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    alert("Đăng nhập thành công!");
+    showSection("home");
+  } catch (e) {
+    alert("Sai thông tin đăng nhập");
+  }
+};
 
     window.signup = async function () {
-      const username = document.getElementById("login-email").value;
-      const email = username + "@app.local";
-      const pass = document.getElementById("login-pass").value;
-      try {
-        await createUserWithEmailAndPassword(auth, email, pass);
-        alert("Đăng ký thành công!");
-      } catch (e) {
-        alert("Lỗi đăng ký: " + e.message);
-      }
-    };
+  const emailInput = document.getElementById("login-email").value.trim();
+  const pass = document.getElementById("login-pass").value;
+  const email = emailInput.includes("@") ? emailInput : `${emailInput}@gmail.com`;
+  try {
+    await createUserWithEmailAndPassword(auth, email, pass);
+    alert("Đăng ký thành công!");
+  } catch (e) {
+    alert("Lỗi đăng ký: " + e.message);
+  }
+};
 
     window.uploadStory = async function () {
       const title = document.getElementById("story-title").value;
@@ -247,7 +282,23 @@
       });
     }
 
-    onAuthStateChanged(auth, (user) => {
+    window.toggleMenu = function () {
+  document.getElementById("menu").classList.toggle("show");
+};
+
+window.loginWithGoogle = async function () {
+  try {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+    alert("Đăng nhập bằng Google thành công!");
+    showSection("home");
+  } catch (e) {
+    alert("Lỗi đăng nhập Google: " + e.message);
+  }
+};
+
+
+onAuthStateChanged(auth, (user) => {
       const authSection = document.getElementById("auth-section");
       if (user) {
         authSection.innerHTML = `<button onclick="logout()">🚪 Đăng xuất</button>`;
@@ -259,7 +310,7 @@
     });
 
     window.logout = async function () {
-      await signOut(auth);
+      await signOut, GoogleAuthProvider, signInWithPopup(auth);
       alert("Đã đăng xuất");
     };
 
