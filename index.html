@@ -21,20 +21,35 @@
       background-color: var(--main-color);
       padding: 1rem;
       color: white;
-      text-align: center;
-    }
-    nav {
       display: flex;
       justify-content: space-between;
-      padding: 0.5rem 1rem;
-      background-color: var(--light-color);
+      align-items: center;
+      position: relative;
     }
-    nav button {
+    .menu-toggle {
+      font-size: 1.8rem;
+      cursor: pointer;
       background: none;
       border: none;
-      color: var(--main-color);
-      font-size: 1rem;
-      cursor: pointer;
+      color: white;
+      margin-right: 1rem;
+    }
+    .nav-menu {
+      display: none;
+      flex-direction: column;
+      background-color: var(--light-color);
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 200px;
+      padding: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 99;
+      border-radius: 0 0 0 10px;
+      pointer-events: auto;
+    }
+    .nav-menu.show {
+      display: flex;
     }
     main {
       padding: 1rem;
@@ -62,13 +77,6 @@
     .center {
       text-align: center;
     }
-    input, textarea, select {
-      width: 100%;
-      padding: 8px;
-      margin: 6px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
     button {
       background-color: var(--main-color);
       border: none;
@@ -78,59 +86,31 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    button:hover {
-      opacity: 0.9;
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-  
-/* MENU 3 GẠCH NGANG */
-.menu-toggle {
-  font-size: 1.8rem;
-  cursor: pointer;
-  background: none;
-  border: none;
-  color: white;
-  margin-right: 1rem;
-}
-.nav-menu {
-  display: none;
-  flex-direction: column;
-  background-color: var(--light-color);
-  position: absolute;
-  top: 100%;
-  right: 0;
-  width: 200px;
-  padding: 1rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  z-index: 99;
-  border-radius: 0 0 0 10px;
-
-  pointer-events: auto;}
-.nav-menu.show {
-  display: flex;
-}
-</style>
+    .user-info img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+  </style>
 </head>
 <body>
-  <header style="display: flex; justify-content: space-between; align-items: center; position: relative;">
-  <h1>📚 Audio Truyện Online</h1>
-  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-
-  <div class="nav-menu" id="menu">
-    <button onclick="showSection('home')">🏠 Trang chủ</button>
-    <button id="upload-btn" onclick="showSection('upload')" class="hidden">➕ Thêm truyện</button>
-    <div id="auth-section">
-      <button onclick="showLogin()">🔐 Đăng nhập</button>
+  <header>
+    <h1>📚 Audio Truyện</h1>
+    <div class="user-info" id="user-info"></div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="nav-menu" id="menu">
+      <button onclick="showSection('home')">🏠 Trang chủ</button>
+      <button id="upload-btn" onclick="showSection('upload')" class="hidden">➕ Thêm truyện</button>
+      <div id="auth-section">
+        <button onclick="loginWithGoogle()">🔓 Đăng nhập Google</button>
+      </div>
     </div>
-  </div>
-</header>
-
-  <div class="nav-menu" id="menu">
-  <button onclick="showSection('home')">🏠 Trang chủ</button>
-  <button id="upload-btn" onclick="showSection('upload')" class="hidden">➕ Thêm truyện</button>
-  <div id="auth-section">
-    <button onclick="showLogin()">🔐 Đăng nhập</button>
-  </div>
-</div>
+  </header>
 
   <main>
     <section id="home-section">
@@ -148,141 +128,106 @@
         <button onclick="uploadStory()">📤 Tải lên</button>
       </div>
     </section>
-
-    <section id="login-section" class="hidden">
-      <h2 class="center">Đăng nhập</h2>
-      <div class="admin-panel">
-        <input type="email" id="login-email" placeholder="Email">
-        <input type="password" id="login-pass" placeholder="Mật khẩu">
-        <button onclick="login()">➡️ Đăng nhập</button>
-        <button onclick="signup()">📝 Đăng ký</button>
-        <button onclick="loginWithGoogle()">🔓 Đăng nhập bằng Google</button>
-      </div>
-    </section>
   </main>
+
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
-      onAuthStateChanged,
-      signOut, GoogleAuthProvider, signInWithPopup
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-      getStorage,
-      ref as sRef,
-      uploadBytes,
-      getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-    import {
-      getDatabase,
-      ref,
-      push,
-      onValue
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut,
+  GoogleAuthProvider
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getStorage,
+  ref as sRef,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
-      authDomain: "nghe-truyen-6dac9.firebaseapp.com",
-      projectId: "nghe-truyen-6dac9",
-      storageBucket: "nghe-truyen-6dac9.appspot.com",
-      messagingSenderId: "798859322959",
-      appId: "1:798859322959:web:a52112ab9d27c0cc1602c3a",
-      databaseURL: "https://nghe-truyen-6dac9-default-rtdb.asia-southeast1.firebasedatabase.app"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const storage = getStorage(app);
-    const database = getDatabase(app);
-
-    function showSection(id) {
-      document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
-      document.getElementById(id + "-section").classList.remove("hidden");
-    }
-
-    window.login = async function () {
-  const emailInput = document.getElementById("login-email").value.trim();
-  const pass = document.getElementById("login-pass").value;
-  const email = emailInput.includes("@") ? emailInput : `${emailInput}@gmail.com`;
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-    alert("Đăng nhập thành công!");
-    showSection("home");
-  } catch (e) {
-    alert("Sai thông tin đăng nhập");
-  }
+const firebaseConfig = {
+  apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
+  authDomain: "nghe-truyen-6dac9.firebaseapp.com",
+  projectId: "nghe-truyen-6dac9",
+  storageBucket: "nghe-truyen-6dac9.appspot.com",
+  messagingSenderId: "798859322959",
+  appId: "1:798859322959:web:a52112ab9d27c0cc1602c3a",
+  databaseURL: "https://nghe-truyen-6dac9-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 
-    window.signup = async function () {
-  const emailInput = document.getElementById("login-email").value.trim();
-  const pass = document.getElementById("login-pass").value;
-  const email = emailInput.includes("@") ? emailInput : `${emailInput}@gmail.com`;
-  try {
-    await createUserWithEmailAndPassword(auth, email, pass);
-    alert("Đăng ký thành công!");
-  } catch (e) {
-    alert("Lỗi đăng ký: " + e.message);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const storage = getStorage(app);
+const database = getDatabase(app);
+
+function showSection(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+  document.getElementById(id + "-section").classList.remove("hidden");
+}
+
+window.uploadStory = async function () {
+  const title = document.getElementById("story-title").value;
+  const desc = document.getElementById("story-desc").value;
+  const imgFile = document.getElementById("story-img").files[0];
+  const audioFile = document.getElementById("story-audio").files[0];
+
+  if (!title || !desc || !imgFile || !audioFile) {
+    alert("Điền đầy đủ thông tin!");
+    return;
   }
+
+  const imgRef = sRef(storage, 'images/' + imgFile.name);
+  const audioRef = sRef(storage, 'audio/' + audioFile.name);
+
+  await uploadBytes(imgRef, imgFile);
+  await uploadBytes(audioRef, audioFile);
+
+  const imgUrl = await getDownloadURL(imgRef);
+  const audioUrl = await getDownloadURL(audioRef);
+
+  await push(ref(database, 'stories'), {
+    title, desc, imgUrl, audioUrl, createdAt: Date.now()
+  });
+
+  alert("Tải truyện thành công!");
+  document.getElementById("story-title").value = "";
+  document.getElementById("story-desc").value = "";
+  document.getElementById("story-img").value = "";
+  document.getElementById("story-audio").value = "";
+  showSection("home");
 };
 
-    window.uploadStory = async function () {
-      const title = document.getElementById("story-title").value;
-      const desc = document.getElementById("story-desc").value;
-      const imgFile = document.getElementById("story-img").files[0];
-      const audioFile = document.getElementById("story-audio").files[0];
-
-      if (!title || !desc || !imgFile || !audioFile) {
-        alert("Điền đầy đủ thông tin!");
-        return;
-      }
-
-      const imgRef = sRef(storage, 'images/' + imgFile.name);
-      const audioRef = sRef(storage, 'audio/' + audioFile.name);
-
-      await uploadBytes(imgRef, imgFile);
-      await uploadBytes(audioRef, audioFile);
-
-      const imgUrl = await getDownloadURL(imgRef);
-      const audioUrl = await getDownloadURL(audioRef);
-
-      await push(ref(database, 'stories'), {
-        title, desc, imgUrl, audioUrl, createdAt: Date.now()
+function displayStories() {
+  const list = document.getElementById("story-list");
+  onValue(ref(database, 'stories'), (snapshot) => {
+    list.innerHTML = '';
+    const data = snapshot.val();
+    if (data) {
+      Object.values(data).reverse().forEach(story => {
+        const div = document.createElement("div");
+        div.className = "story";
+        div.innerHTML = `
+          <h3>${story.title}</h3>
+          <img src="${story.imgUrl}" alt="Ảnh truyện" />
+          <p>${story.desc}</p>
+          <audio controls src="${story.audioUrl}"></audio>
+        `;
+        list.appendChild(div);
       });
-
-      alert("Tải truyện thành công!");
-      document.getElementById("story-title").value = "";
-      document.getElementById("story-desc").value = "";
-      document.getElementById("story-img").value = "";
-      document.getElementById("story-audio").value = "";
-      showSection("home");
-    };
-
-    function displayStories() {
-      const list = document.getElementById("story-list");
-      onValue(ref(database, 'stories'), (snapshot) => {
-        list.innerHTML = '';
-        const data = snapshot.val();
-        if (data) {
-          Object.values(data).reverse().forEach(story => {
-            const div = document.createElement("div");
-            div.className = "story";
-            div.innerHTML = `
-              <h3>${story.title}</h3>
-              <img src="${story.imgUrl}" alt="Ảnh truyện" />
-              <p>${story.desc}</p>
-              <audio controls src="${story.audioUrl}"></audio>
-            `;
-            list.appendChild(div);
-          });
-        } else {
-          list.innerHTML = "<p>Chưa có truyện nào.</p>";
-        }
-      });
+    } else {
+      list.innerHTML = "<p>Chưa có truyện nào.</p>";
     }
+  });
+}
 
-    window.toggleMenu = function () {
+window.toggleMenu = function () {
   document.getElementById("menu").classList.toggle("show");
 };
 
@@ -290,35 +235,35 @@ window.loginWithGoogle = async function () {
   try {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
-    alert("Đăng nhập bằng Google thành công!");
     showSection("home");
   } catch (e) {
     alert("Lỗi đăng nhập Google: " + e.message);
   }
 };
 
-
 onAuthStateChanged(auth, (user) => {
-      const authSection = document.getElementById("auth-section");
-      if (user) {
-        authSection.innerHTML = `<button onclick="logout()">🚪 Đăng xuất</button>`;
-        document.getElementById("upload-section").classList.remove("hidden");
-      } else {
-        authSection.innerHTML = `<button onclick="showLogin()">🔐 Đăng nhập</button>`;
-        document.getElementById("upload-section").classList.add("hidden");
-      }
-    });
+  const authSection = document.getElementById("auth-section");
+  const userInfo = document.getElementById("user-info");
+  if (user) {
+    authSection.innerHTML = `<button onclick="logout()">🚪 Đăng xuất</button>`;
+    document.getElementById("upload-section").classList.remove("hidden");
+    const name = user.displayName || "Người dùng";
+    const photo = user.photoURL || "https://www.gravatar.com/avatar?d=mp";
+    userInfo.innerHTML = `<img src="${photo}" alt="avatar"><span>${name}</span>`;
+  } else {
+    authSection.innerHTML = `<button onclick="loginWithGoogle()">🔓 Đăng nhập Google</button>`;
+    document.getElementById("upload-section").classList.add("hidden");
+    userInfo.innerHTML = "";
+  }
+});
 
-    window.logout = async function () {
+window.logout = async function () {
   await signOut(auth);
   alert("Đã đăng xuất");
+  location.reload();
 };
 
-    window.showLogin = function () {
-      showSection("login");
-    };
-
-    displayStories();
-  </script>
+displayStories();
+</script>
 </body>
 </html>
