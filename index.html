@@ -198,6 +198,7 @@
         </select>
         <input type="file" id="story-img" accept="image/*">
         <input type="file" id="story-audio" accept="audio/*">
+        <input type="text" id="story-youtube" placeholder="Hoặc nhập link YouTube">
         <button onclick="uploadStory()">📤 Tải lên</button>
       </div>
     </section>
@@ -312,10 +313,7 @@
       const imgFile = document.getElementById("story-img").files[0];
       const audioFile = document.getElementById("story-audio").files[0];
 
-      if (!title || !desc || !author || !genre || !chapters || !status || !imgFile || !audioFile) {
-        alert("Điền đầy đủ thông tin!");
-        return;
-      }
+      
 
       const imgRef = sRef(storage, 'images/' + imgFile.name);
       const audioRef = sRef(storage, 'audio/' + audioFile.name);
