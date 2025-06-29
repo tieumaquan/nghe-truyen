@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Audio Truyện Online</title>
+  <style>
+    :root {
+      --main-color: #f76da4;
+      --light-color: #fdd2e0;
+      --bg-color: #fff5f9;
+      --text-color: #333;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+    header {
+      background-color: var(--main-color);
+      padding: 1rem;
+      color: white;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      background-color: var(--light-color);
+    }
+    nav button {
+      background: none;
+      border: none;
+      color: var(--main-color);
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    main {
+      padding: 1rem;
+    }
+    .story {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background-color: white;
+    }
+    .story img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    .admin-panel {
+      background-color: #ffeef2;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 2rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .center {
+      text-align: center;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background-color: var(--main-color);
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      margin-top: 0.5rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 Audio Truyện Online</h1>
+  </header>
+
+  <nav>
+    <div>
+      <button onclick="showSection('home')">🏠 Trang chủ</button>
+      <button onclick="showSection('upload')">➕ Thêm truyện</button>
+    </div>
+    <div id="auth-section">
+      <button onclick="showLogin()">🔐 Đăng nhập</button>
+    </div>
+  </nav>
+
+  <main>
+    <section id="home-section">
+      <h2 class="center">🎧 Danh sách truyện</h2>
+      <div id="story-list"></div>
+    </section>
+
+    <section id="upload-section" class="hidden">
+      <h2>Thêm truyện mới (Admin)</h2>
+      <div class="admin-panel">
+        <input type="text" id="story-title" placeholder="Tên truyện">
+        <textarea id="story-desc" placeholder="Mô tả"></textarea>
+        <input type="file" id="story-img" accept="image/*">
+        <input type="file" id="story-audio" accept="audio/*">
+        <button onclick="uploadStory()">📤 Tải lên</button>
+      </div>
+    </section>
+
+    <section id="login-section" class="hidden">
+      <h2 class="center">Đăng nhập</h2>
+      <div class="admin-panel">
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-pass" placeholder="Mật khẩu">
+        <button onclick="login()">➡️ Đăng nhập</button>
+        <button onclick="signup()">📝 Đăng ký</button>
+      </div>
+    </section>
+  </main>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getStorage,
+      ref as sRef,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      onValue
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXA1NUeh0c-eP0lP6s",
+      authDomain: "nghe-truyen-6dac9.firebaseapp.com",
+      projectId: "nghe-truyen-6dac9",
+      storageBucket: "nghe-truyen-6dac9.appspot.com",
+      messagingSenderId: "798859322959",
+      appId: "1:798859322959:web:a52112ab9d27c0cc1602c3a",
+      databaseURL: "https://nghe-truyen-6dac9-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+    const database = getDatabase(app);
+
+    function showSection(id) {
+      document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+      document.getElementById(id + "-section").classList.remove("hidden");
+    }
+
+    window.login = async function () {
+      const email = document.getElementById("login-email").value;
+      const pass = document.getElementById("login-pass").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        alert("Đăng nhập thành công!");
+        showSection("home");
+      } catch (e) {
+        alert("Sai thông tin đăng nhập");
+      }
+    };
+
+    window.signup = async function () {
+      const email = document.getElementById("login-email").value;
+      const pass = document.getElementById("login-pass").value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, pass);
+        alert("Đăng ký thành công!");
+      } catch (e) {
+        alert("Lỗi đăng ký: " + e.message);
+      }
+    };
+
+    window.uploadStory = async function () {
+      const title = document.getElementById("story-title").value;
+      const desc = document.getElementById("story-desc").value;
+      const imgFile = document.getElementById("story-img").files[0];
+      const audioFile = document.getElementById("story-audio").files[0];
+
+      if (!title || !desc || !imgFile || !audioFile) {
+        alert("Điền đầy đủ thông tin!");
+        return;
+      }
+
+      const imgRef = sRef(storage, 'images/' + imgFile.name);
+      const audioRef = sRef(storage, 'audio/' + audioFile.name);
+
+      await uploadBytes(imgRef, imgFile);
+      await uploadBytes(audioRef, audioFile);
+
+      const imgUrl = await getDownloadURL(imgRef);
+      const audioUrl = await getDownloadURL(audioRef);
+
+      await push(ref(database, 'stories'), {
+        title, desc, imgUrl, audioUrl, createdAt: Date.now()
+      });
+
+      alert("Tải truyện thành công!");
+      document.getElementById("story-title").value = "";
+      document.getElementById("story-desc").value = "";
+      document.getElementById("story-img").value = "";
+      document.getElementById("story-audio").value = "";
+      showSection("home");
+    };
+
+    function displayStories() {
+      const list = document.getElementById("story-list");
+      onValue(ref(database, 'stories'), (snapshot) => {
+        list.innerHTML = '';
+        const data = snapshot.val();
+        if (data) {
+          Object.values(data).reverse().forEach(story => {
+            const div = document.createElement("div");
+            div.className = "story";
+            div.innerHTML = `
+              <h3>${story.title}</h3>
+              <img src="${story.imgUrl}" alt="Ảnh truyện" />
+              <p>${story.desc}</p>
+              <audio controls src="${story.audioUrl}"></audio>
+            `;
+            list.appendChild(div);
+          });
+        } else {
+          list.innerHTML = "<p>Chưa có truyện nào.</p>";
+        }
+      });
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      const authSection = document.getElementById("auth-section");
+      if (user) {
+        authSection.innerHTML = `<button onclick="logout()">🚪 Đăng xuất</button>`;
+        document.getElementById("upload-section").classList.remove("hidden");
+      } else {
+        authSection.innerHTML = `<button onclick="showLogin()">🔐 Đăng nhập</button>`;
+        document.getElementById("upload-section").classList.add("hidden");
+      }
+    });
+
+    window.logout = async function () {
+      await signOut(auth);
+      alert("Đã đăng xuất");
+    };
+
+    window.showLogin = function () {
+      showSection("login");
+    };
+
+    displayStories();
+  </script>
+</body>
+</html>
