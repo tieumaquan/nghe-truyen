@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -35,21 +36,27 @@
       margin-right: 1rem;
     }
     .nav-menu {
-      display: none;
-      flex-direction: column;
-      background-color: var(--light-color);
       position: absolute;
       top: 100%;
       right: 0;
-      width: 200px;
+      width: 220px;
+      min-height: 70vh;
+      background-color: #f8c7d8;
+      color: black;
+      display: none;
+      flex-direction: column;
       padding: 1rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      z-index: 99;
-      border-radius: 0 0 0 10px;
-      pointer-events: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 9999;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
     .nav-menu.show {
       display: flex;
+      opacity: 1;
+      transform: translateX(0);
     }
     main {
       padding: 1rem;
@@ -96,6 +103,18 @@
       height: 32px;
       border-radius: 50%;
     }
+    .equal-width-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+    .equal-width-buttons > button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -104,13 +123,22 @@
     <div class="user-info" id="user-info"></div>
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <div class="nav-menu" id="menu">
-      <button onclick="showSection('home')">🏠 Trang chủ</button>
-      <button id="upload-btn" onclick="showSection('upload')" class="hidden">➕ Thêm truyện</button>
-      <div id="auth-section">
-        <button onclick="loginWithGoogle()">🔓 Đăng nhập Google</button>
+      <div class="equal-width-buttons">
+        <button id="upload-btn" onclick="showSection('upload')" class="hidden">➕ Thêm truyện</button>
+        <button onclick="toggleTheme()">🎨 Đổi màu web</button>
+        <button id="auth-button" onclick="loginWithGoogle()">🔓 Đăng nhập Google</button>
       </div>
     </div>
   </header>
+
+  <nav class="main-navbar" style="display: flex; justify-content: center; gap: 1rem; background: var(--light-color); padding: 0.5rem;">
+    <button onclick="showSection('home')">🏠 Trang chủ</button>
+    <button onclick="alert('Chức năng đang phát triển')">🔍 Tìm truyện</button>
+    <button onclick="alert('Chức năng đang phát triển')">❤️ Theo dõi</button>
+    <button onclick="alert('Chức năng đang phát triển')">📁 Tủ truyện</button>
+    <button onclick="alert('Chức năng đang phát triển')">🕓 Lịch sử</button>
+    <button onclick="alert('Chức năng đang phát triển')">👥 Cộng đồng</button>
+  </nav>
 
   <main>
     <section id="home-section">
@@ -123,6 +151,13 @@
       <div class="admin-panel">
         <input type="text" id="story-title" placeholder="Tên truyện">
         <textarea id="story-desc" placeholder="Mô tả"></textarea>
+        <input type="text" id="story-author" placeholder="Tác giả">
+        <input type="text" id="story-genre" placeholder="Thể loại">
+        <input type="number" id="story-chapters" placeholder="Số chương">
+        <select id="story-status">
+          <option value="Đang ra">Đang ra</option>
+          <option value="Hoàn thành">Hoàn thành</option>
+        </select>
         <input type="file" id="story-img" accept="image/*">
         <input type="file" id="story-audio" accept="audio/*">
         <button onclick="uploadStory()">📤 Tải lên</button>
@@ -132,25 +167,9 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getAuth,
-  signInWithPopup,
-  onAuthStateChanged,
-  signOut,
-  GoogleAuthProvider
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  getStorage,
-  ref as sRef,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-import {
-  getDatabase,
-  ref,
-  push,
-  onValue
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, signInWithPopup, onAuthStateChanged, signOut, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
@@ -175,10 +194,14 @@ function showSection(id) {
 window.uploadStory = async function () {
   const title = document.getElementById("story-title").value;
   const desc = document.getElementById("story-desc").value;
+  const author = document.getElementById("story-author").value;
+  const genre = document.getElementById("story-genre").value;
+  const chapters = document.getElementById("story-chapters").value;
+  const status = document.getElementById("story-status").value;
   const imgFile = document.getElementById("story-img").files[0];
   const audioFile = document.getElementById("story-audio").files[0];
 
-  if (!title || !desc || !imgFile || !audioFile) {
+  if (!title || !desc || !author || !genre || !chapters || !status || !imgFile || !audioFile) {
     alert("Điền đầy đủ thông tin!");
     return;
   }
@@ -193,12 +216,16 @@ window.uploadStory = async function () {
   const audioUrl = await getDownloadURL(audioRef);
 
   await push(ref(database, 'stories'), {
-    title, desc, imgUrl, audioUrl, createdAt: Date.now()
+    title, desc, author, genre, chapters, status, imgUrl, audioUrl, createdAt: Date.now()
   });
 
   alert("Tải truyện thành công!");
   document.getElementById("story-title").value = "";
   document.getElementById("story-desc").value = "";
+  document.getElementById("story-author").value = "";
+  document.getElementById("story-genre").value = "";
+  document.getElementById("story-chapters").value = "";
+  document.getElementById("story-status").value = "Đang ra";
   document.getElementById("story-img").value = "";
   document.getElementById("story-audio").value = "";
   showSection("home");
@@ -216,6 +243,10 @@ function displayStories() {
         div.innerHTML = `
           <h3>${story.title}</h3>
           <img src="${story.imgUrl}" alt="Ảnh truyện" />
+          <p><strong>Tác giả:</strong> ${story.author || "Chưa rõ"}</p>
+          <p><strong>Thể loại:</strong> ${story.genre || "..."}</p>
+          <p><strong>Số chương:</strong> ${story.chapters || "?"}</p>
+          <p><strong>Trạng thái:</strong> ${story.status || "?"}</p>
           <p>${story.desc}</p>
           <audio controls src="${story.audioUrl}"></audio>
         `;
@@ -243,10 +274,10 @@ window.loginWithGoogle = async function () {
 
 onAuthStateChanged(auth, (user) => {
   const isAdmin = user?.email === "sumi22122005@gmail.com";
-  const authSection = document.getElementById("auth-section");
   const userInfo = document.getElementById("user-info");
   if (user) {
-    authSection.innerHTML = `<button onclick="logout()">🚪 Đăng xuất</button>`;
+    document.getElementById("auth-button").innerText = "🚪 Đăng xuất";
+    document.getElementById("auth-button").onclick = logout;
     if (isAdmin) {
       document.getElementById("upload-section").classList.remove("hidden");
       document.getElementById("upload-btn").classList.remove("hidden");
@@ -258,7 +289,8 @@ onAuthStateChanged(auth, (user) => {
     const photo = user.photoURL || "https://www.gravatar.com/avatar?d=mp";
     userInfo.innerHTML = `<img src="${photo}" alt="avatar"><span>${name}</span>`;
   } else {
-    authSection.innerHTML = `<button onclick="loginWithGoogle()">🔓 Đăng nhập Google</button>`;
+    document.getElementById("auth-button").innerText = "🔓 Đăng nhập Google";
+    document.getElementById("auth-button").onclick = loginWithGoogle;
     document.getElementById("upload-section").classList.add("hidden");
     userInfo.innerHTML = "";
   }
