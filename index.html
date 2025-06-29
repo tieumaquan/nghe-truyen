@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -6,7 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Audio Truyện Online</title>
   <style>
-    :root {
+body { font-family: Arial; background: #fff5f9; margin: 0; color: #333; }
+    header, nav, section { padding: 1rem; }
+    header { background: #f76da4; color: white; display: flex; justify-content: space-between; align-items: center; }
+    nav { background: #fdd2e0; display: flex; justify-content: center; gap: 1rem; }
+    button { padding: 0.5rem 1rem; border: none; background: #f76da4; color: white; border-radius: 5px; cursor: pointer; }
+    .hidden { display: none; }
+    .story { background: white; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; border: 1px solid #ccc; }
+    .story img { width: 100%; border-radius: 10px; }
+    .story audio { width: 100%; }
+
+:root {
       --main-color: #f76da4;
       --light-color: #fdd2e0;
       --bg-color: #fff5f9;
@@ -115,38 +124,40 @@
       padding: 10px;
       font-size: 16px;
     }
-  </style>
+</style>
 </head>
-<body>
-  <header>
-    <h1>📚 Audio Truyện</h1>
-    <div class="user-info" id="user-info"></div>
-    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-    <div class="nav-menu" id="menu">
+<header><h1>📚 Audio Truyện</h1>
+<div class="user-info" id="user-info"></div>
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
+<div class="nav-menu" id="menu">
       <div class="equal-width-buttons">
         <button id="upload-btn" onclick="showSection('upload')" class="hidden">➕ Thêm truyện</button>
+<button id="backup-btn" onclick="backupData()" class="hidden">💾 Backup dữ liệu</button>
+<input type="file" id="restore-input" class="hidden" onchange="restoreData(event)" accept=".json">
+<button id="restore-btn" onclick="document.getElementById('restore-input').click()" class="hidden">📥 Khôi phục dữ liệu</button>
         <button onclick="toggleTheme()">🎨 Đổi màu web</button>
         <button id="auth-button" onclick="loginWithGoogle()">🔓 Đăng nhập Google</button>
-      </div>
-    </div>
-  </header>
-
-  <nav class="main-navbar" style="display: flex; justify-content: center; gap: 1rem; background: var(--light-color); padding: 0.5rem;">
+      </div></header>
+  <nav>
     <button onclick="showSection('home')">🏠 Trang chủ</button>
-    <button onclick="alert('Chức năng đang phát triển')">🔍 Tìm truyện</button>
-    <button onclick="alert('Chức năng đang phát triển')">❤️ Theo dõi</button>
-    <button onclick="alert('Chức năng đang phát triển')">📁 Tủ truyện</button>
-    <button onclick="alert('Chức năng đang phát triển')">🕓 Lịch sử</button>
-    <button onclick="alert('Chức năng đang phát triển')">👥 Cộng đồng</button>
+    <button onclick="showSection('search')">🔍 Tìm truyện</button>
+    <button onclick="showSection('follow')">❤️ Theo dõi</button>
+    <button onclick="showSection('tusach')">📁 Tủ truyện</button>
+    <button onclick="showSection('history')">🕓 Lịch sử</button>
   </nav>
 
   <main>
-    <section id="home-section">
-      <h2 class="center">🎧 Danh sách truyện</h2>
-      <div id="story-list"></div>
+    <section id="home-section"><h2>🎧 Tất cả truyện</h2><div id="home-list"></div></section>
+    <section id="search-section" class="hidden">
+      <h2>🔍 Tìm kiếm</h2>
+      <input id="search-input" placeholder="Nhập tên truyện..." oninput="searchStories()">
+      <div id="search-list"></div>
     </section>
-
-    <section id="upload-section" class="hidden">
+    <section id="follow-section" class="hidden"><h2>❤️ Truyện theo dõi</h2><div id="follow-list"></div></section>
+    <section id="tusach-section" class="hidden"><h2>📁 Tủ truyện</h2><div id="tusach-list"></div></section>
+    <section id="history-section" class="hidden"><h2>🕓 Lịch sử nghe</h2><div id="history-list"></div></section>
+  
+<section id="upload-section" class="hidden">
       <h2>Thêm truyện mới (Admin)</h2>
       <div class="admin-panel">
         <input type="text" id="story-title" placeholder="Tên truyện">
@@ -163,13 +174,246 @@
         <button onclick="uploadStory()">📤 Tải lên</button>
       </div>
     </section>
-  </main>
+</main>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
+  authDomain: "nghe-truyen-6dac9.firebaseapp.com",
+  databaseURL: "https://nghe-truyen-6dac9-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "nghe-truyen-6dac9"
+});
+
+const db = getDatabase(app);
+let allStories = [];
+
+function showSection(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+  document.getElementById(id + "-section").classList.remove("hidden");
+  if (id === 'follow') renderFollowed();
+  if (id === 'tusach') renderTusach();
+  if (id === 'history') renderHistory();
+}
+
+function renderStory(story, buttons = true) {
+  return `
+    <div class="story">
+      <h3>${story.title}</h3>
+      <img src="${story.imgUrl}" alt="ảnh"/>
+      <p><b>Tác giả:</b> ${story.author}</p>
+      <p>${story.desc}</p>
+      <audio controls src="${story.audioUrl}" onplay="addToHistory('${story.id}')"></audio>
+      ${buttons ? `
+      <button onclick="addToFollow('${story.id}')">❤️ Theo dõi</button>
+      <button onclick="addToTusach('${story.id}')">📁 Thêm vào tủ</button>` : ''}
+    </div>
+  `;
+}
+
+function loadStories() {
+  onValue(ref(db, 'stories'), snapshot => {
+    const data = snapshot.val();
+    allStories = Object.entries(data || {}).map(([id, val]) => ({ id, ...val })).reverse();
+    document.getElementById("home-list").innerHTML = allStories.map(s => renderStory(s)).join("");
+  });
+}
+
+function searchStories() {
+  const text = document.getElementById("search-input").value.toLowerCase();
+  const result = allStories.filter(s => s.title.toLowerCase().includes(text));
+  document.getElementById("search-list").innerHTML = result.map(s => renderStory(s)).join("");
+}
+
+function addToFollow(id) {
+  let list = JSON.parse(localStorage.getItem("follow") || "[]");
+  if (!list.includes(id)) list.push(id);
+  localStorage.setItem("follow", JSON.stringify(list));
+  alert("Đã theo dõi");
+}
+
+function addToTusach(id) {
+  let list = JSON.parse(localStorage.getItem("tusach") || "[]");
+  if (!list.includes(id)) list.push(id);
+  localStorage.setItem("tusach", JSON.stringify(list));
+  alert("Đã thêm vào tủ truyện");
+}
+
+function addToHistory(id) {
+  let list = JSON.parse(localStorage.getItem("history") || "[]");
+  list = list.filter(i => i !== id);
+  list.unshift(id);
+  if (list.length > 20) list = list.slice(0, 20);
+  localStorage.setItem("history", JSON.stringify(list));
+}
+
+function renderFollowed() {
+  const ids = JSON.parse(localStorage.getItem("follow") || "[]");
+  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
+  document.getElementById("follow-list").innerHTML = html || "<p>Chưa theo dõi truyện nào</p>";
+}
+
+function renderTusach() {
+  const ids = JSON.parse(localStorage.getItem("tusach") || "[]");
+  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
+  document.getElementById("tusach-list").innerHTML = html || "<p>Chưa có truyện trong tủ</p>";
+}
+
+function renderHistory() {
+  const ids = JSON.parse(localStorage.getItem("history") || "[]");
+  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
+  document.getElementById("history-list").innerHTML = html || "<p>Chưa có lịch sử nghe</p>";
+}
+
+window.showSection = showSection;
+window.addToFollow = addToFollow;
+window.addToTusach = addToTusach;
+window.addToHistory = addToHistory;
+
+
+window.backupData = async function () {
+  try {
+    const snapshot = await get(ref(database, 'stories'));
+    const data = snapshot.val() || {};
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "backup_stories.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    alert("Lỗi backup: " + e.message);
+  }
+};
+
+window.restoreData = async function (event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if (confirm("Khôi phục sẽ ghi đè dữ liệu hiện tại. Bạn có chắc?")) {
+      await set(ref(database, 'stories'), data);
+      alert("Khôi phục thành công!");
+      location.reload();
+    }
+  } catch (e) {
+    alert("Lỗi khôi phục: " + e.message);
+  }
+};
+
+loadStories();
+</script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
+  authDomain: "nghe-truyen-6dac9.firebaseapp.com",
+  databaseURL: "https://nghe-truyen-6dac9-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "nghe-truyen-6dac9"
+});
+
+const db = getDatabase(app);
+let allStories = [];
+
+function showSection(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+  document.getElementById(id + "-section").classList.remove("hidden");
+  if (id === 'follow') renderFollowed();
+  if (id === 'tusach') renderTusach();
+  if (id === 'history') renderHistory();
+}
+
+function renderStory(story, buttons = true) {
+  return `
+    <div class="story">
+      <h3>${story.title}</h3>
+      <img src="${story.imgUrl}" alt="ảnh"/>
+      <p><b>Tác giả:</b> ${story.author}</p>
+      <p>${story.desc}</p>
+      <audio controls src="${story.audioUrl}" onplay="addToHistory('${story.id}')"></audio>
+      ${buttons ? `
+      <button onclick="addToFollow('${story.id}')">❤️ Theo dõi</button>
+      <button onclick="addToTusach('${story.id}')">📁 Thêm vào tủ</button>` : ''}
+    </div>
+  `;
+}
+
+function loadStories() {
+  onValue(ref(db, 'stories'), snapshot => {
+    const data = snapshot.val();
+    allStories = Object.entries(data || {}).map(([id, val]) => ({ id, ...val })).reverse();
+    document.getElementById("home-list").innerHTML = allStories.map(s => renderStory(s)).join("");
+  });
+}
+
+function searchStories() {
+  const text = document.getElementById("search-input").value.toLowerCase();
+  const result = allStories.filter(s => s.title.toLowerCase().includes(text));
+  document.getElementById("search-list").innerHTML = result.map(s => renderStory(s)).join("");
+}
+
+function addToFollow(id) {
+  let list = JSON.parse(localStorage.getItem("follow") || "[]");
+  if (!list.includes(id)) list.push(id);
+  localStorage.setItem("follow", JSON.stringify(list));
+  alert("Đã theo dõi");
+}
+
+function addToTusach(id) {
+  let list = JSON.parse(localStorage.getItem("tusach") || "[]");
+  if (!list.includes(id)) list.push(id);
+  localStorage.setItem("tusach", JSON.stringify(list));
+  alert("Đã thêm vào tủ truyện");
+}
+
+function addToHistory(id) {
+  let list = JSON.parse(localStorage.getItem("history") || "[]");
+  list = list.filter(i => i !== id);
+  list.unshift(id);
+  if (list.length > 20) list = list.slice(0, 20);
+  localStorage.setItem("history", JSON.stringify(list));
+}
+
+function renderFollowed() {
+  const ids = JSON.parse(localStorage.getItem("follow") || "[]");
+  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
+  document.getElementById("follow-list").innerHTML = html || "<p>Chưa theo dõi truyện nào</p>";
+}
+
+function renderTusach() {
+  const ids = JSON.parse(localStorage.getItem("tusach") || "[]");
+  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
+  document.getElementById("tusach-list").innerHTML = html || "<p>Chưa có truyện trong tủ</p>";
+}
+
+function renderHistory() {
+  const ids = JSON.parse(localStorage.getItem("history") || "[]");
+  const html = allStories.filter(s => ids.includes(s.id)).map(s => renderStory(s, false)).join("");
+  document.getElementById("history-list").innerHTML = html || "<p>Chưa có lịch sử nghe</p>";
+}
+
+window.showSection = showSection;
+window.addToFollow = addToFollow;
+window.addToTusach = addToTusach;
+window.addToHistory = addToHistory;
+
+loadStories();
+
+
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithPopup, onAuthStateChanged, signOut, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, push, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB-f5Kz6nsVB8ASYUXAlNUeh0c-eP0lP6s",
@@ -279,11 +523,13 @@ onAuthStateChanged(auth, (user) => {
     document.getElementById("auth-button").innerText = "🚪 Đăng xuất";
     document.getElementById("auth-button").onclick = logout;
     if (isAdmin) {
-      document.getElementById("upload-section").classList.remove("hidden");
-      document.getElementById("upload-btn").classList.remove("hidden");
+  ["upload-section", "upload-btn", "backup-btn", "restore-btn"].forEach(id => {
+    document.getElementById(id)?.classList.remove("hidden");
+  });
     } else {
-      document.getElementById("upload-section").classList.add("hidden");
-      document.getElementById("upload-btn").classList.add("hidden");
+  ["upload-section", "upload-btn", "backup-btn", "restore-btn"].forEach(id => {
+    document.getElementById(id)?.classList.add("hidden");
+  });
     }
     const name = user.displayName || "Người dùng";
     const photo = user.photoURL || "https://www.gravatar.com/avatar?d=mp";
@@ -303,6 +549,20 @@ window.logout = async function () {
 };
 
 displayStories();
+
 </script>
-</body>
+
+<script>
+  window.toggleMenu = function () {
+    document.getElementById("menu").classList.toggle("show");
+  };
+  document.addEventListener('click', function (event) {
+    const menu = document.getElementById("menu");
+    const toggle = document.querySelector(".menu-toggle");
+    if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+      menu.classList.remove("show");
+    }
+  });
+</script>
+
 </html>
