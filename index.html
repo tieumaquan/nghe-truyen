@@ -471,6 +471,32 @@
 
   <!-- 🔴 ĐIỂM A: Kết thúc phần khung HTML & CSS -->
 <!-- PHẦN 2: SCRIPT CHÍNH -->
+
+<!-- Firebase App (the core Firebase SDK) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
+
+<script>
+  // Cấu hình Firebase - thay thế bằng config thật của bạn
+  const firebaseConfig = {
+    apiKey: "AIzaSyAHgBqKWXwuZPNC1wTv_VYDvfaQiLAYbJk",
+    authDomain: "rinaudio-app.firebaseapp.com",
+    projectId: "rinaudio-app",
+    storageBucket: "rinaudio-app.firebasestorage.app",
+    messagingSenderId: "56465837529",
+    appId: "1:56465837529:web:4da849806360e95cd01dc8"
+  };
+
+  // Khởi tạo Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+  const storage = firebase.storage();
+</script>
+
+
 <script>
 // ========== CẤU HÌNH ==========
 const ADMIN_USER = "admin";
@@ -486,6 +512,47 @@ function displayName(user) {
 }
 let currentTab = "home";
 let currentPage = 1;
+
+
+// ========== FIREBASE STORAGE ==========
+let use_local_fallback = true;
+
+async function getList(key) {
+  if (!currentUser || use_local_fallback) {
+    return JSON.parse(localStorage.getItem(key) || "[]");
+  }
+
+  try {
+    const doc = await db.collection("userdata").doc(currentUser).get();
+    if (doc.exists) {
+      const data = doc.data();
+      return data[key] || [];
+    }
+  } catch (e) {
+    console.error("🔥 Lỗi đọc dữ liệu Firestore:", e);
+  }
+
+  return JSON.parse(localStorage.getItem(key) || "[]"); // fallback
+}
+
+async function saveList(key, value) {
+  if (!currentUser || use_local_fallback) {
+    localStorage.setItem(key, JSON.stringify(value));
+    return;
+  }
+
+  try {
+    const ref = db.collection("userdata").doc(currentUser);
+    const doc = await ref.get();
+    const data = doc.exists ? doc.data() : {};
+    data[key] = value;
+    await ref.set(data);
+  } catch (e) {
+    console.error("🔥 Lỗi ghi Firestore:", e);
+    localStorage.setItem(key, JSON.stringify(value)); // fallback
+  }
+}
+
 
 // ========== LOCAL STORAGE ==========
 
