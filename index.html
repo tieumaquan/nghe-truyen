@@ -3,2611 +3,302 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Audio Truyện Online</title>
+  <title>📚 Nghe Truyện Online</title>
   <style>
-#sidebar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 280px;
-  height: 100%;
-  background: white;
-  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  overflow-y: auto;
-  z-index: 1002;
-  display: none;
-}
-
-    :root {
-      --main-color: #f76da4;
-      --light-color: #fdd2e0;
-      --bg-color: #fff5f9;
-      --text-color: #333;
-    }
-    * {
-      box-sizing: border-box;
-    }
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: var(--bg-color);
-      color: var(--text-color);
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
     }
     header {
-      background: var(--main-color);
+      background: #0077cc;
       color: white;
-      padding: 10px 15px;
+      padding: 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: sticky;
-      top: 0;
+    }
+    main {
+      padding: 1rem;
+    }
+    #stories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .story-card {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      width: 200px;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .story-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-top: 5px;
+    }
+    #auth-form {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
       z-index: 1000;
     }
-    header h1 {
-      font-size: 22px;
-      margin: 0;
-    }
-    #menuBtn {
-      font-size: 24px;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-    }
-    nav.tabs {
-      display: flex;
-      gap: 10px;
+    #story-player {
       background: white;
-      padding: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      border-bottom: 1px solid #ddd;
-    }
-    nav.tabs button {
-      background: var(--light-color);
-      border: none;
-      padding: 8px 12px;
+      padding: 1rem;
       border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    nav.tabs button.active {
-      background: var(--main-color);
-      color: white;
-    }
-    .content {
-      padding: 15px;
-      padding-bottom: 80px;
-    }
-    .story {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  background: white;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  padding: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  cursor: pointer;
-  max-width: 220px;
-}
-    .story:hover {
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-    .story img {
-  width: 100%;
-  height: auto;
-  max-height: 300px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-    .story-content {
-      flex: 1;
-    }
-    .story-content h3 {
-      margin: 0 0 5px;
-      font-size: 18px;
-    }
-    .story-actions button {
-      margin-top: 5px;
-      margin-right: 5px;
-      background: var(--light-color);
-      border: none;
-      padding: 5px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    #sidebarOverlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
-      display: none;
-      z-index: 998;
-    }
-    #sidebar {
-  ...
-  z-index: 1002; /* hoặc lớn hơn 1000 */
-}
-    .close-btn {
-      text-align: right;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 18px;
-    }
-    #toast {
-      visibility: hidden;
-      min-width: 250px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      border-radius: 4px;
-      padding: 10px;
-      position: fixed;
-      top: 70px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-100%);
-      z-index: 1001;
-    }
-    #toast.show {
-      visibility: visible;
-      animation: fadeinTop 0.5s, fadeoutTop 0.5s 2.5s;
-    }
-    @keyframes fadein {
-      from { bottom: 0; opacity: 0; }
-      to { top: 70px; opacity: 1; }
-    }
-    @keyframes fadeout {
-      from { top: 70px; opacity: 1; }
-      to { bottom: 0; opacity: 0; }
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      margin: 6px 0;
+    #admin-panel {
+      background: #fff4dd;
+      padding: 1rem;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      margin-top: 1rem;
     }
-    button {
-      cursor: pointer;
-    }
-    audio {
-      width: 100%;
-      margin-top: 10px;
-    }
-  
-    body { padding-bottom: 80px; }
-
-.dark-mode {
-  --main-color: #333;
-  --light-color: #555;
-  --bg-color: #1e1e1e;
-  --text-color: #eee;
-  background: var(--bg-color);
-  color: var(--text-color);
-}
-.dark-mode .story,
-.dark-mode .storyDetailView > div,
-.dark-mode .content,
-.dark-mode nav.tabs,
-.dark-mode #sidebar,
-.dark-mode #storyDetailView,
-.dark-mode #communityView,
-.dark-mode #postList > div {
-  background: #2b2b2b !important;
-  color: var(--text-color);
-}
-
-.dark-mode nav.tabs button {
-  background: var(--light-color);
-  color: var(--text-color);
-}
-
-.dark-mode nav.tabs button.active {
-  background: #f76da4 !important; /* Màu hồng chính */
-  color: white !important;
-  border: 2px solid #fff5f9;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
-}
-
-.dark-mode input,
-.dark-mode select,
-.dark-mode textarea {
-  background: #3a3a3a;
-  color: var(--text-color);
-  border: 1px solid #555;
-}
-
-.dark-mode button {
-  background: var(--light-color);
-  color: var(--text-color);
-}
-/* Bài đăng cộng đồng luôn sáng khi dark mode */
-.dark-mode #postList > div {
-  background: #fff !important;
-  color: #333;
-  box-shadow: 0 2px 8px rgba(255,255,255,0.1);
-  transition: transform 0.3s;
-}
-.dark-mode #postList > div:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(255,255,255,0.15);
-}
-/* Giao diện bình luận giống Facebook */
-.comment-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 12px;
-  background: var(--bg-color);
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid #444;
-}
-.comment-item img {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--main-color);
-}
-.comment-content {
-  flex: 1;
-}
-.comment-content strong {
-  font-size: 15px;
-  color: var(--main-color);
-}
-.comment-content span {
-  display: inline-block;
-  margin-top: 6px;
-  font-size: 14px;
-  line-height: 1.4;
-}
-.reply-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin-left: 50px;
-  margin-top: 8px;
-  background: #2b2b2b;
-  border: 1px solid #444;
-  border-radius: 10px;
-  padding: 10px;
-}
-.reply-item img {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--main-color);
-}
-.reply-item strong {
-  color: var(--main-color);
-  font-size: 14px;
-}
-.filter-box {
-  background: #222;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-
-.filter-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.filter-group select,
-.filter-group input {
-  flex: 1;
-  min-width: 120px;
-  background: #333;
-  color: #eee;
-  border: 1px solid #444;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.filter-group input::placeholder {
-  color: #aaa;
-}
-.sidebar-btn {
-  width: 100px;
-  height: 100px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border-radius: 12px;
-  margin: 5px;
-  background: var(--light-color);
-  font-weight: bold;
-  font-size: 14px;
-  text-align: center;
-  color: var(--text-color);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: 0.3s;
-}
-.sidebar-btn:hover {
-  background: var(--main-color);
-  color: white;
-}
-
-#storyList {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 cột cố định */
-  gap: 20px;
-  justify-items: center;
-  padding: 10px;
-}
-.story img {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  background-color: #fff;
-}
-
-  /* Hiển thị ảnh preview vuông cho ảnh truyện */
-  #edit_image_file_preview,
-  #add_image_file_preview {
-    width: 100px;
-    height: 100px;
-    border-radius: 10px;
-    object-fit: cover;
-    margin-top: 10px;
-    border: 2px solid var(--main-color);
-    display: block;
-  }
-</style>
-
-<!-- CropperJS -->
-<link  href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet"/>
-</script>
-
-
-<style>
-/* Glow animation */
-@keyframes glow {
-  0% { box-shadow: 0 0 5px #fff; }
-  50% { box-shadow: 0 0 15px currentColor; }
-  100% { box-shadow: 0 0 5px #fff; }
-}
-
-/* Base style for name display */
-.realm-frame {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-weight: bold;
-  animation: glow 2.5s infinite;
-  display: inline-block;
-}
-
-/* Realm colors */
-.realm-phamnhan { color: #999; border: 1px solid #999; }
-.realm-luyenkhi { color: #00ccff; border: 1px solid #00ccff; }
-.realm-trucco { color: #33cc33; border: 1px solid #33cc33; }
-.realm-kimdan { color: #9933ff; border: 1px solid #9933ff; }
-.realm-nguyenanh { color: #ff9900; border: 1px solid #ff9900; }
-.realm-hoathan { color: #ffcc00; border: 1px solid #ffcc00; }
-.realm-tiennhan { color: #ff3399; border: 1px solid #ff3399; }
-</style>
-
+  </style>
 </head>
 <body>
   <header>
-  <h1>📖 Audio Truyện Online</h1>
-
-  <div style="display:flex;align-items:center;gap:10px;">
-    <img id="headerAvatar" src="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid white;display:none;" onclick="openUserSpace()">
-    <button id="menuBtn" onclick="toggleMenu()">☰</button>
-  </div>
-</header>
-  <nav class="tabs"></nav>
-  <div class="content">
-    <h2 id="sectionTitle">📚 Danh sách truyện</h2>
-    <div id="filterBox" class="filter-box">
-  <select id="categoryFilter" onchange="showStories()">
-      <option value="">Thể loại</option>
-    </select>
-    <select id="typeFilter" onchange="showStories()">
-      <option value="">Trạng thái</option>
-      <option value="hot">Hot</option>
-      <option value="new">Mới</option>
-      <option value="full">Full</option>
-    </select>
-    <input id="searchInput" placeholder="Tìm kiếm truyện..." oninput="showStories()" />
-  </div>
-    <div id="storyList"></div>
-     <div id="addStoryForm" style="display:none;padding:15px;">
-  <h2>➕ Thêm truyện mới</h2>
-  <input id="add_title" placeholder="Tên truyện">
-  <input id="add_desc" placeholder="Mô tả ngắn">
-  <input id="add_audio" placeholder="Link audio (mp3 hoặc YouTube)">
-  <input id="add_image" placeholder="Link ảnh (hoặc dùng ảnh bên dưới)">
-  <input type="file" id="add_image_file" onchange="previewAddImage(this)">
-  <img id="add_image_file_preview">
-  <select id="add_category">
-    <option value="">Chọn thể loại</option>
-    <option value="Tiên hiệp">Tiên hiệp</option>
-    <option value="Hài hước">Hài hước</option>
-    <option value="Ngôn tình">Ngôn tình</option>
-  </select>
-  <label><input type="checkbox" id="add_isHot"> 🔥 Hot</label>
-  <label><input type="checkbox" id="add_isFull"> ✅ Full</label><br><br>
-  <button onclick="saveNewStory()">💾 Lưu truyện</button>
-  <button onclick="switchTab('home')">🔙 Hủy</button>
-</div>
-
-<div id="pagination" style="text-align:center; margin-top:15px;"></div>
-  </div>
-  <div id="storyDetailView" style="display:none; padding:15px;"></div>
-<div id="communityView" style="display:none;padding:15px;">
-  <h2>🌐 Bài viết cộng đồng</h2>
-  <div id="postForm">
-    <textarea id="postText" placeholder="Bạn đang nghĩ gì?" style="width:100%;padding:10px;border-radius:8px;"></textarea><br>
-    <input type="file" id="postImage"><br>
-    <button onclick="addPost()">📤 Đăng bài</button>
-  </div>
-  <hr>
-  <div id="postList"></div>
-</div>
-
-  <div id="sidebarOverlay" onclick="hideMenu()"></div>
-  <div id="sidebar"></div>
-  <div id="toast"></div>
-
-  <!-- 🔴 ĐIỂM A: Kết thúc phần khung HTML & CSS -->
-<!-- PHẦN 2: SCRIPT CHÍNH -->
-
-<!-- Firebase App (the core Firebase SDK) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
-
-<script>
-  // Cấu hình Firebase - thay thế bằng config thật của bạn
-  const firebaseConfig = {
-    apiKey: "AIzaSyAHgBqKWXwuZPNC1wTv_VYDvfaQiLAYbJk",
-    authDomain: "rinaudio-app.firebaseapp.com",
-    projectId: "rinaudio-app",
-    storageBucket: "rinaudio-app.firebasestorage.app",
-    messagingSenderId: "56465837529",
-    appId: "1:56465837529:web:4da849806360e95cd01dc8"
-  };
-
-  // Khởi tạo Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const auth = firebase.auth();
-  const storage = firebase.storage();
-</script>
-
-
-<script>
-// ========== CẤU HÌNH ==========
-const ADMIN_USER = "admin";
-const ADMIN_PASS = btoa("166505");
-const DEFAULT_IMG = "https://i.imgur.com/F32pUuu.jpeg";
-
-let currentUser = localStorage.getItem("currentUser");
-function displayName(user) {
-  if (user === "admin") return "Admin";
-  const users = getList("users");
-  const found = users.find(u => u.user === user);
-  return found?.name || user;
-}
-let currentTab = "home";
-let currentPage = 1;
-
-
-// ========== FIREBASE STORAGE ==========
-let use_local_fallback = true;
-
-async function getList(key) {
-  if (!currentUser || use_local_fallback) {
-    return JSON.parse(localStorage.getItem(key) || "[]");
-  }
-
-  try {
-    const doc = await db.collection("userdata").doc(currentUser).get();
-    if (doc.exists) {
-      const data = doc.data();
-      return data[key] || [];
-    }
-  } catch (e) {
-    console.error("🔥 Lỗi đọc dữ liệu Firestore:", e);
-  }
-
-  return JSON.parse(localStorage.getItem(key) || "[]"); // fallback
-}
-
-async function saveList(key, value) {
-  if (!currentUser || use_local_fallback) {
-    localStorage.setItem(key, JSON.stringify(value));
-    return;
-  }
-
-  try {
-    const ref = db.collection("userdata").doc(currentUser);
-    const doc = await ref.get();
-    const data = doc.exists ? doc.data() : {};
-    data[key] = value;
-    await ref.set(data);
-  } catch (e) {
-    console.error("🔥 Lỗi ghi Firestore:", e);
-    localStorage.setItem(key, JSON.stringify(value)); // fallback
-  }
-}
-
-
-// ========== LOCAL STORAGE ==========
-
-function getAvatar(user) {
-  const users = getList("users");
-  const found = users.find(u => u.user === user);
-  return found && found.avatar ? found.avatar : "https://i.imgur.com/F32pUuu.jpeg";
-}
-
-function getKey(prefix) {
-  return currentUser ? `${prefix}_${currentUser}` : null;
-}
-
-
-function changeAvatar() {
-  const input = document.getElementById("newAvatarInput");
-  const file = input.files[0];
-  if (!file) return alert("Chọn ảnh trước đã!");
-  if (file.size > 1024 * 1024) return alert("❗ Ảnh quá lớn, vui lòng chọn ảnh dưới 1MB.");
-  const imgPreview = document.getElementById("edit_image_file_preview");
-const imgBase64 = imgPreview.dataset.cropped || imgPreview.src || DEFAULT_IMG;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const users = getList("users");
-    const user = users.find(u => u.user === currentUser);
-    if (user) {
-      user.avatar = reader.result;
-      saveList("users", users);
-      showToast("✅ Đã cập nhật ảnh đại diện!");
-      renderPosts();
-      toggleMenu(); // đóng menu
-      setTimeout(toggleMenu, 300); // mở lại để cập nhật avatar
-    }
-  };
-  reader.readAsDataURL(file);
-}
-
-
-// ========== TOAST ==========
-function showToast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "show";
-  setTimeout(() => t.className = "", 3000);
-}
-
-// ========== SIDEBAR MENU ==========
-
-function toggleMenu() {
-  const sb = document.getElementById("sidebar");
-  const ov = document.getElementById("sidebarOverlay");
-  const menuBtn = document.getElementById("menuBtn");
-
-  const isOpen = sb.style.display === "block";
-
-  if (isOpen) {
-    sb.style.display = "none";
-    ov.style.display = "none";
-    menuBtn.textContent = "☰";
-  } else {
-    sb.innerHTML = `
-  <div style="text-align:center;margin-bottom:10px;">
-    <img src="${getAvatar(currentUser)}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--main-color);" />
-    <p style="margin-top:10px;">👤 <strong>${currentUser === 'admin' ? 'Admin' : currentUser}</strong></p>
-  </div>
-  <div class="close-btn" onclick="hideMenu()">❌ Đóng</div>
-  <hr>
-  ${currentUser ? `
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px;">
-  <div class="sidebar-btn" onclick="document.getElementById('newAvatarInput').click()">
-  🖼️<div>Đổi ảnh đại diện</div>
-</div>
-<div class="sidebar-btn" onclick="changeDisplayName()">
-  ✏️<div>Đổi tên hiển thị</div>
-</div>
-
-  </div>
-  <input type="file" id="newAvatarInput" accept="image/png, image/jpeg, image/gif" style="display:none" onchange="changeAvatar()">
-</div>
-
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px;">
-  <div class="sidebar-btn" onclick="logout()">🚪<div>Đăng xuất</div></div>
-  ${currentUser === ADMIN_USER ? `
-    <div class="sidebar-btn" onclick="showAddForm()">➕<div>Thêm truyện</div></div>
-    <div class="sidebar-btn" onclick="showEditList()">✏️<div>Sửa truyện</div></div>
-    <div class="sidebar-btn" onclick="showBackupRestore()">💾<div>Backup</div></div>
-    <div class="sidebar-btn" onclick="manageCategories()">🧩<div>Thể loại</div></div>
-    <div class="sidebar-btn" onclick="resetData()">🧹<div>Reset</div></div>
-    <div class="sidebar-btn" onclick="capNhatTruyenCongKhai()">📤<div>Cập nhật</div></div>
-    <div class="sidebar-btn" onclick="lamMoiDuLieuCongKhai()">🔄<div>Làm mới</div></div>
-  ` : ``}
-</div>
-              ` : `
-        <div style="padding:10px;">
-  <h3 id="authTitle">🔐 Đăng nhập</h3>
-  <input id="authUser" placeholder="Tên tài khoản" type="text">
-  <input id="authPass" type="password" placeholder="Mật khẩu">
-  <div id="avatarField" style="display:none;">
-    <input type="file" id="avatarInput" accept="image/png, image/jpeg, image/gif">
-  </div>
-  <button id="authActionBtn" onclick="handleAuth()">🔓 Đăng nhập</button>
-  <p style="text-align:center; margin-top:10px;">
-    <a href="#" onclick="toggleAuthMode()" style="color:var(--main-color);text-decoration:underline;">
-      Chưa có tài khoản? Đăng ký ngay
-    </a>
-  </p>
-</div>
-      `}
-    `;
-    sb.style.display = "block";
-    ov.style.display = "block";
-    menuBtn.textContent = "❌";
-  }
-}
-
-function hideMenu() {
-  document.getElementById("sidebar").style.display = "none";
-  document.getElementById("sidebarOverlay").style.display = "none";
-  document.getElementById("menuBtn").textContent = "☰";
-}
-
-// ========== TABS ==========
-function renderTabs() {
-  const tabWrap = document.querySelector("nav.tabs");
-  const tabs = getList("tabs");
-  tabWrap.innerHTML = "";
-  tabs.forEach(t => {
-    if (!currentUser && !t.roles.includes("user")) return;
-    if (currentUser === "admin" || t.roles.includes("user")) {
-      const isActive = currentTab === t.id ? "active" : "";
-      tabWrap.innerHTML += `<button class="${isActive}" onclick="switchTab('${t.id}')">${t.icon} ${t.name}</button>`;
-    }
-  });
-}
-
-function switchTab(tab) {
-  renderCategoryFilter();
-  currentTab = tab;
-  localStorage.setItem("lastTab", tab);
-  document.querySelector(".content").style.display = tab === "community" ? "none" : "block";
-  document.getElementById("communityView").style.display = tab === "community" ? "block" : "none"; if(tab==="community"){renderPosts();}
-  document.getElementById("storyDetailView").style.display = "none";
-  document.getElementById("sectionTitle").textContent = {
-  home: "📚 Danh sách truyện",
-  search: "🔍 Tìm truyện", // 👈 thêm dòng này
-  followed: "❤️ Truyện đã theo dõi",
-  library: "📂 Tủ truyện của bạn",
-  history: "🕘 Lịch sử nghe truyện"
-}[tab] || "📚 Danh sách truyện";
- // Hiển thị/ẩn thanh tìm kiếm và lọc chỉ ở tab "search"
-const showFilters = tab === "search";
-const filterBox = document.getElementById("filterBox");
-if (filterBox) filterBox.style.display = showFilters ? "block" : "none";
-
-  // Cập nhật tab active
-  const allTabs = document.querySelectorAll("nav.tabs button");
-  allTabs.forEach(btn => btn.classList.remove("active"));
-  const selectedBtn = Array.from(allTabs).find(b =>
-  b.textContent.includes(
-    tab === "home" ? "Trang chủ" :
-    tab === "search" ? "Tìm truyện" : // ✅ thêm dòng này
-    tab === "followed" ? "Theo dõi" :
-    tab === "library" ? "Tủ truyện" :
-    tab === "history" ? "Lịch sử" :
-    tab === "community" ? "Cộng đồng" : ""
-  )
-);  if (selectedBtn) selectedBtn.classList.add("active");
-
-  currentPage = 1;
-  showStories();
-}
-
-
-
-// ========== CỘNG ĐỒNG ==========
-function addPost() {
-  if (!currentUser) return alert("Bạn cần đăng nhập");
-  const text = document.getElementById("postText").value.trim();
-  const file = document.getElementById("postImage").files[0];
-  if (!text && !file) return alert("Nhập nội dung hoặc chọn ảnh!");
-
-  const imgBase64 = document.getElementById("add_image_file_preview").dataset.cropped || document.getElementById("add_image_file_preview").src || DEFAULT_IMG;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const posts = getList("posts");
-    const image = file ? reader.result : "";
-    posts.unshift({
-  id: Date.now(), // 👈 thêm dòng này để tạo id duy nhất
-  user: currentUser,
-  text,
-  image,
-  likes: 0,
-  comments: []
-});
-    saveList("posts", posts);
-    document.getElementById("postText").value = "";
-    document.getElementById("postImage").value = "";
-    renderPosts();
-  };
-  if (file) reader.readAsDataURL(file);
-  else reader.onload();
-}
-
-
-function renderPosts() {
-  const list = getList("posts");
-  let html = "";
-  list.forEach((p, idx) => {
-    html += '<div style="background:#fff;padding:15px;margin-bottom:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:transform 0.3s;">';
-html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">';
-html += '<img src="' + getAvatar(p.user) + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--main-color);" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-html += '<strong style="font-size:16px;">' + displayName(p.user) + '</strong>';
-html += '</div>';
-html += '<p style="font-size:15px;line-height:1.5;margin:10px 0;">' + p.text + '</p>';
-if (p.image) {
-  html += '<img src="' + p.image + '" style="width:100%;height:auto;border-radius:10px;max-height:300px;object-fit:contain;margin:10px 0;">';
-}
-html += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">';
-html += '<button onclick="likePost(' + idx + ')" style="flex:1;">👍 ' + p.likes + '</button>';
-if (p.user === currentUser) {
-  html += '<button onclick="deletePost(' + idx + ')" style="flex:1;background:#fdd2e0;">🗑️ Xoá</button>';
-}
-html += '<button onclick="toggleComments(' + idx + ')" style="flex:2;">💬 Bình luận (' + p.comments.length + ')</button>';
-html += '</div>';
-    html += '<p>' + p.text + '</p>';
-    if (p.image) {
-      html += '<img src="' + p.image + '" style="width:100%;height:auto;border-radius:10px;max-height:300px;object-fit:contain;">';
-    }
-    html += '<div>';
-    html += '<button onclick="likePost(' + idx + ')">👍 ' + p.likes + '</button>';
-    if (p.user === currentUser) {
-      html += '<button onclick="deletePost(' + idx + ')">🗑️ Xoá</button>';
-    }
-    html += '<button onclick="toggleComments(' + idx + ')">💬 Xem bình luận (' + p.comments.length + ')</button>';
-    html += '</div>';
-    html += '<div id="commentBox_' + idx + '" style="margin-top:10px; display:none;">';
-    html += '<input placeholder="Bình luận..." onkeydown="if(event.key===\'Enter\')commentPost(' + idx + ', this)" style="width:100%;padding:5px;">';
-    html += '<button onclick="commentPost(' + idx + ', this.previousElementSibling)">Gửi</button>';
-    html += '<div style="margin-top:10px;">';
-    p.comments.forEach((c, ci) => {
-      html += '<div class="comment-item">';
-html += '<img src="' + getAvatar(c.user) + '" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-html += '<div class="comment-content">';
-html += '<strong>' +displayName (c.user) + '</strong><br>';
-html += '<span>' + c.text + '</span>';
-html += '<div style="margin-top:5px;">';
-html += '<button onclick="toggleReplies(' + idx + ',' + ci + ')">↪️ Trả lời</button>';
-html += '</div>';
-html += '<div id="replyBox_' + idx + '_' + ci + '" style="display:none;margin-top:5px;">';
-html += '<input placeholder="Trả lời..." onkeydown="if(event.key===\'Enter\')replyComment(' + idx + ',' + ci + ', this)" style="width:100%;padding:5px;">';
-html += '<button onclick="replyComment(' + idx + ',' + ci + ', this.previousElementSibling)">Gửi</button>';
-if (c.replies) {
-  c.replies.forEach(r => {
-    html += '<div class="reply-item">';
-    html += '<img src="' + getAvatar(r.user) + '" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-    html += '<div><strong>' + dislayPlayName (r.user) + '</strong> ' + r.text + '</div>';
-    html += '</div>';
-  });
-}
-html += '</div>'; // replyBox
-html += '</div>'; // comment-content
-html += '</div>'; // comment-item
-      html += '<button onclick="toggleReplies(' + idx + ',' + ci + ')">↪️ Trả lời</button>';
-      html += '<div id="replyBox_' + idx + '_' + ci + '" style="margin-left:30px;margin-top:5px;display:none;">';
-      html += '<input placeholder="Trả lời..." onkeydown="if(event.key===\'Enter\')replyComment(' + idx + ',' + ci + ', this)" style="width:100%;padding:5px;">';
-      html += '<button onclick="replyComment(' + idx + ',' + ci + ', this.previousElementSibling)">Gửi</button>';
-      if (c.replies) {
-        c.replies.forEach(r => {
-          html += '<div style="display:flex;align-items:center;gap:10px;margin-top:5px;margin-left:20px;">';
-          html += '<img src="' + getAvatar(r.user) + '" style="width:22px;height:22px;border-radius:50%" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-          html += '<div><strong>' + displayName (r.user) + ':</strong> ' + r.text + '</div>';
-          html += '</div>';
-        });
-      }
-      html += '</div>';
-      html += '</div>';
-    });
-    html += '</div></div></div>';
-  });
-  document.getElementById("postList").innerHTML = html || "Chưa có bài viết nào.";
-}
-
-
-function likePost(i) {
-  if (!currentUser) return alert("Bạn cần đăng nhập để like!");
-  const posts = getList("posts");
-  const post = posts[i];
-  const key = `liked_${currentUser}`;
-  const liked = getList(key);
-
-  if (!post.id) {
-    post.id = Date.now(); // 🔧 Gán id nếu bài cũ chưa có
-    posts[i] = post;
-    saveList("posts", posts);
-  }
-
-  if (liked.includes(post.id)) {
-    showToast("❗ Bạn đã like bài viết này rồi!");
-    return;
-  }
-
-  post.likes = (post.likes || 0) + 1;
-  liked.push(post.id);
-  saveList("posts", posts);
-  saveList(key, liked);
-  renderPosts();
-}
-
-function commentPost(i, input) {
-  if (!currentUser) return alert("Đăng nhập để bình luận!");
-  const text = input.value.trim();
-  if (!text) return;
-  const list = getList("posts");
-  list[i].comments.push({ user: currentUser, text });
-  saveList("posts", list);
-  input.value = "";
-  renderPosts();
-}
-
-
-// ========== TRUYỆN: DANH SÁCH ==========
-
-function showStories() {
-  const all = getList("stories");
-  const search = document.getElementById("searchInput").value.trim().toLowerCase();
-  const catFilter = document.getElementById("categoryFilter").value;
-  const typeFilter = document.getElementById("typeFilter").value;
-
-  const keyFollow = getKey("follow") || "";
-  const keyLib = getKey("library") || "";
-  const keyHist = getKey("history") || "";
-
-  const followList = getList(keyFollow);
-  const libList = getList(keyLib);
-  const histList = getList(keyHist);
-
-  // Giữ đúng chỉ số index gốc
-  const filtered = all.map((s, i) => ({ s, i })).filter(({ s }) => {
-    if (search && !s.title.toLowerCase().includes(search)) return false;
-    if (catFilter && s.category !== catFilter) return false;
-    if (typeFilter === "hot" && !s.isHot) return false;
-    if (typeFilter === "new" && s.views < 3) return false;
-    if (typeFilter === "full" && !s.isFull) return false;
-    if (currentTab === "followed" && !followList.includes(s.title)) return false;
-    if (currentTab === "library" && !libList.includes(s.title)) return false;
-    if (currentTab === "history" && !histList.includes(s.title)) return false;
-    return true;
-  });
-
-  const STORIES_PER_PAGE = 9;
-  const totalPages = Math.ceil(filtered.length / STORIES_PER_PAGE);
-  currentPage = Math.max(1, Math.min(currentPage, totalPages));
-  const start = (currentPage - 1) * STORIES_PER_PAGE;
-  const pageItems = filtered.slice(start, start + STORIES_PER_PAGE);
-
-  const html = pageItems.map(({ s, i }) => {
-    const isFollowed = followList.includes(s.title);
-    const inLibrary = libList.includes(s.title);
-    let extraBtn = '';
-   //  if (currentTab === "history") { 
-   //  extraBtn = `<button onclick="removeFromHistory(${i})">🗑️ Xoá khỏi lịch sử</button>`;
-    // }
-
-    return `
-  <div class="story" onclick="viewDetail(${i})">
-    <img src="${s.image || DEFAULT_IMG}">
-    <div class="story-content">
-  <h3>${s.title}</h3>
-</div>
-  </div>`;
-  }).join('');
-
-  const paginationHtml = filtered.length > STORIES_PER_PAGE ? (() => {
-    let html = `<div style="margin-top:10px;">`;
-    for (let i = 1; i <= totalPages; i++) {
-      html += `<button onclick="goToPage(${i})" ${i === currentPage ? 'style="font-weight:bold;background:var(--main-color);color:white;border-radius:5px;"' : ''}>${i}</button> `;
-    }
-    html += `</div>`;
-    return html;
-  })() : "";
-
-  document.getElementById("storyList").innerHTML = html || "Không có truyện phù hợp.";
-  document.getElementById("pagination").innerHTML = paginationHtml;
-}
-
-function changePage(delta) {
-  currentPage += delta;
-  showStories();
-}
-
-function goToPage(page) {
-  currentPage = page;
-  showStories();
-}
-
-
-
-function avgStar(s) {
-  if (!s.votes || !s.stars) return "0 ⭐ (0 lượt)";
-  return `${(s.stars / s.votes).toFixed(1)} ⭐ (${s.votes} lượt)`;
-}
-function rate(i) {
-  if (!currentUser) return alert("Bạn cần đăng nhập để đánh giá!");
-
-  const votedKey = `rated_${currentUser}`;
-  const ratedList = getList(votedKey);
-  const storyList = getList("stories");
-  const storyId = storyList[i].title;
-
-  if (ratedList.includes(storyId)) {
-    showToast("❗ Bạn đã đánh giá truyện này rồi!");
-    return;
-  }
-
-  storyList[i].votes = (storyList[i].votes || 0) + 1;
-  storyList[i].stars = (storyList[i].stars || 0) + 5;
-
-  ratedList.push(storyId);
-  saveList("stories", storyList);
-  saveList(votedKey, ratedList);
-
-  showToast("⭐ Cảm ơn bạn đã đánh giá!");
-  showStories();
-}
-function follow(i) {
-  if (!currentUser) return alert("Bạn cần đăng nhập");
-  const key = getKey("follow");
-  const list = getList(key);
-  const stories = getList("stories");
-  const id = stories[i].title;
-
-  if (!list.includes(id)) {
-    list.push(id);
-    stories[i].followCount = (stories[i].followCount || 0) + 1;
-    saveList("stories", stories);
-    saveList(key, list);
-    showToast("Đã theo dõi");
-    showStories();
-  } else {
-    showToast("Bạn đã theo dõi rồi");
-  }
-}
-function unfollow(i) {
-  const key = getKey("follow");
-  const list = getList(key);
-  const stories = getList("stories");
-  const id = stories[i].title;
-
-  if (list.includes(id)) {
-    const index = list.indexOf(id);
-    if (index > -1) list.splice(index, 1);
-    stories[i].followCount = Math.max(0, (stories[i].followCount || 0) - 1);
-    saveList("stories", stories);
-    saveList(key, list);
-    showToast("Đã bỏ theo dõi");
-    showStories();
-  }
-}
-function addToLibrary(i) {
-  const key = getKey("library");
-  if (!key) return alert("Bạn cần đăng nhập");
-  const list = getList(key);
-  const stories = getList("stories");
-  const id = stories[i].title;
-
-  if (!list.includes(id)) {
-    list.push(id);
-    stories[i].libraryCount = (stories[i].libraryCount || 0) + 1;
-    saveList("stories", stories);
-    saveList(key, list);
-    showToast("Đã thêm vào tủ truyện");
-    showStories();
-  } else {
-    showToast("Đã có trong tủ truyện");
-  }
-}
-function removeFromLibrary(i) {
-  const key = getKey("library");
-  const list = getList(key);
-  const stories = getList("stories");
-  const id = stories[i].title;
-
-  if (list.includes(id)) {
-    const index = list.indexOf(id);
-    if (index > -1) list.splice(index, 1);
-    stories[i].libraryCount = Math.max(0, (stories[i].libraryCount || 0) - 1);
-    saveList("stories", stories);
-    saveList(key, list);
-    showToast("Đã xoá khỏi tủ truyện");
-    showStories();
-  }
-}
-function logHistory(title) {
-  const key = getKey("history");
-  if (!key) return;
-  const list = getList(key);
-  if (!list.includes(title)) list.push(title);
-  saveList(key, list);
-}
-
-function viewDetail(i) {
-  const s = getList("stories")[i];
-  let episodesHtml = "";
-  (s.episodes || []).forEach((ep, idx) => {
-    episodesHtml += `
-      <li><a href="#" onclick="playEpisode(${i}, ${idx}); return false;">📼 ${ep.name}</a></li>
-    `;
-  });
-
-  let editBtn = "";
-  if (currentUser === "admin") {
-    editBtn = `<button onclick="editStory(${i})" style="margin-right:10px;background:#ffe08a;border:none;padding:5px 10px;border-radius:6px;">✏️ Sửa truyện</button>`;
-  }
-
-  const html = `
-    <button onclick="switchTab('${currentTab}')">← Quay lại</button>
-    ${editBtn}
-    <div style="display:flex;gap:15px;flex-wrap:wrap;background:var(--bg-color);color:var(--text-color);padding:15px;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);margin-bottom:15px;">
-      <img src="${s.image || DEFAULT_IMG}" style="width:150px;height:150px;object-fit:cover;border-radius:10px;">
-      <div style="flex:1">
-        <h2 style="margin:0">${s.title}</h2>
-        <p>${s.desc}</p>
-        <div><strong>Thể loại:</strong> ${s.category}</div>
-        <div><strong>Lượt xem:</strong> ${s.views}</div>
-        <div><strong>Đánh giá:</strong> ${avgStar(s)} ⭐</div>
-      </div>
+    <h1>📚 Nghe Truyện Online</h1>
+    <div id="user-auth">
+      <span id="user-email" style="margin-right: 10px;"></span>
+      <button onclick="showLogin()">Đăng nhập</button>
+      <button onclick="showRegister()">Đăng ký</button>
+      <button onclick="logout()" style="display:none;">Đăng xuất</button>
     </div>
-    <h3>🎧 Danh sách tập</h3>
-    <ul>${episodesHtml}</ul>
-  `;
-  s.views++;
-  const all = getList("stories");
-  all[i] = s;
-  saveList("stories", all);
-  logHistory(s.title);
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "block";
-  document.getElementById("storyDetailView").innerHTML = html;
-  requestAnimationFrame(() => renderCategoryOptions("edit_cat", s.category));
-}
+  </header>
 
+  <main>
+    <section id="story-list">
+      <h2>📖 Danh sách truyện</h2>
+      <div id="stories"></div>
+    </section>
 
-function playEpisode(storyIndex, epIndex) {
-  const s = getList("stories")[storyIndex];
-  const ep = s.episodes[epIndex];
-  const html = `
-    <button onclick="viewDetail(${storyIndex})">← Quay lại truyện</button>
-    <h2>▶️ ${s.title} - ${ep.name}</h2>
-    <audio controls autoplay style="width:100%" src="${ep.audio}"></audio>
-  `;
-  logHistory(s.title);
-  document.getElementById("storyDetailView").innerHTML = html;
-  requestAnimationFrame(() => renderCategoryOptions("edit_cat", s.category));
-}
+    <section id="story-player" style="display: none;">
+      <h2 id="story-title">Tên truyện</h2>
+      <img id="story-cover" src="" alt="Ảnh truyện" width="200"/>
+      <audio id="story-audio" controls style="width:100%; margin-top:10px;"></audio>
+      <br/><br/>
+      <button onclick="hidePlayer()">⬅️ Quay lại</button>
+    </section>
 
-function playStory(i) {
-  const s = getList("stories")[i];
-  if (s.episodes && s.episodes.length > 0) {
-    playEpisode(i, 0);
-    return;
-  }
-  const html = `
-    <button onclick="switchTab('${currentTab}')">← Quay lại</button>
-    <h2>▶️ ${s.title}</h2>
-    <audio controls autoplay style="width:100%" src="${s.audio}"></audio>
-  `;
-  logHistory(s.title);
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "block";
-  document.getElementById("storyDetailView").innerHTML = html;
-  requestAnimationFrame(() => renderCategoryOptions("edit_cat", s.category));
-}
+    <!-- ✅ ADMIN PANEL -->
+    <section id="admin-panel" style="display: none;">
+      <h2>🛠 Quản lý truyện (Admin)</h2>
 
-// ========== THÊM TRUYỆN ==========
-function showAddForm() {
-  document.getElementById("communityView").style.display = "none";
-  const form = `
-    <h2>➕ Thêm Truyện</h2>
-    <input id="add_title" placeholder="Tên truyện"><br>
-    <input type="file" id="add_image_file" accept="image/*" onchange="previewImage(this, 'add_image_file_preview')"><br>
-<img id="add_image_file_preview" src="https://i.imgur.com/F32pUuu.jpeg" alt="Preview">
-    <textarea id="add_desc" placeholder="Mô tả"></textarea><br>
-    <input id="add_custom_cat" placeholder="Nhập Thể Loại Mới"><br>
-    <label><input type="checkbox" id="add_hot"> Hot</label>
-    <label><input type="checkbox" id="add_full"> Full</label><br>
-    <textarea id="add_episodes" placeholder='Tập 1|link.mp3'></textarea><br>
-    <button onclick="addStory()">📥 Lưu truyện</button>
-  `;
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("storyDetaiView").style.display = "block";
-  document.getElementById("storyDetailView").innerHTML = form;
-  requestAnimationFrame(() => renderCategoryOptions("add_cat"));
-}
+      <form id="story-form">
+        <input type="text" id="story-title" placeholder="Tên truyện" required /><br/><br/>
+        <input type="file" id="story-cover-file" accept="image/*" required /><br/><br/>
+        <input type="file" id="story-audio-file" accept="audio/*" required /><br/><br/>
+        <button type="submit">📤 Thêm truyện</button>
+      </form>
 
-function addStory() {
-  const title = document.getElementById("add_title").value.trim();
-  const desc = document.getElementById("add_desc").value.trim();
-  let cat = document.getElementById("add_custom_cat").value.trim() || document.getElementById("add_cat").value;
-  const hot = document.getElementById("add_hot").checked;
-  const full = document.getElementById("add_full").checked;
-  const episodesText = document.getElementById("add_episodes").value.trim();
-  const episodes = episodesText.split("\n").map(line => {
-    const [name, audio] = line.split("|");
-    return { name: name?.trim(), audio: audio?.trim() };
-  }).filter(ep => ep.name && ep.audio);
+      <div id="admin-stories"></div>
+    </section>
+  </main>
 
-  if (!title || !desc || episodes.length === 0) return alert("Vui lòng nhập đủ thông tin và ít nhất 1 tập!");
+  <!-- Đăng nhập / Đăng ký -->
+  <div id="auth-form" style="display: none;">
+    <h2 id="auth-title">Đăng nhập</h2>
+    <input type="email" id="auth-email" placeholder="Email" /><br/><br/>
+    <input type="password" id="auth-password" placeholder="Mật khẩu" /><br/><br/>
+    <button onclick="submitAuth()">Gửi</button>
+    <button onclick="closeAuth()">Hủy</button>
+  </div>
 
-  const imgBase64 = document.getElementById("add_image_file_preview").dataset.cropped || document.getElementById("add_image_file_preview").src || DEFAULT_IMG;
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-  const stories = getList("stories");
-  stories.push({
-    title,
-    desc,
-    image: imgBase64,
-    category: cat,
-    uploader: currentUser,
-    isHot: hot,
-    isFull: full,
-    views: 0,
-    stars: 0,
-    votes: 0,
-    episodes
-  });
-  saveList("stories", stories);
-  alert("✅ Đã thêm truyện!");
-  switchTab("home");
-};
-
-// ========== SỬA TRUYỆN ==========
-function showEditList() {
-  document.getElementById("communityView").style.display = "none";
-  const list = getList("stories");
-  let html = "<h2>✏️ Sửa Truyện</h2><div style='display:flex;flex-wrap:wrap;gap:15px;'>";
-
-list.forEach((s, i) => {
-  html += `
-    <div style="
-      width: 220px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 10px;
-      text-align: center;
-    ">
-      <img src="${s.image || DEFAULT_IMG}" style="width:100%;height:160px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
-      <h3 style="font-size:16px;margin:5px 0;">${s.title}</h3>
-      <p style="font-size:13px;height:40px;overflow:hidden;text-overflow:ellipsis;">${s.desc}</p>
-      <div style="margin-top:10px;">
-        <button onclick="editStory(${i})" style="padding:5px 8px;border-radius:6px;background:#ffe08a;border:none;margin-right:5px;">✍️ Sửa</button>
-        <button onclick="deleteStory(${i})" style="padding:5px 8px;border-radius:6px;background:#fda4af;border:none;">🗑️ Xoá</button>
-      </div>
-    </div>
-  `;
-});
-
-html += "</div>";
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "block";
-  document.getElementById("storyDetailView").innerHTML = html;
-  requestAnimationFrame(() => renderCategoryOptions("edit_cat", s.category));
-}
-
-function editStory(i) {
-  document.getElementById("communityView").style.display = "none";
-  const s = getList("stories")[i];
-  const episodesText = (s.episodes || []).map(ep => `${ep.name}|${ep.audio}`).join("\n");
-  const html = `
-    <h2>✍️ Sửa Truyện</h2>
-    <input id="edit_title" value="${s.title}"><br>
-    <input type="file" id="edit_image_file" accept="image/*" onchange="previewImage(this, 'edit_image_file_preview')"><br>
-<img id="edit_image_file_preview" src="${s.image}" alt="Preview">
-    <textarea id="edit_desc">${s.desc}</textarea><br>
-    <input id="edit_custom_cat" value="${s.category}" placeholder=" Nhập Thể Loại Mới"><br>
-    <label><input type="checkbox" id="edit_hot" ${s.isHot ? "checked" : ""}> Hot</label>
-    <label><input type="checkbox" id="edit_full" ${s.isFull ? "checked" : ""}> Full</label><br>
-    <textarea id="edit_episodes">${episodesText}</textarea><br>
-    <button onclick="saveEdit(${i})">💾 Lưu thay đổi</button>
-  `;
-  document.getElementById("storyDetailView").innerHTML = html;
-  requestAnimationFrame(() => renderCategoryOptions("edit_cat", s.category));
-}
-
-function saveEdit(i) {
-  const stories = getList("stories");
-  const s = stories[i];
-
-  // Lấy giá trị từ form
-  const title = document.getElementById("edit_title").value.trim();
-  const desc = document.getElementById("edit_desc").value.trim();
-  const customCat = document.getElementById("edit_custom_cat").value.trim();
-  const catSelect = document.getElementById("edit_cat");
-  const cat = customCat || (catSelect ? catSelect.value : "");
-  const hot = document.getElementById("edit_hot").checked;
-  const full = document.getElementById("edit_full").checked;
-  const fileInput = document.getElementById("edit_image_file");
-  const file = fileInput.files[0];
-  const episodesText = document.getElementById("edit_episodes").value.trim();
-
-  // Xử lý danh sách tập
-  const episodes = episodesText
-    .split("\n")
-    .map(line => {
-      const [name, audio] = line.split("|");
-      return name && audio ? { name: name.trim(), audio: audio.trim() } : null;
-    })
-    .filter(ep => ep);
-
-  // Lấy ảnh preview (crop hoặc src) hoặc DEFAULT_IMG
-  const imgPreview = document.getElementById("edit_image_file_preview");
-  const fallbackImg = imgPreview.dataset.cropped || imgPreview.src || DEFAULT_IMG;
-
-  // Hàm nội bộ để lưu chi tiết truyện
-  function saveStory() {
-    s.title    = title;
-    s.desc     = desc;
-    s.category = cat;
-    s.isHot    = hot;
-    s.isFull   = full;
-    s.episodes = episodes;
-    stories[i] = s;
-    saveList("stories", stories);
-    alert("✅ Đã lưu truyện!");
-    showEditList();
-  }
-
-  // Nếu chọn file mới
-  if (file) {
-    if (file.size > 1024 * 1024) {
-      return alert("❗ Ảnh quá lớn, vui lòng chọn ảnh dưới 1MB.");
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      s.image = reader.result;
-      saveStory();
+    const firebaseConfig = {
+      apiKey: "AIzaSyAHg0qKWXwuZPNClwTv_VYDvfaQiLAYbJk",
+      authDomain: "rinaudio-app.firebaseapp.com",
+      projectId: "rinaudio-app",
+      storageBucket: "rinaudio-app.appspot.com",
+      messagingSenderId: "56465837529",
+      appId: "1:56465837529:web:4da849806360e95cd01dc8"
     };
-    reader.readAsDataURL(file);
 
-  // Nếu không chọn file mới: giữ ảnh cũ hoặc preview
-  } else {
-    s.image = fallbackImg;
-    saveStory();
-  }
-}
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
 
-function deleteStory(i) {
-  if (confirm("Bạn chắc chắn muốn xoá?")) {
-    const stories = getList("stories");
-    stories.splice(i, 1);
-    saveList("stories", stories);
-    showEditList();
-  }
-}
+    const ADMIN_EMAIL = "sumi22122005@gmail.com";
+    let mode = "login";
 
-// ========== BACKUP / RESTORE ==========
-function showBackupRestore() {
-  document.getElementById("communityView").style.display = "none";
-  const html = `
-    <h2>💾 Backup / Restore</h2>
-    <button onclick="downloadBackup()">📤 Tải dữ liệu</button><br><br>
-    <textarea id="importData" placeholder="Dán dữ liệu JSON vào đây..." style="width:100%;height:150px;"></textarea><br>
-    <button onclick="restoreData()">📥 Phục hồi</button>
-  `;
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "block";
-  document.getElementById("storyDetailView").innerHTML = html;
-  requestAnimationFrame(() => renderCategoryOptions("edit_cat", s.category));
-}
-
-function downloadBackup() {
-  const data = {
-    stories: getList("stories"),
-    users: getList("users"),
-    tabs: getList("tabs")
-  };
-  const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "backup_data.json";
-  link.click();
-}
-
-function restoreData() {
-  if (confirm("Ghi đè dữ liệu hiện tại?")) {
-    const text = document.getElementById("importData").value;
-    try {
-      const data = JSON.parse(text);
-      if (Array.isArray(data)) {
-        saveList("stories", data);
-      } else {
-        saveList("stories", data.stories || []);
-        saveList("users", data.users || []);
-        saveList("tabs", data.tabs || []);
-      }
-      alert("✅ Đã phục hồi dữ liệu!");
-      location.reload();
-    } catch {
-      alert("❌ Dữ liệu không hợp lệ!");
-    }
-  }
-}
-
-// ========== ĐĂNG NHẬP / ĐĂNG KÝ ==========
-function login() {
-  const u = document.getElementById("username").value.trim();
-  const p = btoa(document.getElementById("password").value.trim());
-  const users = getList("users");
-  const found = users.find(x => x.user === u && x.pass === p);
-  if (found) {
-    localStorage.setItem("currentUser", u);
-    location.reload();
-  } else {
-    alert("Sai thông tin đăng nhập");
-  }
-}
-
-
-
-function register() {
-  const u = document.getElementById("newUser").value.trim().toLowerCase();
-  const p = btoa(document.getElementById("newPass").value.trim());
-  const imgInput = document.getElementById("avatarInput");
-
-  if (!u || !p) return showToast("❗ Vui lòng nhập đầy đủ");
-  if (imgInput.files[0] && imgInput.files[0].size > 1024 * 1024) return showToast("❗ Ảnh quá lớn! Chọn ảnh dưới 1MB.");
-
-  const users = getList("users");
-  if (users.some(x => x.user.toLowerCase() === u)) return showToast("❗ Tên người dùng đã tồn tại!");
-
-  const imgBase64 = document.getElementById("add_image_file_preview").dataset.cropped || DEFAULT_IMG;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const avatar = imgInput.files[0] ? reader.result : "";
-    users.push({ user: u, pass: p, role: "user", avatar });
-    saveList("users", users);
-    showToast("✅ Đăng ký thành công!");
-  };
-  if (imgInput.files[0]) reader.readAsDataURL(imgInput.files[0]);
-  else reader.onload();
-}
-
-
-
-function logout() {
-  localStorage.removeItem("currentUser");
-  location.reload();
-}
-
-function resetData() {
-  if (confirm("Xoá tất cả dữ liệu?")) {
-    localStorage.clear();
-    location.reload();
-  }
-}
-
-// ========== KHỞI TẠO ==========
-
-(function init() {
-  localStorage.removeItem("tabs"); // Xoá tabs cũ để khởi tạo lại
-
-  if (!localStorage.getItem("stories") || getList("stories").length === 0) {
-    const stories = [
-      {
-        "title": "Truyện 1",
-        "desc": "Mô tả truyện 1",
-        "image": "",
-        "category": "Hành động",
-        "isHot": true,
-        "isFull": false,
-        "views": 0,
-        "stars": 0,
-        "votes": 0,
-        "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"}]
-      },
-      {
-        "title": "Truyện 2",
-        "desc": "Mô tả truyện 2",
-        "image": "",
-        "category": "Tình cảm",
-        "isHot": false,
-        "isFull": true,
-        "views": 0,
-        "stars": 0,
-        "votes": 0,
-        "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"}]
-      }
-    ];
-    saveList("stories", stories);
-  }
-
-  const users = getList("users");
-  const existing = users.find(u => u.user === ADMIN_USER);
-  if (!existing) {
-    users.push({
-      user: ADMIN_USER,
-      pass: ADMIN_PASS,
-      role: "admin",
-      avatar: DEFAULT_IMG
-    });
-    saveList("users", users);
-  }
-
-  if (!localStorage.getItem("tabs")) {
-  saveList("tabs", [
-    { id: "home", name: "Trang chủ", icon: "🏠", roles: ["user", "admin"] },
-    { id: "search", name: "Tìm truyện", icon: "🔍", roles: ["user", "admin"] }, // 👈 thêm dòng này
-    { id: "followed", name: "Theo dõi", icon: "❤️", roles: ["user", "admin"] },
-    { id: "library", name: "Tủ truyện", icon: "📂", roles: ["user", "admin"] },
-    { id: "history", name: "Lịch sử", icon: "🕘", roles: ["user", "admin"] },
-    { id: "community", name: "Cộng đồng", icon: "🌐", roles: ["user", "admin"] }
-  ]);
-}
-  currentUser = localStorage.getItem("currentUser");
-  renderTabs();
-  renderCategoryFilter();
-  const navType = performance.getEntriesByType("navigation")[0]?.type;
-if ((navType === "reload" || navType === "back_forward") && localStorage.getItem("lastTab")) {
-  switchTab(localStorage.getItem("lastTab"));
-} else {
-  switchTab("home");
-}})();
-
- (function showHeaderAvatar() {
-  const avatarEl = document.getElementById("headerAvatar");
-  if (!avatarEl || !currentUser) return;
-  const avatarUrl = getAvatar(currentUser);
-  avatarEl.src = avatarUrl;
-  avatarEl.style.display = "inline-block";
-})();
-
-// ========== QUẢN LÝ THỂ LOẠI ==========
-function getCategories() {
-  return JSON.parse(localStorage.getItem("categories") || '["Hành động", "Tình cảm", "Kinh dị"]');
-}
-function saveCategories(list) {
-  localStorage.setItem("categories", JSON.stringify(list));
-}
-function manageCategories() {
-  document.getElementById("communityView").style.display = "none";
-  const cats = getCategories();
-  let html = "<h2>🧩 Quản lý Thể loại</h2>";
-  html += '<ul id="catList">' + cats.map((c, i) =>
-    `<li>${c} <button onclick="deleteCategory(${i})">🗑️ Xoá</button></li>`
-  ).join("") + "</ul>";
-  html += `
-    <input id="newCat" placeholder="Thể loại mới">
-    <button onclick="addCategory()">➕ Thêm thể loại</button>
-  `;
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "block";
-  document.getElementById("storyDetailView").innerHTML = html;
-  requestAnimationFrame(() => renderCategoryOptions("edit_cat", s.category));
-}
-function addCategory() {
-  const newCat = document.getElementById("newCat").value.trim();
-  if (!newCat) return alert("Nhập tên thể loại!");
-  const cats = getCategories();
-  if (cats.includes(newCat)) return alert("Thể loại đã tồn tại!");
-  cats.push(newCat);
-  saveCategories(cats);
-  manageCategories();
-}
-function deleteCategory(i) {
-  const cats = getCategories();
-  if (confirm("Xoá thể loại '" + cats[i] + "'?")) {
-    cats.splice(i, 1);
-    saveCategories(cats);
-    manageCategories();
-  }
-}
-function renderCategoryOptions(id, selected = "") {
-  const select = document.getElementById(id);
-  const cats = getCategories();
-  select.innerHTML = cats.map(c => `<option ${c === selected ? "selected" : ""}>${c}</option>`).join("");
-}
-
-
-function renderCategoryFilter() {
-  const select = document.getElementById("categoryFilter");
-  if (!select) return;
-  const cats = getCategories();
-  select.innerHTML = '<option value="">-- Thể loại --</option>' +
-    cats.map(c => `<option value="${c}">${c}</option>`).join("");
-}
-
-
-// 🔄 CẬP NHẬT GIAO DIỆN CỘNG ĐỒNG: Xem bình luận riêng cho từng bài
-
-function renderPosts() {
-  const list = getList("posts");
-  let html = "";
-  list.forEach((p, idx) => {
-    html += '<div style="background:#fff;padding:10px;margin-bottom:15px;border-radius:10px;">';
-    html += '<div style="display:flex;align-items:center;gap:10px;">';
-    html += '<img src="' + getAvatar(p.user) + '" style="width:30px;height:30px;border-radius:50%" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-    html += '<strong>' + p.user + '</strong></div><br>';
-    html += '<p>' + p.text + '</p>';
-    if (p.image) {
-      html += '<img src="' + p.image + '" style="width:100%;height:auto;border-radius:10px;max-height:300px;object-fit:contain;">';
-    }
-    html += '<div>';
-    html += '<button onclick="likePost(' + idx + ')">👍 ' + p.likes + '</button>';
-    if (p.user === currentUser) {
-      html += '<button onclick="deletePost(' + idx + ')">🗑️ Xoá</button>';
-    }
-    html += '<button onclick="toggleComments(' + idx + ')">💬 Xem bình luận (' + p.comments.length + ')</button>';
-    html += '</div>';
-    html += '<div id="commentBox_' + idx + '" style="margin-top:10px; display:none;">';
-    html += '<input placeholder="Bình luận..." onkeydown="if(event.key===\'Enter\')commentPost(' + idx + ', this)" style="width:100%;padding:5px;">';
-    html += '<button onclick="commentPost(' + idx + ', this.previousElementSibling)">Gửi</button>';
-    html += '<div style="margin-top:10px;">';
-    p.comments.forEach((c, ci) => {
-      html += '<div style="margin-top:5px;padding-left:10px;">';
-      html += '<div style="display:flex;align-items:center;gap:10px;">';
-      html += '<img src="' + getAvatar(c.user) + '" style="width:24px;height:24px;border-radius:50%" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-      html += '<div><strong>' + c.user + ':</strong> ' + c.text + '</div>';
-      html += '</div>';
-      html += '<button onclick="toggleReplies(' + idx + ',' + ci + ')">↪️ Trả lời</button>';
-      html += '<div id="replyBox_' + idx + '_' + ci + '" style="margin-left:30px;margin-top:5px;display:none;">';
-      html += '<input placeholder="Trả lời..." onkeydown="if(event.key===\'Enter\')replyComment(' + idx + ',' + ci + ', this)" style="width:100%;padding:5px;">';
-      html += '<button onclick="replyComment(' + idx + ',' + ci + ', this.previousElementSibling)">Gửi</button>';
-      if (c.replies) {
-        c.replies.forEach(r => {
-          html += '<div style="display:flex;align-items:center;gap:10px;margin-top:5px;margin-left:20px;">';
-          html += '<img src="' + getAvatar(r.user) + '" style="width:22px;height:22px;border-radius:50%" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-          html += '<div><strong>' + r.user + ':</strong> ' + r.text + '</div>';
-          html += '</div>';
-        });
-      }
-      html += '</div>';
-      html += '</div>';
-    });
-    html += '</div></div></div>';
-  });
-  document.getElementById("postList").innerHTML = html || "Chưa có bài viết nào.";
-}
-
-
-function toggleComments(i) {
-  const box = document.getElementById("commentBox_" + i);
-  box.style.display = box.style.display === "none" ? "block" : "none";
-}
-
-
-function deletePost(i) {
-  const posts = getList("posts");
-  if (posts[i].user !== currentUser) return alert("Bạn không có quyền xoá bài này!");
-  if (confirm("Bạn chắc chắn muốn xoá bài viết này?")) {
-    posts.splice(i, 1);
-    saveList("posts", posts);
-    renderPosts();
-    showToast("✅ Đã xoá bài viết!");
-  }
-}
-
-
-function replyComment(postIndex, commentIndex, input) {
-  if (!currentUser) return alert("Đăng nhập để trả lời!");
-  const text = input.value.trim();
-  if (!text) return;
-  const posts = getList("posts");
-  const comment = posts[postIndex].comments[commentIndex];
-  if (!comment.replies) comment.replies = [];
-  comment.replies.push({ user: currentUser, text });
-  saveList("posts", posts);
-  renderPosts();
-}
-
-function toggleReplies(postIndex, commentIndex) {
-  const el = document.getElementById(`replyBox_${postIndex}_${commentIndex}`);
-  el.style.display = el.style.display === "none" ? "block" : "none";
-}
-
-
-// ========== DARK MODE ==========
-function toggleTheme() {
-  document.body.classList.toggle("dark-mode");
-  const isDark = document.body.classList.contains("dark-mode");
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-  document.getElementById("toggleTheme").innerText = isDark ? "☀️" : "🌙";
-}
-(function(){
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
-    requestAnimationFrame(() => {
-      const btn = document.getElementById("toggleTheme");
-      if (btn) btn.innerText = "☀️";
-    });
-  }
-
-let isRegisterMode = false;
-
-function toggleAuthMode() {
-  isRegisterMode = !isRegisterMode;
-  document.getElementById("authTitle").textContent = isRegisterMode ? "📝 Đăng ký" : "🔐 Đăng nhập";
-  document.getElementById("authActionBtn").textContent = isRegisterMode ? "📝 Đăng ký" : "🔓 Đăng nhập";
-  document.getElementById("avatarField").style.display = isRegisterMode ? "block" : "none";
-  document.querySelector("#sidebar a").textContent = isRegisterMode
-    ? "Đã có tài khoản? Đăng nhập"
-    : "Chưa có tài khoản? Đăng ký ngay";
-}
-
-function handleAuth() {
-  const u = document.getElementById("authUser").value.trim().toLowerCase();
-  const p = btoa(document.getElementById("authPass").value.trim());
-
-  if (!u || !p) return showToast("❗ Nhập đủ tài khoản và mật khẩu");
-
-  if (isRegisterMode) {
-    const imgInput = document.getElementById("avatarInput");
-    const users = getList("users");
-    if (users.some(x => x.user === u)) return showToast("❗ Tài khoản đã tồn tại!");
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const avatar = imgInput.files[0] ? reader.result : "";
-      users.push({ user: u, pass: p, role: "user", avatar });
-      saveList("users", users);
-      localStorage.setItem("currentUser", u);
-      showToast("✅ Đăng ký thành công!");
-      location.reload();
+    window.showLogin = () => {
+      mode = "login";
+      document.getElementById("auth-title").innerText = "Đăng nhập";
+      document.getElementById("auth-form").style.display = "block";
     };
-    if (imgInput.files[0]) reader.readAsDataURL(imgInput.files[0]);
-    else reader.onload();
-  } else {
-    const users = getList("users");
-    const found = users.find(x => x.user === u && x.pass === p);
-    if (found) {
-      localStorage.setItem("currentUser", u);
-      location.reload();
-    } else {
-      showToast("❌ Sai tài khoản hoặc mật khẩu");
-    }
-  }
-}
 
-})();
-
-
-function openUserSpace() {
-  if (!currentUser) return;
-
-  const avatar = getAvatar(currentUser);
-  const stories = getList("stories").filter(s => s.uploader === currentUser);
-  const posts = getList("posts").filter(p => p.user === currentUser);
-
-  let html = `
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--main-color);"><br>
-      <h2 style="margin-top:10px;">👤 ${currentUser === 'admin' ? 'Admin' : currentUser}</h2>
-    </div>
-  `;
-
-  html += "<h3>📚 Truyện đã đăng</h3>";
-  if (stories.length === 0) {
-    html += "<p>Chưa có truyện nào.</p>";
-  } else {
-    stories.forEach(s => {
-      html += `<div class="story" style="cursor:auto;">
-        <img src="${s.image || DEFAULT_IMG}">
-        <div class="story-content">
-          <h3>${s.title}</h3>
-          <p>${s.desc}</p>
-        </div>
-      </div>`;
-    });
-  }
-
-  html += "<h3>🌐 Bài viết cộng đồng</h3>";
-  if (posts.length === 0) {
-    html += "<p>Chưa có bài viết nào.</p>";
-  } else {
-    posts.forEach(p => {
-      html += `<div style="background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;">
-        <p>${p.text}</p>
-        ${p.image ? `<img src="${p.image}" style="width:100%;border-radius:10px;">` : ''}
-      </div>`;
-    });
-  }
-
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("communityView").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "none";
-  document.getElementById("userProfileSpace").style.display = "block";
-  document.getElementById("userProfileContent").innerHTML = html;
-}
-
-function closeUserSpace() {
-  document.getElementById("userProfileSpace").style.display = "none";
-  switchTab(currentTab);
-}
-</script>
-
-<script>
-(function(){
-  const stories = [
-    {
-      "title": "Truyện 1",
-      "desc": "Mô tả truyện 1",
-      "image": "",
-      "category": "Hành động",
-      "isHot": true,
-      "isFull": false,
-      "views": 0,
-      "stars": 0,
-      "votes": 0,
-      "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"}]
-    },
-    {
-      "title": "Truyện 2",
-      "desc": "Mô tả truyện 2",
-      "image": "",
-      "category": "Tình cảm",
-      "isHot": false,
-      "isFull": true,
-      "views": 0,
-      "stars": 0,
-      "votes": 0,
-      "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"}]
-    },
-    {
-      "title": "Truyện 3",
-      "desc": "Mô tả truyện 3",
-      "image": "",
-      "category": "Kinh dị",
-      "isHot": false,
-      "isFull": false,
-      "views": 0,
-      "stars": 0,
-      "votes": 0,
-      "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"}]
-    },
-    {
-      "title": "Truyện 4",
-      "desc": "Mô tả truyện 4",
-      "image": "",
-      "category": "Tình cảm",
-      "isHot": true,
-      "isFull": false,
-      "views": 0,
-      "stars": 0,
-      "votes": 0,
-      "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"}]
-    },
-    {
-      "title": "Truyện 5",
-      "desc": "Mô tả truyện 5",
-      "image": "",
-      "category": "Hành động",
-      "isHot": false,
-      "isFull": true,
-      "views": 0,
-      "stars": 0,
-      "votes": 0,
-      "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"}]
-    },
-    {
-      "title": "Truyện 6",
-      "desc": "Mô tả truyện 6",
-      "image": "",
-      "category": "Kinh dị",
-      "isHot": false,
-      "isFull": false,
-      "views": 0,
-      "stars": 0,
-      "votes": 0,
-      "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"}]
-    },
-    {
-      "title": "Truyện 7",
-      "desc": "Mô tả truyện 7",
-      "image": "",
-      "category": "Tình cảm",
-      "isHot": true,
-      "isFull": false,
-      "views": 0,
-      "stars": 0,
-      "votes": 0,
-      "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3"}]
-    },
-    {
-      "title": "Truyện 8",
-      "desc": "Mô tả truyện 8",
-      "image": "",
-      "category": "Hành động",
-      "isHot": true,
-      "isFull": false,
-      "views": 0,
-      "stars": 0,
-      "votes": 0,
-      "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"}]
-    },
-    {
-      "title": "Truyện 9",
-      "desc": "Mô tả truyện 9",
-      "image": "",
-      "category": "Kinh dị",
-      "isHot": true,
-      "isFull": true,
-      "views": 0,
-      "stars": 0,
-      "votes": 0,
-      "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3"}]
-    },
-    {
-      "title": "Truyện 10",
-      "desc": "Mô tả truyện 10",
-      "image": "",
-      "category": "Tình cảm",
-      "isHot": false,
-      "isFull": true,
-      "views": 0,
-      "stars": 0,
-      "votes": 0,
-      "episodes": [{"name": "Tập 1", "audio": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3"}]
-    }
-  ];
-  localStorage.setItem("stories", JSON.stringify(stories));
-})();
-
-
-
-
-<script>
-// 🔄 Đồng bộ truyện công khai cho mọi thiết bị
-
-// Admin: Lưu danh sách truyện công khai
-function capNhatTruyenCongKhai() {
-  const all = getList("stories");
-  localStorage.setItem("storiesCongKhai", JSON.stringify(all));
-  showToast("✅ Đã cập nhật dữ liệu công khai!");
-}
-
-// Người dùng: Làm mới từ dữ liệu công khai
-function lamMoiDuLieuCongKhai() {
-  const congKhai = localStorage.getItem("storiesCongKhai");
-  if (!congKhai) return alert("⚠️ Chưa có dữ liệu công khai!");
-  try {
-    const stories = JSON.parse(congKhai);
-    saveList("stories", stories);
-    showToast("✅ Đã làm mới dữ liệu!");
-    showStories();
-  } catch (e) {
-    alert("❌ Lỗi đọc dữ liệu công khai");
-  }
-}
-
-// Tự động kiểm tra mỗi 15s
-setInterval(() => {
-  const congKhai = localStorage.getItem("storiesCongKhai");
-  if (!congKhai) return;
-  try {
-    const newStories = JSON.parse(congKhai);
-    const oldStories = getList("stories");
-    if (JSON.stringify(newStories) !== JSON.stringify(oldStories)) {
-      saveList("stories", newStories);
-      showStories();
-    }
-  } catch {}
-}, 15000);
-
-function openUserSpace() {
-  if (!currentUser) return;
-
-  const avatar = getAvatar(currentUser);
-  const stories = getList("stories").filter(s => s.uploader === currentUser);
-  const posts = getList("posts").filter(p => p.user === currentUser);
-
-  let html = `
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--main-color);"><br>
-      <h2 style="margin-top:10px;">👤 ${currentUser}</h2>
-    </div>
-  `;
-
-  html += "<h3>📚 Truyện đã đăng</h3>";
-  if (stories.length === 0) {
-    html += "<p>Chưa có truyện nào.</p>";
-  } else {
-    stories.forEach(s => {
-      html += `<div class="story" style="cursor:auto;">
-        <img src="${s.image || DEFAULT_IMG}">
-        <div class="story-content">
-          <h3>${s.title}</h3>
-          <p>${s.desc}</p>
-        </div>
-      </div>`;
-    });
-  }
-
-  html += "<h3>🌐 Bài viết cộng đồng</h3>";
-  if (posts.length === 0) {
-    html += "<p>Chưa có bài viết nào.</p>";
-  } else {
-    posts.forEach(p => {
-      html += `<div style="background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;">
-        <p>${p.text}</p>
-        ${p.image ? `<img src="${p.image}" style="width:100%;border-radius:10px;">` : ''}
-      </div>`;
-    });
-  }
-
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("communityView").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "none";
-  document.getElementById("userProfileSpace").style.display = "block";
-  document.getElementById("userProfileContent").innerHTML = html;
-}
-
-function closeUserSpace() {
-  document.getElementById("userProfileSpace").style.display = "none";
-  switchTab(currentTab);
-}
-</script>
-
-
-<!-- Floating Theme Toggle -->
-<button id="toggleTheme" onclick="toggleTheme()" style="
-  position: fixed;
-  bottom: 60px;
-  right: 20px;
-  background: var(--light-color);
-  color: var(--text-color);
-  border: none;
-  padding: 10px;
-  border-radius: 50%;
-  font-size: 20px;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  z-index: 1000;
-">🌙</button>
-
-<script>
-let isRegisterMode = false;
-
-function toggleAuthMode() {
-  isRegisterMode = !isRegisterMode;
-  document.getElementById("authTitle").textContent = isRegisterMode ? "📝 Đăng ký" : "🔐 Đăng nhập";
-  document.getElementById("authActionBtn").textContent = isRegisterMode ? "📝 Đăng ký" : "🔓 Đăng nhập";
-  document.getElementById("avatarField").style.display = isRegisterMode ? "block" : "none";
-  document.querySelector("#sidebar a").textContent = isRegisterMode
-    ? "Đã có tài khoản? Đăng nhập"
-    : "Chưa có tài khoản? Đăng ký ngay";
-}
-
-function handleAuth() {
-  const u = document.getElementById("authUser").value.trim().toLowerCase();
-  const p = btoa(document.getElementById("authPass").value.trim());
-
-  if (!u || !p) return showToast("❗ Nhập đủ tài khoản và mật khẩu");
-
-  if (isRegisterMode) {
-    const imgInput = document.getElementById("avatarInput");
-    const users = getList("users");
-    if (users.some(x => x.user === u)) return showToast("❗ Tài khoản đã tồn tại!");
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const avatar = imgInput.files[0] ? reader.result : "";
-      users.push({ user: u, pass: p, role: "user", avatar });
-      saveList("users", users);
-      localStorage.setItem("currentUser", u);
-      showToast("✅ Đăng ký thành công!");
-      location.reload();
+    window.showRegister = () => {
+      mode = "register";
+      document.getElementById("auth-title").innerText = "Đăng ký";
+      document.getElementById("auth-form").style.display = "block";
     };
-    if (imgInput.files[0]) reader.readAsDataURL(imgInput.files[0]);
-    else reader.onload();
-  } else {
-    const users = getList("users");
-    const found = users.find(x => x.user === u && x.pass === p);
-    if (found) {
-      localStorage.setItem("currentUser", u);
-      location.reload();
-    } else {
-      showToast("❌ Sai tài khoản hoặc mật khẩu");
-    }
-  }
-}
 
-function openUserSpace() {
-  if (!currentUser) return;
+    window.closeAuth = () => {
+      document.getElementById("auth-form").style.display = "none";
+    };
 
-  const avatar = getAvatar(currentUser);
-  const stories = getList("stories").filter(s => s.uploader === currentUser);
-  const posts = getList("posts").filter(p => p.user === currentUser);
+    window.submitAuth = async () => {
+      const email = document.getElementById("auth-email").value;
+      const password = document.getElementById("auth-password").value;
+      try {
+        if (mode === "login") {
+          await signInWithEmailAndPassword(auth, email, password);
+          alert("Đăng nhập thành công!");
+        } else {
+          await createUserWithEmailAndPassword(auth, email, password);
+          alert("Đăng ký thành công!");
+        }
+        document.getElementById("auth-form").style.display = "none";
+      } catch (e) {
+        alert("Lỗi: " + e.message);
+      }
+    };
 
-  let html = `
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--main-color);"><br>
-      <h2 style="margin-top:10px;">👤 ${currentUser}</h2>
-    </div>
-  `;
+    window.logout = async () => {
+      await signOut(auth);
+    };
 
-  html += "<h3>📚 Truyện đã đăng</h3>";
-  if (stories.length === 0) {
-    html += "<p>Chưa có truyện nào.</p>";
-  } else {
-    stories.forEach(s => {
-      html += `<div class="story" style="cursor:auto;">
-        <img src="${s.image || DEFAULT_IMG}">
-        <div class="story-content">
-          <h3>${s.title}</h3>
-          <p>${s.desc}</p>
-        </div>
-      </div>`;
-    });
-  }
+    onAuthStateChanged(auth, (user) => {
+      const emailSpan = document.getElementById("user-email");
+      const btnLogin = document.querySelector("button[onclick='showLogin()']");
+      const btnRegister = document.querySelector("button[onclick='showRegister()']");
+      const btnLogout = document.querySelector("button[onclick='logout()']");
+      const adminPanel = document.getElementById("admin-panel");
 
-  html += "<h3>🌐 Bài viết cộng đồng</h3>";
-  if (posts.length === 0) {
-    html += "<p>Chưa có bài viết nào.</p>";
-  } else {
-    posts.forEach(p => {
-      html += `<div style="background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;">
-        <p>${p.text}</p>
-        ${p.image ? `<img src="${p.image}" style="width:100%;border-radius:10px;">` : ''}
-      </div>`;
-    });
-  }
-
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("communityView").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "none";
-  document.getElementById("userProfileSpace").style.display = "block";
-  document.getElementById("userProfileContent").innerHTML = html;
-}
-
-function closeUserSpace() {
-  document.getElementById("userProfileSpace").style.display = "none";
-  switchTab(currentTab);
-}
-</script>
-
-<!-- Avatar Crop Modal -->
-<div id="cropModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000a;z-index:9999;justify-content:center;align-items:center;">
-  <div style="background:#fff;padding:20px;border-radius:10px;max-width:90%;max-height:90%;overflow:auto;">
-    <h3>✂️ Cắt ảnh đại diện</h3>
-    <img id="cropImage" style="max-width:100%;max-height:400px;">
-    <br><br>
-    <button onclick="applyCrop()">✅ Lưu ảnh</button>
-    <button onclick="closeCrop()">❌ Hủy</button>
-  </div>
-</div>
-
-<script>
-let cropper;
-function changeAvatar() {
-  const input = document.getElementById("newAvatarInput");
-  const file = input.files[0];
-  if (!file) return alert("Chọn ảnh trước đã!");
-  const imgBase64 = document.getElementById("add_image_file_preview").dataset.cropped || DEFAULT_IMG;
-  const reader = new FileReader();
-  reader.onload = () => {
-    document.getElementById("cropImage").src = reader.result;
-    document.getElementById("cropModal").style.display = "flex";
-    if (cropper) cropper.destroy();
-    cropper = new Cropper(document.getElementById("cropImage"), {
-      aspectRatio: 1,
-      viewMode: 1,
-      background: false
-    });
-  };
-  reader.readAsDataURL(file);
-}
-
-function applyCrop() {
-  if (!cropper) return;
-  cropper.getCroppedCanvas({
-    width: 200,
-    height: 200
-  }).toBlob(blob => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const avatar = reader.result;
-      const users = getList("users");
-      const user = users.find(u => u.user === currentUser);
       if (user) {
-        user.avatar = avatar;
-        saveList("users", users);
-        showToast("✅ Đã cập nhật ảnh đại diện!");
-        renderPosts();
-        toggleMenu();
-        setTimeout(toggleMenu, 300);
+        emailSpan.textContent = "👤 " + user.email;
+        btnLogin.style.display = "none";
+        btnRegister.style.display = "none";
+        btnLogout.style.display = "inline-block";
+
+        if (user.email === ADMIN_EMAIL) {
+          adminPanel.style.display = "block";
+          loadAdminStories();
+        } else {
+          adminPanel.style.display = "none";
+        }
+      } else {
+        emailSpan.textContent = "";
+        btnLogin.style.display = "inline-block";
+        btnRegister.style.display = "inline-block";
+        btnLogout.style.display = "none";
+        adminPanel.style.display = "none";
       }
-      closeCrop();
-    };
-    reader.readAsDataURL(blob);
-  });
-}
 
-function closeCrop() {
-  document.getElementById("cropModal").style.display = "none";
-  if (cropper) {
-    cropper.destroy();
-    cropper = null;
-  }
-}
-
-function openUserSpace() {
-  if (!currentUser) return;
-
-  const avatar = getAvatar(currentUser);
-  const stories = getList("stories").filter(s => s.uploader === currentUser);
-  const posts = getList("posts").filter(p => p.user === currentUser);
-
-  let html = `
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--main-color);"><br>
-      <h2 style="margin-top:10px;">👤 ${currentUser}</h2>
-    </div>
-  `;
-
-  html += "<h3>📚 Truyện đã đăng</h3>";
-  if (stories.length === 0) {
-    html += "<p>Chưa có truyện nào.</p>";
-  } else {
-    stories.forEach(s => {
-      html += `<div class="story" style="cursor:auto;">
-        <img src="${s.image || DEFAULT_IMG}">
-        <div class="story-content">
-          <h3>${s.title}</h3>
-          <p>${s.desc}</p>
-        </div>
-      </div>`;
+      loadStories();
     });
-  }
 
-  html += "<h3>🌐 Bài viết cộng đồng</h3>";
-  if (posts.length === 0) {
-    html += "<p>Chưa có bài viết nào.</p>";
-  } else {
-    posts.forEach(p => {
-      html += `<div style="background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;">
-        <p>${p.text}</p>
-        ${p.image ? `<img src="${p.image}" style="width:100%;border-radius:10px;">` : ''}
-      </div>`;
-    });
-  }
+    async function loadStories() {
+      const storyContainer = document.getElementById("stories");
+      storyContainer.innerHTML = "";
 
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("communityView").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "none";
-  document.getElementById("userProfileSpace").style.display = "block";
-  document.getElementById("userProfileContent").innerHTML = html;
-}
+      const snap = await getDocs(collection(db, "stories"));
+      if (snap.empty) {
+        storyContainer.innerHTML = "<p>Không có truyện nào.</p>";
+        return;
+      }
 
-function closeUserSpace() {
-  document.getElementById("userProfileSpace").style.display = "none";
-  switchTab(currentTab);
-}
-</script>
-
-
-<script>
-function getRealmClass(level) {
-  if (level >= 80) return "realm-tiennhan";
-  if (level >= 60) return "realm-hoathan";
-  if (level >= 40) return "realm-nguyenanh";
-  if (level >= 20) return "realm-kimdan";
-  if (level >= 10) return "realm-trucco";
-  if (level >= 5) return "realm-luyenkhi";
-  return "realm-phamnhan";
-}
-
-function renderUsername(name, level) {
-  const cls = getRealmClass(level);
-  return '<span class="realm-frame ' + cls + '">' + name + '</span>';
-}
-
-function openUserSpace() {
-  if (!currentUser) return;
-
-  const avatar = getAvatar(currentUser);
-  const stories = getList("stories").filter(s => s.uploader === currentUser);
-  const posts = getList("posts").filter(p => p.user === currentUser);
-
-  let html = `
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--main-color);"><br>
-      <h2 style="margin-top:10px;">👤 ${currentUser}</h2>
-    </div>
-  `;
-
-  html += "<h3>📚 Truyện đã đăng</h3>";
-  if (stories.length === 0) {
-    html += "<p>Chưa có truyện nào.</p>";
-  } else {
-    stories.forEach(s => {
-      html += `<div class="story" style="cursor:auto;">
-        <img src="${s.image || DEFAULT_IMG}">
-        <div class="story-content">
-          <h3>${s.title}</h3>
-          <p>${s.desc}</p>
-        </div>
-      </div>`;
-    });
-  }
-
-  html += "<h3>🌐 Bài viết cộng đồng</h3>";
-  if (posts.length === 0) {
-    html += "<p>Chưa có bài viết nào.</p>";
-  } else {
-    posts.forEach(p => {
-      html += `<div style="background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;">
-        <p>${p.text}</p>
-        ${p.image ? `<img src="${p.image}" style="width:100%;border-radius:10px;">` : ''}
-      </div>`;
-    });
-  }
-
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("communityView").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "none";
-  document.getElementById("userProfileSpace").style.display = "block";
-  document.getElementById("userProfileContent").innerHTML = html;
-}
-
-function closeUserSpace() {
-  document.getElementById("userProfileSpace").style.display = "none";
-  switchTab(currentTab);
-}
-</script>
-
-
-<script>
-// Gán admin mặc định level 99 khi đã tồn tại
-(function ensureAdminMaxLevel() {
-  const users = getList("users");
-  let changed = false;
-  users.forEach(u => {
-    if (u.user === "admin") {
-      if (u.level !== 99) { u.level = 99; changed = true; }
-      if (u.role !== "admin") { u.role = "admin"; changed = true; }
+      snap.forEach((doc) => {
+        const s = doc.data();
+        const div = document.createElement("div");
+        div.className = "story-card";
+        div.innerHTML = `<strong>${s.title}</strong><br/><img src="${s.cover}" alt="cover"/>`;
+        div.onclick = () => showStory(s);
+        storyContainer.appendChild(div);
+      });
     }
-  });
-  if (changed) saveList("users", users);
-})();
 
-function openUserSpace() {
-  if (!currentUser) return;
+    function showStory(s) {
+      document.getElementById("story-title").innerText = s.title;
+      document.getElementById("story-cover").src = s.cover;
+      document.getElementById("story-audio").src = s.audio;
+      document.getElementById("story-player").style.display = "block";
+      document.getElementById("story-list").style.display = "none";
+    }
 
-  const avatar = getAvatar(currentUser);
-  const stories = getList("stories").filter(s => s.uploader === currentUser);
-  const posts = getList("posts").filter(p => p.user === currentUser);
+    window.hidePlayer = () => {
+      document.getElementById("story-player").style.display = "none";
+      document.getElementById("story-list").style.display = "block";
+    };
 
-  let html = `
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--main-color);"><br>
-      <h2 style="margin-top:10px;">👤 ${currentUser}</h2>
-    </div>
-  `;
+    // THÊM TRUYỆN MỚI
+    document.getElementById("story-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("story-title").value;
+      const coverFile = document.getElementById("story-cover-file").files[0];
+      const audioFile = document.getElementById("story-audio-file").files[0];
 
-  html += "<h3>📚 Truyện đã đăng</h3>";
-  if (stories.length === 0) {
-    html += "<p>Chưa có truyện nào.</p>";
-  } else {
-    stories.forEach(s => {
-      html += `<div class="story" style="cursor:auto;">
-        <img src="${s.image || DEFAULT_IMG}">
-        <div class="story-content">
-          <h3>${s.title}</h3>
-          <p>${s.desc}</p>
-        </div>
-      </div>`;
+      try {
+        const coverRef = ref(storage, "covers/" + coverFile.name);
+        await uploadBytes(coverRef, coverFile);
+        const coverURL = await getDownloadURL(coverRef);
+
+        const audioRef = ref(storage, "audios/" + audioFile.name);
+        await uploadBytes(audioRef, audioFile);
+        const audioURL = await getDownloadURL(audioRef);
+
+        await addDoc(collection(db, "stories"), {
+          title,
+          cover: coverURL,
+          audio: audioURL
+        });
+
+        alert("✅ Truyện đã được thêm!");
+        document.getElementById("story-form").reset();
+        loadStories();
+        loadAdminStories();
+      } catch (err) {
+        alert("❌ Lỗi thêm truyện: " + err.message);
+      }
     });
-  }
 
-  html += "<h3>🌐 Bài viết cộng đồng</h3>";
-  if (posts.length === 0) {
-    html += "<p>Chưa có bài viết nào.</p>";
-  } else {
-    posts.forEach(p => {
-      html += `<div style="background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;">
-        <p>${p.text}</p>
-        ${p.image ? `<img src="${p.image}" style="width:100%;border-radius:10px;">` : ''}
-      </div>`;
-    });
-  }
+    // HIỂN THỊ DANH SÁCH ADMIN
+    async function loadAdminStories() {
+      const adminContainer = document.getElementById("admin-stories");
+      adminContainer.innerHTML = "";
 
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("communityView").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "none";
-  document.getElementById("userProfileSpace").style.display = "block";
-  document.getElementById("userProfileContent").innerHTML = html;
-}
+      const snap = await getDocs(collection(db, "stories"));
+      snap.forEach((docSnap) => {
+        const s = docSnap.data();
+        const id = docSnap.id;
 
-function closeUserSpace() {
-  document.getElementById("userProfileSpace").style.display = "none";
-  switchTab(currentTab);
-}
-</script>
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <p><strong>${s.title}</strong></p>
+          <button onclick="deleteStory('${id}')">🗑 Xoá</button>
+          <hr/>
+        `;
+        adminContainer.appendChild(div);
+      });
+    }
 
-
-<!-- User Profile Modal -->
-<div id="userProfileModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
-background:rgba(0,0,0,0.6);z-index:9999;justify-content:center;align-items:center;">
-  <div style="background:white;padding:20px;border-radius:12px;max-width:90%;max-height:90%;text-align:center;">
-    <img id="profileAvatar" src="" style="width:100px;height:100px;border-radius:50%;border:3px solid #ccc;">
-    <div id="profileName" style="margin:10px 0;font-size:20px;"></div>
-    <div id="profileLevel" style="margin:5px 0;"></div>
-    <div id="profileRole" style="margin:5px 0;"></div>
-    <button onclick="closeProfile()">❌ Đóng</button>
-  </div>
-</div>
-
-
-<script>
-function showUserProfile(username) {
-  const users = getList("users");
-  const user = users.find(u => u.user === username);
-  if (!user) return alert("Không tìm thấy người dùng!");
-
-  const cls = getRealmClass(user.level || 1);
-  const displayName = '<span class="realm-frame ' + cls + '">' + username + '</span>';
-  const exp = user.exp || 0;
-  const nextExp = (user.level || 1) * 10 + 100;
-
-  document.getElementById("profileAvatar").src = user.avatar || "";
-  document.getElementById("profileName").innerHTML = displayName;
-  document.getElementById("profileLevel").innerText = "Level: " + (user.level || 1) + " (" + exp + "/" + nextExp + " EXP)";
-  document.getElementById("profileRole").innerText = "Vai trò: " + (user.role || "user");
-
-  document.getElementById("userProfileModal").style.display = "flex";
-}
-
-function closeProfile() {
-  document.getElementById("userProfileModal").style.display = "none";
-}
-
-function openUserSpace() {
-  if (!currentUser) return;
-
-  const avatar = getAvatar(currentUser);
-  const stories = getList("stories").filter(s => s.uploader === currentUser);
-  const posts = getList("posts").filter(p => p.user === currentUser);
-
-  let html = `
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--main-color);"><br>
-      <h2 style="margin-top:10px;">👤 ${currentUser}</h2>
-    </div>
-  `;
-
-  html += "<h3>📚 Truyện đã đăng</h3>";
-  if (stories.length === 0) {
-    html += "<p>Chưa có truyện nào.</p>";
-  } else {
-    stories.forEach(s => {
-      html += `<div class="story" style="cursor:auto;">
-        <img src="${s.image || DEFAULT_IMG}">
-        <div class="story-content">
-          <h3>${s.title}</h3>
-          <p>${s.desc}</p>
-        </div>
-      </div>`;
-    });
-  }
-
-  html += "<h3>🌐 Bài viết cộng đồng</h3>";
-  if (posts.length === 0) {
-    html += "<p>Chưa có bài viết nào.</p>";
-  } else {
-    posts.forEach(p => {
-      html += `<div style="background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;">
-        <p>${p.text}</p>
-        ${p.image ? `<img src="${p.image}" style="width:100%;border-radius:10px;">` : ''}
-      </div>`;
-    });
-  }
-
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("communityView").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "none";
-  document.getElementById("userProfileSpace").style.display = "block";
-  document.getElementById("userProfileContent").innerHTML = html;
-}
-
-function closeUserSpace() {
-  document.getElementById("userProfileSpace").style.display = "none";
-  switchTab(currentTab);
-}
-</script>
-
-
-<!-- User Space -->
-<div id="userSpace" style="display:none;padding:20px;">
-  <button onclick="closeUserSpace()">← Quay lại</button>
-  <div id="userSpaceInfo" style="margin-top:10px;"></div>
-  <hr>
-  <div id="userSpaceContent"></div>
-</div>
-
-
-<script>
-function openUserSpace(username) {
-  const user = getList("users").find(u => u.user === username);
-  if (!user) return alert("Không tìm thấy tài khoản!");
-
-  const cls = getRealmClass(user.level || 1);
-  const displayName = '<span class="realm-frame ' + cls + '">' + username + '</span>';
-  const exp = user.exp || 0;
-  const nextExp = (user.level || 1) * 10 + 100;
-  const avatar = user.avatar || "";
-
-  const infoHTML = \`
-    <div style="text-align:center;">
-      <img src="\${avatar}" style="width:100px;height:100px;border-radius:50%;border:2px solid #ccc;"><br>
-      <div style="margin-top:10px;">\${displayName}</div>
-      <div>Level: \${user.level || 1} (\${exp}/\${nextExp} EXP)</div>
-      <div>Vai trò: \${user.role || 'user'}</div>
-    </div>
-  \`;
-
-  // Ví dụ nội dung: truyện theo dõi (nếu có thể lấy), lịch sử nghe
-  const currentUser = localStorage.getItem("currentUser") || "";
-  const follow = JSON.parse(localStorage.getItem("followList") || "{}");
-  const history = JSON.parse(localStorage.getItem("historyList") || "{}");
-
-  let contentHTML = "";
-  if (follow[username]?.length) {
-    contentHTML += "<h3>📚 Truyện theo dõi:</h3><ul>" +
-      follow[username].map(t => "<li>" + t + "</li>").join("") + "</ul>";
-  }
-
-  if (history[username]?.length) {
-    contentHTML += "<h3>⏳ Lịch sử nghe truyện:</h3><ul>" +
-      history[username].map(t => "<li>" + t + "</li>").join("") + "</ul>";
-  }
-
-  if (!contentHTML) contentHTML = "<p>Chưa có dữ liệu theo dõi hoặc lịch sử.</p>";
-
-  document.getElementById("userSpaceInfo").innerHTML = infoHTML;
-  document.getElementById("userSpaceContent").innerHTML = contentHTML;
-
-  
-  // Ẩn toàn bộ các phần chính
-  const idsToHide = ['main', 'sidebar', 'trangChu', 'chiTiet', 'authBox', 'truyenBox'];
-  idsToHide.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = "none";
-  });
-
-  // Ẩn các phần khác nếu có, chỉ hiển thị userSpace
-  document.getElementById("userSpace").style.display = "block";
-  if (document.getElementById("main")) document.getElementById("main").style.display = "none";
-}
-
-function closeUserSpace() {
-  document.getElementById("userSpace").style.display = "none";
-  
-  // Hiện lại các phần chính
-  const idsToShow = ['main', 'sidebar', 'trangChu'];
-  idsToShow.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = "block";
-  });
-
-}
-
-function openUserSpace() {
-  if (!currentUser) return;
-
-  const avatar = getAvatar(currentUser);
-  const stories = getList("stories").filter(s => s.uploader === currentUser);
-  const posts = getList("posts").filter(p => p.user === currentUser);
-
-  let html = `
-    <div style="text-align:center;margin-bottom:20px;">
-      <img src="${avatar}" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--main-color);"><br>
-      <h2 style="margin-top:10px;">👤 ${currentUser}</h2>
-    </div>
-  `;
-
-  html += "<h3>📚 Truyện đã đăng</h3>";
-  if (stories.length === 0) {
-    html += "<p>Chưa có truyện nào.</p>";
-  } else {
-    stories.forEach(s => {
-      html += `<div class="story" style="cursor:auto;">
-        <img src="${s.image || DEFAULT_IMG}">
-        <div class="story-content">
-          <h3>${s.title}</h3>
-          <p>${s.desc}</p>
-        </div>
-      </div>`;
-    });
-  }
-
-  html += "<h3>🌐 Bài viết cộng đồng</h3>";
-  if (posts.length === 0) {
-    html += "<p>Chưa có bài viết nào.</p>";
-  } else {
-    posts.forEach(p => {
-      html += `<div style="background:#fff;padding:10px;border-radius:10px;margin-bottom:10px;">
-        <p>${p.text}</p>
-        ${p.image ? `<img src="${p.image}" style="width:100%;border-radius:10px;">` : ''}
-      </div>`;
-    });
-  }
-
-  document.querySelector(".content").style.display = "none";
-  document.getElementById("communityView").style.display = "none";
-  document.getElementById("storyDetailView").style.display = "none";
-  document.getElementById("userProfileSpace").style.display = "block";
-  document.getElementById("userProfileContent").innerHTML = html;
-}
-
-function closeUserSpace() {
-  document.getElementById("userProfileSpace").style.display = "none";
-  switchTab(currentTab);
-}
-</script>
-
-
-<!-- Không gian cá nhân -->
-<div id="userProfileSpace" style="display:none;padding:15px;">
-  <button onclick="closeUserSpace()">← Quay lại</button>
-  <div id="userProfileContent"></div>
-</div>
-
-
-<script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
-<script>
-let cropper;
-function previewImage(input, previewId) {
-  const file = input.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const img = document.getElementById(previewId);
-    img.src = e.target.result;
-    img.style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-}
-
-function changeDisplayName() {
-  const newName = prompt("Nhập tên hiển thị mới:");
-  if (!newName) return;
-  const users = getList("users");
-  const found = users.find(u => u.user === currentUser);
-  if (found) {
-    found.name = newName.trim();
-    saveList("users", users);
-    showToast("✅ Đã cập nhật tên hiển thị!");
-    renderPosts?.();
-    toggleMenu();
-    setTimeout(toggleMenu, 300);
-  }
-}
-
-</script>
-
+    window.deleteStory = async (id) => {
+      if (confirm("Bạn chắc chắn muốn xoá truyện này?")) {
+        await deleteDoc(doc(db, "stories", id));
+        alert("✅ Đã xoá truyện");
+        loadStories();
+        loadAdminStories();
+      }
+    };
+  </script>
 </body>
-
 </html>
