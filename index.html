@@ -562,12 +562,6 @@ function getAvatar(user) {
   return found && found.avatar ? found.avatar : "https://i.imgur.com/F32pUuu.jpeg";
 }
 
-function getList(key) {
-  return JSON.parse(localStorage.getItem(key) || "[]");
-}
-function saveList(key, data) {
-  localStorage.setItem(key, JSON.stringify(data));
-}
 function getKey(prefix) {
   return currentUser ? `${prefix}_${currentUser}` : null;
 }
