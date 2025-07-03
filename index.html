@@ -250,5 +250,93 @@
       }
     };
   </script>
+
+<style>
+#story-actions {
+  margin-top: 20px;
+}
+#comment-list {
+  background: #f9f9f9;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+</style>
+
+<script type="module">
+import { query, where, getDocs, setDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+let currentStoryId = null;
+
+async function showStory(s) {
+  document.getElementById("story-title").innerText = s.title;
+  document.getElementById("story-cover").src = s.cover;
+  document.getElementById("story-audio").src = s.audio;
+  document.getElementById("story-player").style.display = "block";
+  document.getElementById("story-list").style.display = "none";
+  currentStoryId = s.id || s.storyId || s.title; // fallback nếu không có id rõ
+  loadLikes(currentStoryId);
+  loadComments(currentStoryId);
+}
+
+// Giao diện nút like + comment
+const actionsHTML = \`
+<div id="story-actions">
+  <button id="like-btn">❤️ Thích (<span id="like-count">0</span>)</button>
+  <h3>Bình luận</h3>
+  <div id="comment-list"></div>
+  <textarea id="comment-input" placeholder="Viết bình luận..."></textarea><br/>
+  <button onclick="submitComment()">💬 Gửi bình luận</button>
+</div>\`;
+
+document.getElementById("story-player").insertAdjacentHTML("beforeend", actionsHTML);
+
+// Load lượt like
+async function loadLikes(storyId) {
+  const likeSnap = await getDocs(collection(db, "stories", storyId, "likes"));
+  document.getElementById("like-count").innerText = likeSnap.size;
+  const user = auth.currentUser;
+  const liked = likeSnap.docs.some(doc => doc.id === user?.email);
+  document.getElementById("like-btn").disabled = liked;
+}
+
+// Bấm like
+document.getElementById("like-btn").onclick = async () => {
+  const user = auth.currentUser;
+  if (!user) return alert("Bạn cần đăng nhập để like!");
+  const storyId = currentStoryId;
+  const likeRef = doc(db, "stories", storyId, "likes", user.email);
+  await setDoc(likeRef, { likedAt: serverTimestamp() });
+  loadLikes(storyId);
+};
+
+// Gửi bình luận
+window.submitComment = async () => {
+  const user = auth.currentUser;
+  const text = document.getElementById("comment-input").value.trim();
+  if (!user || !text) return;
+  await addDoc(collection(db, "stories", currentStoryId, "comments"), {
+    text,
+    email: user.email,
+    createdAt: serverTimestamp()
+  });
+  document.getElementById("comment-input").value = "";
+  loadComments(currentStoryId);
+};
+
+// Hiển thị bình luận
+async function loadComments(storyId) {
+  const commentList = document.getElementById("comment-list");
+  commentList.innerHTML = "Đang tải...";
+  const snap = await getDocs(collection(db, "stories", storyId, "comments"));
+  const comments = snap.docs.map(doc => doc.data());
+  commentList.innerHTML = comments.map(c =>
+    \`<p><strong>\${c.email}:</strong> \${c.text}</p>\`
+  ).join("") || "<p>Chưa có bình luận.</p>";
+}
+</script>
+
 </body>
 </html>
