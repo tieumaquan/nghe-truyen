@@ -1,4 +1,4 @@
-0<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
@@ -42,17 +42,6 @@
       border-radius: 8px;
       margin-top: 5px;
     }
-    #auth-form {
-      position: fixed;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: white;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      z-index: 1000;
-    }
     #story-player {
       background: white;
       padding: 1rem;
@@ -72,8 +61,7 @@
     <h1>📚 Nghe Truyện Online</h1>
     <div id="user-auth">
       <span id="user-email" style="margin-right: 10px;"></span>
-      <button onclick="showLogin()">Đăng nhập</button>
-      <button onclick="showRegister()">Đăng ký</button>
+      <button id="googleSignIn">🔐 Đăng nhập Google</button>
       <button onclick="logout()" style="display:none;">Đăng xuất</button>
     </div>
   </header>
@@ -95,39 +83,28 @@
     <!-- ✅ ADMIN PANEL -->
     <section id="admin-panel" style="display: none;">
       <h2>🛠 Quản lý truyện (Admin)</h2>
-
       <form id="story-form">
         <input type="text" id="story-title" placeholder="Tên truyện" required /><br/><br/>
         <input type="file" id="story-cover-file" accept="image/*" required /><br/><br/>
         <input type="file" id="story-audio-file" accept="audio/*" required /><br/><br/>
         <button type="submit">📤 Thêm truyện</button>
       </form>
-
       <div id="admin-stories"></div>
     </section>
   </main>
 
-  <!-- Đăng nhập / Đăng ký -->
-  <div id="auth-form" style="display: none;">
-    <h2 id="auth-title">Đăng nhập</h2>
-    <input type="email" id="auth-email" placeholder="Email" /><br/><br/>
-    <input type="password" id="auth-password" placeholder="Mật khẩu" /><br/><br/>
-    <button onclick="submitAuth()">Gửi</button>
-    <button onclick="closeAuth()">Hủy</button>
-  </div>
-
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyAHg0qKWXwuZPNC1wTv_VYDvfaQiLAYbJk",
+      apiKey: "AIzaSyAHg0qKWXwuZPNClwTv_VYDvfaQiLAYbJk",
       authDomain: "rinaudio-app.firebaseapp.com",
       projectId: "rinaudio-app",
-      storageBucket: "rinaudio-app.firebasestorage.app",
+      storageBucket: "rinaudio-app.appspot.com",
       messagingSenderId: "56465837529",
       appId: "1:56465837529:web:4da849806360e95cd01dc8"
     };
@@ -136,58 +113,32 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const storage = getStorage(app);
+    const provider = new GoogleAuthProvider();
 
-    const ADMIN_EMAIL = "sumi22122005@gmail.com";
-    let mode = "login";
-
-    window.showLogin = () => {
-      mode = "login";
-      document.getElementById("auth-title").innerText = "Đăng nhập";
-      document.getElementById("auth-form").style.display = "block";
-    };
-
-    window.showRegister = () => {
-      mode = "register";
-      document.getElementById("auth-title").innerText = "Đăng ký";
-      document.getElementById("auth-form").style.display = "block";
-    };
-
-    window.closeAuth = () => {
-      document.getElementById("auth-form").style.display = "none";
-    };
-
-    window.submitAuth = async () => {
-      const email = document.getElementById("auth-email").value;
-      const password = document.getElementById("auth-password").value;
+    // Đăng nhập Google
+    document.getElementById("googleSignIn").addEventListener("click", async () => {
       try {
-        if (mode === "login") {
-          await signInWithEmailAndPassword(auth, email, password);
-          alert("Đăng nhập thành công!");
-        } else {
-          await createUserWithEmailAndPassword(auth, email, password);
-          alert("Đăng ký thành công!");
-        }
-        document.getElementById("auth-form").style.display = "none";
-      } catch (e) {
-        alert("Lỗi: " + e.message);
+        await signInWithPopup(auth, provider);
+      } catch (error) {
+        alert("❌ Lỗi đăng nhập Google: " + error.message);
       }
-    };
+    });
 
     window.logout = async () => {
       await signOut(auth);
     };
 
+    const ADMIN_EMAIL = "sumi22122005@gmail.com";
+
     onAuthStateChanged(auth, (user) => {
       const emailSpan = document.getElementById("user-email");
-      const btnLogin = document.querySelector("button[onclick='showLogin()']");
-      const btnRegister = document.querySelector("button[onclick='showRegister()']");
+      const btnGoogle = document.getElementById("googleSignIn");
       const btnLogout = document.querySelector("button[onclick='logout()']");
       const adminPanel = document.getElementById("admin-panel");
 
       if (user) {
         emailSpan.textContent = "👤 " + user.email;
-        btnLogin.style.display = "none";
-        btnRegister.style.display = "none";
+        btnGoogle.style.display = "none";
         btnLogout.style.display = "inline-block";
 
         if (user.email === ADMIN_EMAIL) {
@@ -198,8 +149,7 @@
         }
       } else {
         emailSpan.textContent = "";
-        btnLogin.style.display = "inline-block";
-        btnRegister.style.display = "inline-block";
+        btnGoogle.style.display = "inline-block";
         btnLogout.style.display = "none";
         adminPanel.style.display = "none";
       }
