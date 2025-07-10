@@ -20,11 +20,11 @@
 }
 
     :root {
-      --main-color: #f76da4;
-      --light-color: #fdd2e0;
-      --bg-color: #fff5f9;
-      --text-color: #333;
-    }
+  --main-color: #888;         /* màu chủ đạo (xám nhạt) */
+  --light-color: #bbb;        /* màu nhấn nhẹ */
+  --bg-color: #f0f0f0;        /* nền toàn trang */
+  --text-color: #222;         /* màu chữ */
+}
     * {
       box-sizing: border-box;
     }
@@ -157,23 +157,28 @@
       font-size: 18px;
     }
     #toast {
-      visibility: hidden;
-      min-width: 250px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      border-radius: 4px;
-      padding: 10px;
-      position: fixed;
-      top: 70px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-100%);
-      z-index: 1001;
-    }
-    #toast.show {
-      visibility: visible;
-      animation: fadeinTop 0.5s, fadeoutTop 0.5s 2.5s;
-    }
+  visibility: hidden;
+  max-width: 80%;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  text-align: center;
+  border-radius: 12px;
+  padding: 14px 24px;
+  position: fixed;
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  font-size: 17px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+#toast.show {
+  visibility: visible;
+  opacity: 1;
+}
     @keyframes fadein {
       from { bottom: 0; opacity: 0; }
       to { top: 70px; opacity: 1; }
@@ -277,7 +282,8 @@
 }
 .comment-content strong {
   font-size: 15px;
-  color: var(--main-color);
+  font-weight: bold;
+  color: #f76da4; /* Màu hồng nổi bật - luôn dùng */
 }
 .comment-content span {
   display: inline-block;
@@ -295,6 +301,24 @@
   border: 1px solid #444;
   border-radius: 10px;
   padding: 10px;
+}
+/* ✅ DARK MODE cải thiện khung bình luận */
+.dark-mode .comment-item {
+  background: #333 !important;
+  color: #eee !important;
+  border-color: #555 !important;
+}
+
+.dark-mode .reply-item {
+  background: #2a2a2a !important;
+  color: #ddd !important;
+  border-color: #555 !important;
+}
+
+.dark-mode .comment-content span {
+  color: #ccc !important;
+  font-size: 14px;
+  line-height: 1.5;
 }
 .reply-item img {
   width: 30px;
@@ -399,6 +423,184 @@
 .dark-mode .story-desc {
   border-color: #555;
 }
+
+.episode-list {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  list-style: none;
+  margin: 0;
+}
+
+.episode-list li {
+  padding: 8px 0;
+  border-bottom: 1px dashed #ddd;
+}
+
+.episode-list li:last-child {
+  border-bottom: none;
+}
+
+.episode-list a {
+  text-decoration: none;
+  color: #111;        /* 💥 Màu đen đậm */
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.episode-list a:hover {
+  text-decoration: underline;
+}
+
+.tag-user {
+  color: #f76da4;
+  font-weight: bold;
+}
+
+.dark-mode .tag-user {
+  color: #f76da4 !important;
+}
+
+.comment-content strong,
+.reply-item strong {
+  color: #f76da4 !important; /* Màu hồng đậm, dễ nhìn */
+}
+
+a[href^="#"][onclick*="replyTo"] {
+  color: white !important;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a[href^="#"][onclick*="replyTo"]:hover {
+  text-decoration: underline;
+}
+
+/* Màu nút trả lời trong bình luận truyện */
+#storyComments a[onclick*="replyTo"] {
+  color: black !important;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+#storyComments .comment-item,
+#storyComments .reply-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+  background: #1e1e1e;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #555;
+}
+
+#storyComments .reply-item {
+  margin-left: 50px;
+  background: #2a2a2a;
+}
+
+#storyComments img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--main-color);
+}
+
+#storyComments .comment-content {
+  flex: 1;
+  background: #2b2b2b;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  color: #eee;
+}
+
+#storyComments .comment-content strong {
+  color: #f76da4;
+}
+
+#storyComments .comment-content span {
+  display: block;
+  margin-top: 5px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+#storyComments a[onclick*="replyToComment"] {
+  display: inline-block;
+  margin-top: 6px;
+  color: #00ffff !important;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Cộng đồng - bình luận khung đen giống truyện */
+#communityView .comment-item,
+#communityView .reply-item {
+  background: #1e1e1e;
+  border: 1px solid #555;
+  border-radius: 12px;
+  padding: 12px;
+  color: #eee;
+}
+
+#communityView .reply-item {
+  background: #2a2a2a;
+  margin-left: 50px;
+}
+
+#communityView .comment-content strong {
+  color: #f76da4;
+}
+
+#communityView .comment-content span {
+  color: #ccc;
+  font-size: 14px;
+  display: block;
+  margin-top: 6px;
+}
+
+/* Nút trả lời trong bình luận cộng đồng giống bình luận truyện */
+#communityView a[onclick*="replyTo"] {
+  color: white !important;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: 0.2s;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+#communityView a[onclick*="replyTo"]:hover {
+  text-decoration: underline;
+  background: #444;
+}
+
+/* Nút Trả lời cho cả bình luận truyện & cộng đồng */
+#storyComments a[onclick*="replyTo"],
+#communityView a[onclick*="replyTo"] {
+  color: #1abc9c !important; /* xanh ngọc lam đẹp, không quá chói */
+  font-weight: bold;
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+/* Hover hiệu ứng */
+#storyComments a[onclick*="replyTo"]:hover,
+#communityView a[onclick*="replyTo"]:hover {
+  text-decoration: underline;
+  background: rgba(26, 188, 156, 0.15); /* xanh nhạt khi hover */
+}
 </style>
 
 <!-- CropperJS -->
@@ -499,7 +701,18 @@ function closeUserSpace() {
   <nav class="tabs"></nav>
   <div class="content">
     <h2 id="sectionTitle">📚 Danh sách truyện</h2>
-    <div style="margin: 15px 0;">
+<div id="youtubeIntro" style="display:none;">
+  <div style="background: #fff0f5; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center;">
+    <h2 style="margin-top: 0; color: #e91e63;">📺 Theo dõi kênh YouTube của mình!</h2>
+    <p style="font-size: 16px; color: #444;">
+      Hãy ghé thăm và đăng ký <strong>Kênh YouTube Audio Truyện</strong> để nghe truyện nhanh, chất lượng cao, cập nhật sớm nhất! 🔔🎧
+    </p>
+    <a href="https://www.youtube.com/@TenKenhCuaBan" target="_blank" style="display:inline-block;margin-top:10px;padding:10px 18px;background:#e91e63;color:white;border-radius:8px;font-weight:bold;text-decoration:none;transition:0.3s;">
+      👉 Đến Kênh YouTube
+    </a>
+  </div>
+</div>
+    <div id="topTabButtons" style="margin: 15px 0;">
   <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
     <button id="tabTopDay" class="top-tab active" onclick="changeTopTab('day')">🔥 Top Ngày</button>
     <button id="tabTopWeek" class="top-tab" onclick="changeTopTab('week')">🔥 Top Tuần</button>
@@ -527,20 +740,10 @@ function closeUserSpace() {
 </div>
 </div> <!-- 🔚 Kết thúc top 6 truyện -->
 
-<!-- 🔶 PHẦN DONATE - Ủng hộ -->
-<div id="donate" style="margin: 40px auto; max-width: 500px; background: var(--light); padding: 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center">
-  <h2 style="margin-bottom: 10px;">💖 Ủng hộ Admin</h2>
-  <p style="margin-bottom: 20px;">Nếu bạn thấy website hữu ích, hãy ủng hộ để mình có động lực duy trì và phát triển nhé!</p>
 
-  <!-- Số tài khoản -->
-  <div style="margin: 10px 0;">
-    <strong>TP Bank:</strong>
-    <span id="bankNumber">00006481854 </span>
-    <button onclick="copyText('bankNumber')" style="margin-left: 8px; padding: 4px 8px; border: none; background: var(--primary); color: white; border-radius: 6px;">📋 Copy</button>
-  </div>
-</div>
+  <div id="storyDetailView" style="display:none; padding:15px;"></div
+
 </div> <!-- 🔚 Kết thúc .content -->
-  <div id="storyDetailView" style="display:none; padding:15px;"></div>
 <div id="communityView" style="display:none;padding:15px;">
   <h2>🌐 Bài viết cộng đồng</h2>
   <div id="postForm">
@@ -552,6 +755,26 @@ function closeUserSpace() {
   <div id="postList"></div>
 </div>
 
+<div id="donate" style="margin: 40px auto; max-width: 500px; background: var(--light); padding: 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center">
+  <h2 style="margin-bottom: 10px;">💖 Ủng hộ Admin</h2>
+  <p style="margin-bottom: 20px;">Nếu bạn thấy website hữu ích, hãy ủng hộ để mình có động lực duy trì và phát triển nhé!</p>
+
+  <div style="margin: 10px 0;">
+    <strong>TP Bank:</strong>
+    <span id="bankNumber">00006481854 </span>
+    <button onclick="copyText('bankNumber')" style="margin-left: 8px; padding: 4px 8px; border: none; background: var(--primary); color: white; border-radius: 6px;">📋 Copy</button>
+  </div>
+</div>
+
+<div style="margin: 30px auto; max-width: 700px; background: #fff8f8; padding: 20px; border-radius: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); text-align: center; color: #333;">
+  <h2 style="color: #f76da4;">🌟 Giới Thiệu Website</h2>
+  <p style="line-height: 1.6; font-size: 16px;">
+    <strong>Audio Truyện Online</strong> là nền tảng nghe truyện miễn phí, hỗ trợ nhiều thể loại hấp dẫn như tiên hiệp, kiếm hiệp, ngôn tình, huyền huyễn và hơn thế nữa. Người dùng có thể nghe mọi lúc mọi nơi, không cần đăng ký. Chúng mình luôn cập nhật truyện mới mỗi ngày để mang đến trải nghiệm tốt nhất cho bạn!
+  </p>
+  <p style="font-size: 15px; color: #555;">
+    Chúc bạn có những phút giây thư giãn vui vẻ cùng Audio Truyện! 🎧📚
+  </p>
+</div>
   <div id="sidebarOverlay" onclick="hideMenu()"></div>
   <div id="sidebar"></div>
   <div id="toast"></div>
@@ -564,6 +787,7 @@ const ADMIN_USER = "admin";
 const ADMIN_PASS = btoa("166505");
 const DEFAULT_IMG = "https://i.imgur.com/F32pUuu.jpeg";
 
+let replyingToStory = null;
 let currentUser = localStorage.getItem("currentUser");
 let currentTab = "home";
 let currentPage = 1;
@@ -592,8 +816,8 @@ function getKey(prefix) {
 function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
-  t.className = "show";
-  setTimeout(() => t.className = "", 3000);
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
 }
 
 // ========== SIDEBAR MENU ==========
@@ -677,38 +901,52 @@ function renderTabs() {
 function switchTab(tab) {
   renderCategoryFilter();
   currentTab = tab;
+
+  // ✅ Hiện phần giới thiệu YouTube nếu là tab Trang chủ
+  const youtubeBox = document.getElementById("youtubeIntro");
+  if (youtubeBox) youtubeBox.style.display = (tab === "home" ? "block" : "none");
+
   localStorage.setItem("lastTab", tab);
   document.querySelector(".content").style.display = tab === "community" ? "none" : "block";
-  document.getElementById("communityView").style.display = tab === "community" ? "block" : "none"; if(tab==="community"){renderPosts();}
+  document.getElementById("communityView").style.display = tab === "community" ? "block" : "none";
+  if (tab === "community") {
+    renderPosts();
+  }
   document.getElementById("storyDetailView").style.display = "none";
+// Ẩn hiện nút Top Ngày/Tuần/Tháng
+const topTab = document.getElementById("topTabButtons");
+if (topTab) topTab.style.display = (tab === "home" || tab === "search") ? "block" : "none";
   document.getElementById("sectionTitle").textContent = {
-  home: "📚 Danh sách truyện",
-  search: "🔍 Tìm truyện", // 👈 thêm dòng này
-  followed: "❤️ Truyện đã theo dõi",
-  library: "📂 Tủ truyện của bạn",
-  history: "🕘 Lịch sử nghe truyện"
-}[tab] || "📚 Danh sách truyện";
- // Hiển thị/ẩn thanh tìm kiếm và lọc chỉ ở tab "search"
-const showFilters = tab === "search";
-const filterBox = document.getElementById("filterBox");
-if (filterBox) filterBox.style.display = showFilters ? "block" : "none";
+    home: "📚 Danh sách truyện",
+    search: "🔍 Tìm truyện",
+    followed: "❤️ Truyện đã theo dõi",
+    library: "📂 Tủ truyện của bạn",
+    history: "🕘 Lịch sử nghe truyện"
+  }[tab] || "📚 Danh sách truyện";
+
+  // Hiển thị/ẩn thanh tìm kiếm và lọc chỉ ở tab "search"
+  const showFilters = tab === "search";
+  const filterBox = document.getElementById("filterBox");
+  if (filterBox) filterBox.style.display = showFilters ? "block" : "none";
 
   // Cập nhật tab active
   const allTabs = document.querySelectorAll("nav.tabs button");
   allTabs.forEach(btn => btn.classList.remove("active"));
   const selectedBtn = Array.from(allTabs).find(b =>
-  b.textContent.includes(
-    tab === "home" ? "Trang chủ" :
-    tab === "search" ? "Tìm truyện" : // ✅ thêm dòng này
-    tab === "followed" ? "Theo dõi" :
-    tab === "library" ? "Tủ truyện" :
-    tab === "history" ? "Lịch sử" :
-    tab === "community" ? "Cộng đồng" : ""
-  )
-);  if (selectedBtn) selectedBtn.classList.add("active");
+    b.textContent.includes(
+      tab === "home" ? "Trang chủ" :
+      tab === "search" ? "Tìm truyện" :
+      tab === "followed" ? "Theo dõi" :
+      tab === "library" ? "Tủ truyện" :
+      tab === "history" ? "Lịch sử" :
+      tab === "community" ? "Cộng đồng" : ""
+    )
+  );
+  if (selectedBtn) selectedBtn.classList.add("active");
 
   currentPage = 1;
   showStories();
+  loadMostViewedStories();
 }
 
 
@@ -720,127 +958,188 @@ function addPost() {
   const file = document.getElementById("postImage").files[0];
   if (!text && !file) return alert("Nhập nội dung hoặc chọn ảnh!");
 
+  const posts = getList("posts");
   const reader = new FileReader();
+
   reader.onload = () => {
-    const posts = getList("posts");
     const image = file ? reader.result : "";
-    posts.unshift({ user: currentUser, text, image, likes: 0, comments: [] });
+    posts.unshift({ id: Date.now(), user: currentUser, text, image, likes: 0, comments: [] });
     saveList("posts", posts);
     document.getElementById("postText").value = "";
     document.getElementById("postImage").value = "";
     renderPosts();
   };
-  if (file) reader.readAsDataURL(file);
-  else reader.onload();
-}
 
+  if (file) {
+    reader.readAsDataURL(file);
+  } else {
+    reader.onload();
+  }
+}
 
 function renderPosts() {
   const list = getList("posts");
   let html = "";
+
   list.forEach((p, idx) => {
-    html += '<div style="background:#fff;padding:15px;margin-bottom:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:transform 0.3s;">';
-html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">';
-html += '<img src="' + getAvatar(p.user) + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--main-color);" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-html += '<strong style="font-size:16px;">' + p.user + '</strong>';
-html += '</div>';
-html += '<p style="font-size:15px;line-height:1.5;margin:10px 0;">' + p.text + '</p>';
-if (p.image) {
-  html += '<img src="' + p.image + '" style="width:100%;height:auto;border-radius:10px;max-height:300px;object-fit:contain;margin:10px 0;">';
-}
-html += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">';
-html += '<button onclick="likePost(' + idx + ')" style="flex:1;">👍 ' + p.likes + '</button>';
-if (p.user === currentUser) {
-  html += '<button onclick="deletePost(' + idx + ')" style="flex:1;background:#fdd2e0;">🗑️ Xoá</button>';
-}
-html += '<button onclick="toggleComments(' + idx + ')" style="flex:2;">💬 Bình luận (' + p.comments.length + ')</button>';
-html += '</div>';
-    html += '<p>' + p.text + '</p>';
-    if (p.image) {
-      html += '<img src="' + p.image + '" style="width:100%;height:auto;border-radius:10px;max-height:300px;object-fit:contain;">';
-    }
-    html += '<div>';
-    html += '<button onclick="likePost(' + idx + ')">👍 ' + p.likes + '</button>';
-    if (p.user === currentUser) {
-      html += '<button onclick="deletePost(' + idx + ')">🗑️ Xoá</button>';
-    }
-    html += '<button onclick="toggleComments(' + idx + ')">💬 Xem bình luận (' + p.comments.length + ')</button>';
-    html += '</div>';
-    html += '<div id="commentBox_' + idx + '" style="margin-top:10px; display:none;">';
-    html += '<input placeholder="Bình luận..." onkeydown="if(event.key===\'Enter\')commentPost(' + idx + ', this)" style="width:100%;padding:5px;">';
-    html += '<button onclick="commentPost(' + idx + ', this.previousElementSibling)">Gửi</button>';
-    html += '<div style="margin-top:10px;">';
-    p.comments.forEach((c, ci) => {
-      html += '<div class="comment-item">';
-html += '<img src="' + getAvatar(c.user) + '" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-html += '<div class="comment-content">';
-html += '<strong>' + c.user + '</strong><br>';
-html += '<span>' + c.text + '</span>';
-html += '<div style="margin-top:5px;">';
-html += '<button onclick="toggleReplies(' + idx + ',' + ci + ')">↪️ Trả lời</button>';
-html += '</div>';
-html += '<div id="replyBox_' + idx + '_' + ci + '" style="display:none;margin-top:5px;">';
-html += '<input placeholder="Trả lời..." onkeydown="if(event.key===\'Enter\')replyComment(' + idx + ',' + ci + ', this)" style="width:100%;padding:5px;">';
-html += '<button onclick="replyComment(' + idx + ',' + ci + ', this.previousElementSibling)">Gửi</button>';
-if (c.replies) {
-  c.replies.forEach(r => {
-    html += '<div class="reply-item">';
-    html += '<img src="' + getAvatar(r.user) + '" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-    html += '<div><strong>' + r.user + '</strong> ' + r.text + '</div>';
-    html += '</div>';
+    html += `
+      <div class="post-item" style="
+        padding:17px;
+        margin:25px 0;
+        border-radius:12px;
+        background:var(--bg-color);
+        box-shadow:0 2px 6px rgba(0,0,0,0.1);
+        border:1px solid rgba(0,0,0,0.05);">
+
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <img src="${getAvatar(p.user)}" style="width:32px;height:32px;border-radius:50%;" onerror="this.src='https://i.imgur.com/F32pUuu.jpeg'">
+          <strong style="font-size:15px;">${p.user}</strong>
+        </div>
+
+        <p style="margin:5px 0;font-size:15px;line-height:1.4;">${formatTags(p.text)}</p>
+
+        ${p.image ? `<img src="${p.image}" style="max-width:100%;border-radius:10px;margin-top:10px;">` : ""}
+
+        <div style="margin-top:10px;display:flex;gap:10px;">
+          <button onclick="likePost(${idx})">👍 ${p.likes}</button>
+          <button onclick="toggleComments(${idx})">💬 Xem bình luận (${p.comments?.length || 0})</button>
+        </div>
+
+        <div id="commentsContainer_${idx}" style="margin-top:12px; display: none;">
+          <div id="commentBox_${idx}" style="margin-top:10px;">
+            <input id="commentInput_${idx}" placeholder="Bình luận..." 
+                   style="width:100%;padding:6px;border-radius:6px;border:1px solid #ccc"
+                   onkeydown="if(event.key==='Enter') commentPost(${idx})">
+            <button onclick="commentPost(${idx})" style="margin-top:6px;">Gửi</button>
+          </div>
+
+          <div style="margin-top:15px;">
+            ${renderCommentTree(p.comments || [], null, 0, idx)}
+          </div>
+        </div>
+      </div>
+    `;
   });
-}
-html += '</div>'; // replyBox
-html += '</div>'; // comment-content
-html += '</div>'; // comment-item
-      html += '<button onclick="toggleReplies(' + idx + ',' + ci + ')">↪️ Trả lời</button>';
-      html += '<div id="replyBox_' + idx + '_' + ci + '" style="margin-left:30px;margin-top:5px;display:none;">';
-      html += '<input placeholder="Trả lời..." onkeydown="if(event.key===\'Enter\')replyComment(' + idx + ',' + ci + ', this)" style="width:100%;padding:5px;">';
-      html += '<button onclick="replyComment(' + idx + ',' + ci + ', this.previousElementSibling)">Gửi</button>';
-      if (c.replies) {
-        c.replies.forEach(r => {
-          html += '<div style="display:flex;align-items:center;gap:10px;margin-top:5px;margin-left:20px;">';
-          html += '<img src="' + getAvatar(r.user) + '" style="width:22px;height:22px;border-radius:50%" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-          html += '<div><strong>' + r.user + ':</strong> ' + r.text + '</div>';
-          html += '</div>';
-        });
-      }
-      html += '</div>';
-      html += '</div>';
-    });
-    html += '</div></div></div>';
-  });
-  document.getElementById("postList").innerHTML = html || "Chưa có bài viết nào.";
+
+  document.getElementById("postList").innerHTML = html || "<p>Chưa có bài viết nào.</p>";
 }
 
+function renderCommentTree(comments, parentId = null, indent = 0, postIndex) {
+  const roots = comments.filter(c => c.parentId === null);
+  return roots
+    .map(c => {
+      const replies = comments.filter(r => r.parentId === c.id);
+      return `
+        <div class="comment-item" style="margin-left:${indent}px;">
+  <img src="${getAvatar(c.user)}" onerror="this.src='https://i.imgur.com/F32pUuu.jpeg'">
+  <div class="comment-content">
+            <strong>${c.user}</strong><br>
+            <span>${formatTags(c.text)}</span>
+            <div style="margin-top:5px;">
+              <a href="#" onclick="replyTo(${postIndex}, '${c.id}', '${c.user}');return false;"> Trả lời</a>
+            </div>
 
-function likePost(i) {
-  if (!currentUser) return alert("Bạn cần đăng nhập để like!");
-  const key = `liked_${currentUser}`;
-  const liked = getList(key);
-  if (liked.includes(i)) {
-    showToast("❗ Bạn đã like bài viết này rồi!");
-    return;
-  }
-  const list = getList("posts");
-  list[i].likes++;
-  liked.push(i);
-  saveList("posts", list);
-  saveList(key, liked);
-  renderPosts();
+            ${
+              replies.length > 0
+                ? `<div class="reply-group" style="margin-top:10px;margin-left:10px;border-left:2px solid #ccc;padding-left:10px;">
+                    ${replies
+                      .map(r => `
+                         <div class="reply-item">
+  <img src="${getAvatar(r.user)}" onerror="this.src='https://i.imgur.com/F32pUuu.jpeg'">
+  <div class="comment-content">
+                            <strong>${r.user}</strong><br>
+                            <span>${formatTags(r.text)}</span>
+                            <div style="margin-top:4px;">
+                              <a href="#" onclick="replyTo(${postIndex}, '${c.id}', '${r.user}');return false;"> Trả lời</a>
+                            </div>
+                          </div>
+                        </div>
+                      `).join("")}
+                  </div>`
+                : ""
+            }
+
+          </div>
+        </div>
+      `;
+    })
+    .join('');
 }
 
-function commentPost(i, input) {
-  if (!currentUser) return alert("Đăng nhập để bình luận!");
+function replyTo(postIndex, parentId, userName) {
+  const input = document.getElementById(`commentInput_${postIndex}`);
+  input.value = `@${userName} `;
+  input.focus();
+  window.replyingTo = { postIndex, parentId };
+}
+
+function commentPost(postIndex) {
+  const input = document.getElementById(`commentInput_${postIndex}`);
   const text = input.value.trim();
   if (!text) return;
+
   const list = getList("posts");
-  list[i].comments.push({ user: currentUser, text });
+  const post = list[postIndex];
+  if (!post.comments) post.comments = [];
+
+  const comment = {
+    id: Date.now().toString(),
+    parentId: (window.replyingTo?.postIndex === postIndex) ? window.replyingTo.parentId : null,
+    user: currentUser || "Ẩn danh",
+    text: text,
+    createdAt: Date.now()
+  };
+
+  post.comments.push(comment);
   saveList("posts", list);
+
+  // Reset trạng thái trả lời
+  window.replyingTo = null;
   input.value = "";
-  renderPosts();
+
+  // ✅ Thay vì renderPosts toàn bộ, chỉ cập nhật phần bình luận bài này
+  const commentArea = document.getElementById(`commentsContainer_${postIndex}`);
+  if (commentArea) {
+    const commentListContainer = commentArea.querySelector("div:nth-child(2)");
+    if (commentListContainer) {
+      commentListContainer.innerHTML = renderCommentTree(post.comments, null, 0, postIndex);
+    }
+  }
 }
 
+function formatTags(text) {
+  return text.replace(/@(\w+)/g, `<span style="color:#ffffff;font-weight:bold;">@$1</span>`);
+}
+
+function toggleComments(idx) {
+  const box = document.getElementById(`commentsContainer_${idx}`);
+  if (!box) return;
+  box.style.display = (box.style.display === "none" ? "block" : "none");
+}
+
+function likePost(postIndex) {
+  if (!currentUser) return alert("Bạn cần đăng nhập để thích bài viết!");
+
+  const posts = getList("posts");
+  const post = posts[postIndex];
+
+  // Kiểm tra xem người dùng đã like chưa
+  const likedKey = `likedPosts_${currentUser}`;
+  const likedList = getList(likedKey);
+
+  if (likedList.includes(post.id)) {
+    showToast("❗ Bạn đã thích bài này rồi!");
+    return;
+  }
+
+  post.likes = (post.likes || 0) + 1;
+  likedList.push(post.id);
+
+  saveList("posts", posts);
+  saveList(likedKey, likedList);
+
+  renderPosts(); // Cập nhật giao diện
+}
 
 // ========== TRUYỆN: DANH SÁCH ==========
 
@@ -941,7 +1240,17 @@ function renderMostViewedStories() {
     .sort((a, b) => (b.views || 0) - (a.views || 0))
     .slice(0, 6);
 
-  const html = sorted.map(s => `
+  // Lưu vào localStorage
+  localStorage.setItem("mostViewedTop6", JSON.stringify({
+    time: Date.now(),
+    data: sorted
+  }));
+
+  updateMostViewedUI(sorted);
+}
+
+function updateMostViewedUI(list) {
+  const html = list.map(s => `
     <div class="story" style="cursor:auto;">
       <img src="${s.image || DEFAULT_IMG}">
       <div class="story-content">
@@ -953,6 +1262,17 @@ function renderMostViewedStories() {
 
   const box = document.getElementById("mostViewedStories");
   if (box) box.innerHTML = html || "<p>Không có dữ liệu.</p>";
+}
+
+function loadMostViewedStories() {
+  const stored = JSON.parse(localStorage.getItem("mostViewedTop6") || "{}");
+  const now = Date.now();
+
+  if (!stored.data || (now - stored.time) > 30 * 60 * 1000) {
+    renderMostViewedStories();  // cập nhật top 6 mới
+  } else {
+    updateMostViewedUI(stored.data); // dùng top 6 cũ
+  }
 }
 
 function filterTop(type) {
@@ -1077,26 +1397,55 @@ function logHistory(title) {
   saveList(key, list);
 }
 
+let currentStoryIndex = null;
+let currentEpisodeIndex = null;
 function viewDetail(i) {
+  currentStoryTitle = getList("stories")[i].title;
   const s = getList("stories")[i];
   const followList = getList(getKey('follow'));
   const libList = getList(getKey('library'));
   const ratedList = getList(`rated_${currentUser}`);
 
+// Lấy tập đầu tiên để phát mặc định
+const firstEp = s.episodes?.[0];
+const audioPlayer = firstEp ? `
+  <div id="audioControls" style="background:#bbb;color:#111;padding:15px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.2);margin-bottom:20px;">
+  <h3 style="text-align:center;">▶️ Đang phát: <span id="currentEpName">${firstEp.name}</span></h3>
+  <audio id="mainPlayer" src="${firstEp.audio}" style="width:100%;margin-top:10px;"></audio>
+
+  <div style="margin-top:10px;">
+  <input type="range" id="progressBar" value="0" min="0" max="100" step="1" style="width: 100%;">
+  <div style="display:flex;justify-content:space-between;font-size:14px;margin-top:5px;">
+    <span id="currentTime">00:00</span>
+    <span id="totalTime">00:00</span>
+  </div>
+</div>
+
+  <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:20px;margin-top:10px;">
+  <div style="display:flex;gap:10px;">
+    <button onclick="seekTime(-10)" style="font-size:20px;padding:10px 16px;">⏪ -10s</button>
+    <button id="playPauseBtn" onclick="togglePlayPause()" style="font-size:20px;padding:10px 16px;">▶️</button>
+    <button onclick="seekTime(10)" style="font-size:20px;padding:10px 16px;">⏩ +10s</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <label for="speedControl" style="font-weight:bold;">Tốc độ:</label>
+    <input id="speedControl" type="range" min="0.5" max="5" step="0.1" value="1" style="width:100px;">
+    <span id="speedValue">1x</span>
+  </div>
+</div>
+</div>
+` : '';
   let episodesHtml = "";
 (s.episodes || []).forEach((ep, idx) => {
   episodesHtml += `
-    <li>
-      <a href="#" onclick="toggleAudio(${i}, ${idx}); return false;">📼 ${ep.name}</a>
-      <div id="audioBox_${i}_${idx}" style="display:none; margin-top:10px;">
-        <audio controls style="width:100%" src="${ep.audio}"></audio>
-      </div>
-    </li>
-  `;
+  <li>
+    <a href="#" onclick="changeEpisode(${i}, ${idx}); return false;">📼 ${ep.name}</a>
+  </li>
+`;
 });
 
   const html = `
-    <button onclick="switchTab('${currentTab}')">← Quay lại</button>
+  <button onclick="switchTab('${currentTab}')">← Quay lại</button>
     
     <div style="background:var(--bg-color);color:var(--text-color);padding:15px;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);margin-bottom:15px;text-align:center;">
       <!-- 1. Ảnh -->
@@ -1128,8 +1477,24 @@ function viewDetail(i) {
       </div>
     </div>
 
+    ${audioPlayer}
     <h3>🎧 Danh sách tập</h3>
-    <ul>${episodesHtml}</ul>
+    <ul class="episode-list">${episodesHtml}</ul>
+  <div id="storyComments" style="background:var(--bg-color);color:var(--text-color);padding:15px;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);margin:20px 0;">
+  <h3>💬 Bình luận truyện</h3>
+  <div id="commentList" style="max-height:800px;overflow-y:auto;border:1px solid var(--light-color);padding:10px;border-radius:6px;background:var(--bg-color);color:var(--text-color);">
+    <p>Chưa có bình luận nào.</p>
+  </div>
+
+  ${currentUser ? `
+    <div style="margin-top:10px;">
+      <input id="commentInput" placeholder="Nhập bình luận..." style="width:100%;padding:8px;border-radius:6px;margin-bottom:5px;">
+      <button onclick="addStoryComment()">Gửi</button>
+    </div>
+  ` : `<p style="margin-top:10px;color:gray;">Đăng nhập để bình luận.</p>`}
+</div>
+    </div>
+
     ${currentUser === "admin" ? `
   <div style="margin-top: 20px;">
     <h3>➕ Thêm Tập Mới</h3>
@@ -1137,21 +1502,96 @@ function viewDetail(i) {
     <input id="newEpAudio" placeholder="Link audio">
     <button onclick="addEpisode(${i})">➕ Thêm Tập</button>
   </div>
-` : ''}
+ </div>
+ ` : ''}
   `;
 
-  s.views++;
-  if (!s.viewLogs) s.viewLogs = [];
-s.viewLogs.push(Date.now());
-  s.updatedAt = Date.now();
-  const all = getList("stories");
-  all[i] = s;
-  saveList("stories", all);
   logHistory(s.title);
   document.querySelector(".content").style.display = "none";
   document.getElementById("storyDetailView").style.display = "block";
   document.getElementById("storyDetailView").innerHTML = html;
+  const audio = document.getElementById("mainPlayer");
+if (audio) {
+  currentStoryIndex = i;
+  currentEpisodeIndex = 0;
+
+  // Khi phát xong tự chuyển tập
+  audio.addEventListener("ended", function () {
+    const s = getList("stories")[currentStoryIndex];
+    const nextIndex = currentEpisodeIndex + 1;
+    if (s && s.episodes && nextIndex < s.episodes.length) {
+      changeEpisode(currentStoryIndex, nextIndex);
+    }
+  });
+
+  // Cập nhật thời gian phát
+  audio.addEventListener("timeupdate", () => {
+    const current = formatTime(audio.currentTime);
+    const total = formatTime(audio.duration);
+    document.getElementById("currentTime").textContent = current;
+    document.getElementById("totalTime").textContent = total;
+  });
+
+const progressBar = document.getElementById("progressBar");
+
+audio.addEventListener("timeupdate", () => {
+  const current = formatTime(audio.currentTime);
+  const total = formatTime(audio.duration);
+  document.getElementById("currentTime").textContent = current;
+  document.getElementById("totalTime").textContent = total;
+
+  if (!isNaN(audio.duration)) {
+    const percent = (audio.currentTime / audio.duration) * 100;
+    progressBar.value = percent;
+  }
+});
+
+audio.addEventListener("play", () => {
+  const btn = document.getElementById("playPauseBtn");
+  if (btn) btn.textContent = "⏸️";
+});
+
+audio.addEventListener("pause", () => {
+  const btn = document.getElementById("playPauseBtn");
+  if (btn) btn.textContent = "▶️";
+});
+
+progressBar.addEventListener("input", () => {
+  if (!isNaN(audio.duration)) {
+    audio.currentTime = (progressBar.value / 100) * audio.duration;
+  }
+});
+  // Khôi phục tốc độ từ localStorage nếu có
+  const savedSpeed = localStorage.getItem("audioSpeed") || "1";
+  audio.playbackRate = parseFloat(savedSpeed);
+
+  const speedControl = document.getElementById("speedControl");
+  if (speedControl) {
+    speedControl.value = savedSpeed;
+    document.getElementById("speedValue").textContent = savedSpeed + "x";
+
+    // Khi kéo thanh tốc độ
+    speedControl.addEventListener("input", function () {
+      const speed = this.value;
+      audio.playbackRate = speed;
+      document.getElementById("speedValue").textContent = speed + "x";
+      localStorage.setItem("audioSpeed", speed);
+    });
+  }
+}
   requestAnimationFrame(() => renderCategoryOptions("edit_cat", s.category));
+  requestAnimationFrame(renderStoryComments);
+}
+
+function togglePlayPause() {
+  const player = document.getElementById("mainPlayer");
+  if (!player) return;
+
+  if (player.paused) {
+    player.play();
+  } else {
+    player.pause();
+  }
 }
 
 function toggleAudio(storyIndex, epIndex) {
@@ -1161,23 +1601,74 @@ function toggleAudio(storyIndex, epIndex) {
   el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
+function changeEpisode(storyIndex, epIndex) {
+  const stories = getList("stories");
+  const s = stories[storyIndex];
+  const ep = s.episodes[epIndex];
+  const player = document.getElementById("mainPlayer");
+  const nameSpan = document.getElementById("currentEpName");
+
+  if (!ep || !player) return;
+
+  // ✅ CHỈ TĂNG LƯỢT XEM KHI PHÁT TẬP 1
+  if (epIndex === 0) {
+    s.views = (s.views || 0) + 1;
+    if (!s.viewLogs) s.viewLogs = [];
+    s.viewLogs.push(Date.now());
+    stories[storyIndex] = s;
+    saveList("stories", stories);
+  }
+
+  if (player && ep) {
+   showToast("⏳ Đang tải... vui lòng đợi sau 3s");  // ✅ Hiện thông báo
+    player.src = ep.audio;
+
+    // ✅ Khôi phục tốc độ nếu có
+    const savedSpeed = localStorage.getItem("audioSpeed") || "1";
+    player.playbackRate = parseFloat(savedSpeed);
+
+    player.play();
+    if (nameSpan) nameSpan.textContent = ep.name;
+    const speedValue = document.getElementById("speedValue");
+    const speedControl = document.getElementById("speedControl");
+    if (speedValue) speedValue.textContent = savedSpeed + "x";
+    if (speedControl) speedControl.value = savedSpeed;
+    // Ghi lại tập hiện tại
+    currentStoryIndex = storyIndex;
+    currentEpisodeIndex = epIndex;
+  }
+}
+
 function playEpisode(storyIndex, epIndex) {
   const s = getList("stories")[storyIndex];
   const ep = s.episodes[epIndex];
   const html = `
     <button onclick="viewDetail(${storyIndex})">← Quay lại truyện</button>
     <h2>▶️ ${s.title} - ${ep.name}</h2>
-    <audio controls autoplay style="width:100%" src="${ep.audio}"></audio>
+    <audio id="audioPlayer" controls autoplay style="width:100%" src="${ep.audio}"></audio>
   `;
   logHistory(s.title);
   document.getElementById("storyDetailView").innerHTML = html;
-  requestAnimationFrame(() => renderCategoryOptions("edit_cat", s.category));
+
+  requestAnimationFrame(() => {
+    const audio = document.getElementById("audioPlayer");
+    audio.onended = function () {
+      const nextIndex = epIndex + 1;
+      if (s.episodes && nextIndex < s.episodes.length) {
+        playEpisode(storyIndex, nextIndex);
+      } else {
+        showToast("✅ Đã hết các tập!");
+      }
+    };
+    renderCategoryOptions("edit_cat", s.category);
+  });
 }
 
 function playStory(i) {
   const s = getList("stories")[i];
   if (s.episodes && s.episodes.length > 0) {
-    playEpisode(i, 0);
+ showToast("⏳ Đang tải... vui lòng đợi sau 3s");  // ✅ Hiện thông báo
+    changeEpisode(i, 0);
     return;
   }
   const html = `
@@ -1521,8 +2012,22 @@ if ((navType === "reload" || navType === "back_forward") && localStorage.getItem
 } else {
   switchTab("home");
   localStorage.setItem("stories", JSON.stringify(getList("stories")));
-  renderMostViewedStories();
 }})();
+
+setInterval(() => {
+  renderMostViewedStories();
+}, 30 * 60 * 1000);  // 30 phút
+
+window.addEventListener("beforeunload", function() {
+  renderMostViewedStories();  // cập nhật top 6 trước khi thoát
+});
+
+function formatTime(sec) {
+  if (isNaN(sec)) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
 
  (function showHeaderAvatar() {
   const avatarEl = document.getElementById("headerAvatar");
@@ -1584,94 +2089,6 @@ function renderCategoryFilter() {
   const cats = getCategories();
   select.innerHTML = '<option value="">-- Thể loại --</option>' +
     cats.map(c => `<option value="${c}">${c}</option>`).join("");
-}
-
-
-// 🔄 CẬP NHẬT GIAO DIỆN CỘNG ĐỒNG: Xem bình luận riêng cho từng bài
-
-function renderPosts() {
-  const list = getList("posts");
-  let html = "";
-  list.forEach((p, idx) => {
-    html += '<div style="background:#fff;padding:10px;margin-bottom:15px;border-radius:10px;">';
-    html += '<div style="display:flex;align-items:center;gap:10px;">';
-    html += '<img src="' + getAvatar(p.user) + '" style="width:30px;height:30px;border-radius:50%" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-    html += '<strong>' + p.user + '</strong></div><br>';
-    html += '<p>' + p.text + '</p>';
-    if (p.image) {
-      html += '<img src="' + p.image + '" style="width:100%;height:auto;border-radius:10px;max-height:300px;object-fit:contain;">';
-    }
-    html += '<div>';
-    html += '<button onclick="likePost(' + idx + ')">👍 ' + p.likes + '</button>';
-    if (p.user === currentUser) {
-      html += '<button onclick="deletePost(' + idx + ')">🗑️ Xoá</button>';
-    }
-    html += '<button onclick="toggleComments(' + idx + ')">💬 Xem bình luận (' + p.comments.length + ')</button>';
-    html += '</div>';
-    html += '<div id="commentBox_' + idx + '" style="margin-top:10px; display:none;">';
-    html += '<input placeholder="Bình luận..." onkeydown="if(event.key===\'Enter\')commentPost(' + idx + ', this)" style="width:100%;padding:5px;">';
-    html += '<button onclick="commentPost(' + idx + ', this.previousElementSibling)">Gửi</button>';
-    html += '<div style="margin-top:10px;">';
-    p.comments.forEach((c, ci) => {
-      html += '<div style="margin-top:5px;padding-left:10px;">';
-      html += '<div style="display:flex;align-items:center;gap:10px;">';
-      html += '<img src="' + getAvatar(c.user) + '" style="width:24px;height:24px;border-radius:50%" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-      html += '<div><strong>' + c.user + ':</strong> ' + c.text + '</div>';
-      html += '</div>';
-      html += '<button onclick="toggleReplies(' + idx + ',' + ci + ')">↪️ Trả lời</button>';
-      html += '<div id="replyBox_' + idx + '_' + ci + '" style="margin-left:30px;margin-top:5px;display:none;">';
-      html += '<input placeholder="Trả lời..." onkeydown="if(event.key===\'Enter\')replyComment(' + idx + ',' + ci + ', this)" style="width:100%;padding:5px;">';
-      html += '<button onclick="replyComment(' + idx + ',' + ci + ', this.previousElementSibling)">Gửi</button>';
-      if (c.replies) {
-        c.replies.forEach(r => {
-          html += '<div style="display:flex;align-items:center;gap:10px;margin-top:5px;margin-left:20px;">';
-          html += '<img src="' + getAvatar(r.user) + '" style="width:22px;height:22px;border-radius:50%" onerror="this.src=\'https://i.imgur.com/F32pUuu.jpeg\'">';
-          html += '<div><strong>' + r.user + ':</strong> ' + r.text + '</div>';
-          html += '</div>';
-        });
-      }
-      html += '</div>';
-      html += '</div>';
-    });
-    html += '</div></div></div>';
-  });
-  document.getElementById("postList").innerHTML = html || "Chưa có bài viết nào.";
-}
-
-
-function toggleComments(i) {
-  const box = document.getElementById("commentBox_" + i);
-  box.style.display = box.style.display === "none" ? "block" : "none";
-}
-
-
-function deletePost(i) {
-  const posts = getList("posts");
-  if (posts[i].user !== currentUser) return alert("Bạn không có quyền xoá bài này!");
-  if (confirm("Bạn chắc chắn muốn xoá bài viết này?")) {
-    posts.splice(i, 1);
-    saveList("posts", posts);
-    renderPosts();
-    showToast("✅ Đã xoá bài viết!");
-  }
-}
-
-
-function replyComment(postIndex, commentIndex, input) {
-  if (!currentUser) return alert("Đăng nhập để trả lời!");
-  const text = input.value.trim();
-  if (!text) return;
-  const posts = getList("posts");
-  const comment = posts[postIndex].comments[commentIndex];
-  if (!comment.replies) comment.replies = [];
-  comment.replies.push({ user: currentUser, text });
-  saveList("posts", posts);
-  renderPosts();
-}
-
-function toggleReplies(postIndex, commentIndex) {
-  const el = document.getElementById(`replyBox_${postIndex}_${commentIndex}`);
-  el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
 
@@ -2615,6 +3032,197 @@ function closeUserSpace() {
   }
 </script>
 
+
+<script>
+let currentStoryTitle = "";
+
+function replyToStory(storyKey, parentId, userName) {
+  const input = document.getElementById("commentInput");
+  input.value = `@${userName} `;
+  input.focus();
+  replyingToStory = { storyKey, parentId };
+}
+
+function renderStoryComments() {
+  const storyList = getList("stories");
+  const s = storyList.find(story => story.title === currentStoryTitle);
+  const comments = s.comments || [];
+
+  const html = comments.map(c => `
+    <div class="comment-item">
+      <img src="${getAvatar(c.user)}" alt="${c.user}" onerror="this.src='https://i.imgur.com/F32pUuu.jpeg'">
+      <div class="comment-content">
+        <strong>${c.user}</strong>
+        <span>${formatTags(c.text)}</span>
+        <a href="#" onclick="replyToComment('${c.id}', '${c.user}');return false;"> Trả lời</a>
+
+        ${renderStoryReplies(comments, c.id)}
+      </div>
+    </div>
+  `).filter(c => !c.includes('parentId')).join('');
+
+  document.getElementById("commentList").innerHTML = html || "<p>Chưa có bình luận nào.</p>";
+}
+
+function renderStoryCommentTree(comments, parentId = null, indent = 0, storyKey) {
+  const roots = comments.filter(c => c.parentId === parentId);
+  return roots.map(c => {
+    const replies = comments.filter(r => r.parentId === c.id);
+    const timeStr = new Date(c.createdAt).toLocaleString("vi-VN", {
+      hour: '2-digit',
+      minute: '2-digit',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    return `
+      <div class="comment-item" style="margin-top:12px;">
+        <img src="${getAvatar(c.user)}" onerror="this.src='https://www.blogger.com/img/b16-rounded.gif'" />
+        <div class="comment-content">
+          <strong>${c.user}</strong> <small style="color:gray;">lúc ${timeStr}</small><br>
+          <span>${formatTags(c.text)}</span>
+          <div style="margin-top:6px;">
+            <a href="#" onclick="replyToStory('${storyKey}', '${c.id}', '${c.user}'); return false;"> Trả lời</a>
+          </div>
+
+          ${replies.length > 0 ? `
+            <div class="reply-group" style="margin-top:10px;">
+              ${replies.map(r => `
+                <div class="reply-item">
+                  <img src="${getAvatar(r.user)}" onerror="this.src='https://www.blogger.com/img/b16-rounded.gif'" />
+                  <div class="comment-content">
+                    <strong>${r.user}</strong> <small style="color:gray;">lúc ${new Date(r.createdAt).toLocaleString("vi-VN", {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}</small><br>
+                    <span>${formatTags(r.text)}</span>
+                    <div style="margin-top:4px;">
+                      <a href="#" onclick="replyToStory('${storyKey}', '${c.id}', '${r.user}'); return false;"> Trả lời</a>
+                    </div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          ` : ""}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function seekTime(seconds) {
+  const audio = document.getElementById("mainPlayer");
+  if (audio) {
+    audio.currentTime += seconds;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const audio = document.getElementById("mainPlayer");
+  const volumeControl = document.getElementById("volumeControl");
+  const speedControl = document.getElementById("speedControl");
+  const speedValue = document.getElementById("speedValue");
+
+  if (volumeControl) {
+    volumeControl.addEventListener("input", () => {
+      audio.volume = volumeControl.value;
+    });
+  }
+
+  if (speedControl && speedValue) {
+    speedControl.addEventListener("input", () => {
+      audio.playbackRate = speedControl.value;
+      speedValue.textContent = speedControl.value + "x";
+      localStorage.setItem("audioSpeed", speedControl.value);
+    });
+
+    const saved = localStorage.getItem("audioSpeed");
+    if (saved) {
+      speedControl.value = saved;
+      speedValue.textContent = saved + "x";
+      if (audio) audio.playbackRate = parseFloat(saved);
+    }
+  }
+});
+
+function addStoryComment() {
+  const input = document.getElementById("commentInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  const storyList = getList("stories");
+  const s = storyList.find(story => story.title === currentStoryTitle);
+  if (!s.comments) s.comments = [];
+
+  const comment = {
+    id: Date.now().toString(),
+    user: currentUser || "Ẩn danh",
+    text: text,
+    createdAt: Date.now(),
+    parentId: window.replyingToStory || null
+  };
+
+  s.comments.push(comment);
+  saveList("stories", storyList);
+
+  window.replyingToStory = null;
+  input.value = "";
+  renderStoryComments();
+}
+
+function renderStoryReplies(comments, parentId) {
+  const replies = comments.filter(r => r.parentId === parentId);
+  if (replies.length === 0) return '';
+
+  return replies.map(r => `
+    <div class="reply-item">
+      <img src="${getAvatar(r.user)}" onerror="this.src='https://i.imgur.com/F32pUuu.jpeg'">
+      <div class="comment-content">
+        <strong>${r.user}</strong>
+        <span>${formatTags(r.text)}</span>
+        <a href="#" onclick="replyToComment('${parentId}', '${r.user}');return false;"> Trả lời</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function replyToComment(parentId, userName) {
+  const input = document.getElementById("commentInput");
+  input.value = `@${userName} `;
+  input.focus();
+  window.replyingToStory = parentId;
+}
+</script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+
+<script>
+  // 🔧 Thay bằng config của bạn
+  const firebaseConfig = {
+  apiKey: "AIzaSyC9N5GXgV_ZbugYiF28C1flLz04QEC-YwI",
+  authDomain: "truyen-audio-ea4df.firebaseapp.com",
+  projectId: "truyen-audio-ea4df",
+  storageBucket: "truyen-audio-ea4df.firebasestorage.app",
+  messagingSenderId: "531547494072",
+  appId: "1:531547494072:web:e5c977225031e496f8c64d"
+};
+
+  // ✅ Khởi tạo Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // ✅ Kiểm tra thêm dữ liệu
+  firebase.database().ref("test").set({
+    message: "Xin chào Firebase!"
+  });
+</script>
+
 </body>
 
-</html>
+</html>2
