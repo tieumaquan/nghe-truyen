@@ -3198,26 +3198,26 @@ function replyToComment(parentId, userName) {
 }
 </script>
 
-<!-- Firebase SDK -->
+<!-- 🔥 Firebase SDK từ CDN -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
 
 <script>
-  // 🔧 Thay bằng config của bạn
+  // ✅ Cấu hình Firebase của bạn
   const firebaseConfig = {
-  apiKey: "AIzaSyC9N5GXgV_ZbugYiF28C1flLz04QEC-YwI",
-  authDomain: "truyen-audio-ea4df.firebaseapp.com",
-  projectId: "truyen-audio-ea4df",
-  storageBucket: "truyen-audio-ea4df.firebasestorage.app",
-  messagingSenderId: "531547494072",
-  appId: "1:531547494072:web:e5c977225031e496f8c64d"
-};
+    apiKey: "AIzaSyDVuikw_-rNRrDLT8re-EzecTaqsbyFMjk",
+    authDomain: "nghe-9fdcb.firebaseapp.com",
+    projectId: "nghe-9fdcb",
+    storageBucket: "nghe-9fdcb.firebasestorage.app",
+    messagingSenderId: "511282593486",
+    appId: "1:511282593486:web:b858348f7d62022d355a9f",
+    databaseURL: "https://nghe-9fdcb-default-rtdb.firebaseio.com"
+  };
 
   // ✅ Khởi tạo Firebase
   firebase.initializeApp(firebaseConfig);
 
-  // ✅ Kiểm tra thêm dữ liệu
+  // ✅ Kiểm tra ghi dữ liệu Firebase
   firebase.database().ref("test").set({
     message: "Xin chào Firebase!"
   });
