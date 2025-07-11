@@ -3200,47 +3200,40 @@ function replyToComment(parentId, userName) {
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDLBCD_NF9fy5mRePgyLy1hSUZwwieAvo0",
-  authDomain: "nghe-truyen-caf0c.firebaseapp.com",
-  projectId: "nghe-truyen-caf0c",
-  storageBucket: "nghe-truyen-caf0c.firebasestorage.app",
-  messagingSenderId: "400321522390",
-  appId: "1:400321522390:web:7392ff8e8e26586695f777"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyDLBCD_NF9fy5mRePgyLy1hSUZwwieAvo0",
+    authDomain: "nghe-truyen-caf0c.firebaseapp.com",
+    databaseURL: "https://nghe-truyen-caf0c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "nghe-truyen-caf0c",
+    storageBucket: "nghe-truyen-caf0c.firebasestorage.app",
+    messagingSenderId: "400321522390",
+    appId: "1:400321522390:web:7392ff8e8e26586695f777"
+  };
 
   // Khởi tạo Firebase
   const app = firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
-</script>
 
-<script>
+  // Kiểm tra kết nối Firebase (hiện thông báo nhỏ trên web)
   const statusBox = document.createElement("div");
   statusBox.style = "position:fixed;bottom:10px;left:10px;background:#eee;padding:10px;border-radius:8px;font-weight:bold;z-index:9999;";
   statusBox.innerText = "🔄 Đang kiểm tra Firebase...";
   document.body.appendChild(statusBox);
 
-  try {
-    const app = firebase.app();
-    firebase.database().ref("test").set({ time: new Date().toISOString() })
-      .then(() => {
-        statusBox.innerText = "✅ Firebase hoạt động!";
-        statusBox.style.background = "#d4edda";
-      })
-      .catch(err => {
-        statusBox.innerText = "❌ Lỗi ghi Firebase: " + err.message;
-        statusBox.style.background = "#f8d7da";
-      });
-  } catch (e) {
-    statusBox.innerText = "❌ Lỗi Firebase: " + e.message;
-    statusBox.style.background = "#f8d7da";
-  }
+  db.ref("test").set({ time: new Date().toISOString() })
+    .then(() => {
+      statusBox.innerText = "✅ Firebase hoạt động!";
+      statusBox.style.background = "#d4edda";
+    })
+    .catch((err) => {
+      statusBox.innerText = "❌ Lỗi Firebase: " + err.message;
+      statusBox.style.background = "#f8d7da";
+    });
 </script>
 
 </body>
 
-</html>2
+</html>
