@@ -3198,29 +3198,25 @@ function replyToComment(parentId, userName) {
 }
 </script>
 
-<!-- 🔥 Firebase SDK từ CDN -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js"></script>
 
 <script>
-  // ✅ Cấu hình Firebase của bạn
-  const firebaseConfig = {
-    apiKey: "AIzaSyDVuikw_-rNRrDLT8re-EzecTaqsbyFMjk",
-    authDomain: "nghe-9fdcb.firebaseapp.com",
-    projectId: "nghe-9fdcb",
-    storageBucket: "nghe-9fdcb.firebasestorage.app",
-    messagingSenderId: "511282593486",
-    appId: "1:511282593486:web:b858348f7d62022d355a9f",
-    databaseURL: "https://nghe-9fdcb-default-rtdb.firebaseio.com"
-  };
+   const firebaseConfig = {
+  apiKey: "AIzaSyDVuikw_-rNRrDLT8re-EzecTaqsbyFMjk",
+  authDomain: "nghe-9fdcb.firebaseapp.com",
+  databaseURL: "https://nghe-9fdcb-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "nghe-9fdcb",
+  storageBucket: "nghe-9fdcb.firebasestorage.app",
+  messagingSenderId: "511282593486",
+  appId: "1:511282593486:web:b858348f7d62022d355a9f"
+};
 
-  // ✅ Khởi tạo Firebase
-  firebase.initializeApp(firebaseConfig);
-
-  // ✅ Kiểm tra ghi dữ liệu Firebase
-  firebase.database().ref("test").set({
-    message: "Xin chào Firebase!"
-  });
+  // Khởi tạo Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 </script>
 
 </body>
