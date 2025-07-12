@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Audio Truyện Online</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Audio Truyện Online</title>
+<style>
 #sidebar {
   position: fixed;
   top: 0;
@@ -602,9 +603,8 @@ a[href^="#"][onclick*="replyTo"]:hover {
   background: rgba(26, 188, 156, 0.15); /* xanh nhạt khi hover */
 }
 </style>
-
 <!-- CropperJS -->
-<link  href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet"/>
+<link href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet"/>
 <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js">
 function openUserSpace() {
   if (!currentUser) return;
@@ -658,9 +658,18 @@ function closeUserSpace() {
   document.getElementById("userProfileSpace").style.display = "none";
   switchTab(currentTab);
 }
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
-
-
 <style>
 /* Glow animation */
 @keyframes glow {
@@ -687,99 +696,88 @@ function closeUserSpace() {
 .realm-hoathan { color: #ffcc00; border: 1px solid #ffcc00; }
 .realm-tiennhan { color: #ff3399; border: 1px solid #ff3399; }
 </style>
-
 </head>
 <body>
-  <header>
-  <h1>📖 Audio Truyện Online</h1>
-
-  <div style="display:flex;align-items:center;gap:10px;">
-    <img id="headerAvatar" src="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid white;display:none;" onclick="openUserSpace()">
-    <button id="menuBtn" onclick="toggleMenu()">☰</button>
-  </div>
+<header>
+<h1>📖 Audio Truyện Online</h1>
+<div style="display:flex;align-items:center;gap:10px;">
+<img id="headerAvatar" onclick="openUserSpace()" src="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid white;display:none;"/>
+<button id="menuBtn" onclick="toggleMenu()">☰</button>
+</div>
 </header>
-  <nav class="tabs"></nav>
-  <div class="content">
-    <h2 id="sectionTitle">📚 Danh sách truyện</h2>
+<nav class="tabs"></nav>
+<div class="content">
+<h2 id="sectionTitle">📚 Danh sách truyện</h2>
 <div id="youtubeIntro" style="display:none;">
-  <div style="background: #fff0f5; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center;">
-    <h2 style="margin-top: 0; color: #e91e63;">📺 Theo dõi kênh YouTube của mình!</h2>
-    <p style="font-size: 16px; color: #444;">
+<div style="background: #fff0f5; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center;">
+<h2 style="margin-top: 0; color: #e91e63;">📺 Theo dõi kênh YouTube của mình!</h2>
+<p style="font-size: 16px; color: #444;">
       Hãy ghé thăm và đăng ký <strong>Kênh YouTube Audio Truyện</strong> để nghe truyện nhanh, chất lượng cao, cập nhật sớm nhất! 🔔🎧
     </p>
-    <a href="https://www.youtube.com/@TenKenhCuaBan" target="_blank" style="display:inline-block;margin-top:10px;padding:10px 18px;background:#e91e63;color:white;border-radius:8px;font-weight:bold;text-decoration:none;transition:0.3s;">
+<a href="https://www.youtube.com/@TenKenhCuaBan" style="display:inline-block;margin-top:10px;padding:10px 18px;background:#e91e63;color:white;border-radius:8px;font-weight:bold;text-decoration:none;transition:0.3s;" target="_blank">
       👉 Đến Kênh YouTube
     </a>
-  </div>
 </div>
-    <div id="topTabButtons" style="margin: 15px 0;">
-  <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-    <button id="tabTopDay" class="top-tab active" onclick="changeTopTab('day')">🔥 Top Ngày</button>
-    <button id="tabTopWeek" class="top-tab" onclick="changeTopTab('week')">🔥 Top Tuần</button>
-    <button id="tabTopMonth" class="top-tab" onclick="changeTopTab('month')">🔥 Top Tháng</button>
-  </div>
 </div>
-    <div id="filterBox" class="filter-box">
-  <select id="categoryFilter" onchange="showStories()">
-      <option value="">Thể loại</option>
-    </select>
-    <select id="typeFilter" onchange="showStories()">
-      <option value="">Trạng thái</option>
-      <option value="hot">Hot</option>
-      <option value="new">Mới</option>
-      <option value="full">Full</option>
-    </select>
-    <input id="searchInput" placeholder="Tìm kiếm truyện..." oninput="showStories()" />
-  </div>
-    <div id="storyList"></div>
-
+<div id="topTabButtons" style="margin: 15px 0;">
+<div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+<button class="top-tab active" id="tabTopDay" onclick="changeTopTab('day')">🔥 Top Ngày</button>
+<button class="top-tab" id="tabTopWeek" onclick="changeTopTab('week')">🔥 Top Tuần</button>
+<button class="top-tab" id="tabTopMonth" onclick="changeTopTab('month')">🔥 Top Tháng</button>
+</div>
+</div>
+<div class="filter-box" id="filterBox">
+<select id="categoryFilter" onchange="showStories()">
+<option value="">Thể loại</option>
+</select>
+<select id="typeFilter" onchange="showStories()">
+<option value="">Trạng thái</option>
+<option value="hot">Hot</option>
+<option value="new">Mới</option>
+<option value="full">Full</option>
+</select>
+<input id="searchInput" oninput="showStories()" placeholder="Tìm kiếm truyện..."/>
+</div>
+<div id="storyList"></div>
 <div id="pagination" style="text-align:center; margin-top:15px;"></div>
 <div id="mostViewedBox" style="margin-top:25px;">
-  <h3>🏆 Top 6 Truyện Xem Nhiều Nhất</h3>
-  <div id="mostViewedStories" style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;"></div>
+<h3>🏆 Top 6 Truyện Xem Nhiều Nhất</h3>
+<div id="mostViewedStories" style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;"></div>
 </div>
 </div> <!-- 🔚 Kết thúc top 6 truyện -->
-
-
-  <div id="storyDetailView" style="display:none; padding:15px;"></div
-
-</div> <!-- 🔚 Kết thúc .content -->
+<div id="storyDetailView" style="display:none; padding:15px;"></div> <!-- 🔚 Kết thúc .content -->
 <div id="communityView" style="display:none;padding:15px;">
-  <h2>🌐 Bài viết cộng đồng</h2>
-  <div id="postForm">
-    <textarea id="postText" placeholder="Bạn đang nghĩ gì?" style="width:100%;padding:10px;border-radius:8px;"></textarea><br>
-    <input type="file" id="postImage"><br>
-    <button onclick="addPost()">📤 Đăng bài</button>
-  </div>
-  <hr>
-  <div id="postList"></div>
+<h2>🌐 Bài viết cộng đồng</h2>
+<div id="postForm">
+<textarea id="postText" placeholder="Bạn đang nghĩ gì?" style="width:100%;padding:10px;border-radius:8px;"></textarea><br/>
+<input id="postImage" type="file"/><br/>
+<button onclick="addPost()">📤 Đăng bài</button>
 </div>
-
+<hr/>
+<div id="postList"></div>
+</div>
 <div id="donate" style="margin: 40px auto; max-width: 500px; background: var(--light); padding: 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center">
-  <h2 style="margin-bottom: 10px;">💖 Ủng hộ Admin</h2>
-  <p style="margin-bottom: 20px;">Nếu bạn thấy website hữu ích, hãy ủng hộ để mình có động lực duy trì và phát triển nhé!</p>
-
-  <div style="margin: 10px 0;">
-    <strong>TP Bank:</strong>
-    <span id="bankNumber">00006481854 </span>
-    <button onclick="copyText('bankNumber')" style="margin-left: 8px; padding: 4px 8px; border: none; background: var(--primary); color: white; border-radius: 6px;">📋 Copy</button>
-  </div>
+<h2 style="margin-bottom: 10px;">💖 Ủng hộ Admin</h2>
+<p style="margin-bottom: 20px;">Nếu bạn thấy website hữu ích, hãy ủng hộ để mình có động lực duy trì và phát triển nhé!</p>
+<div style="margin: 10px 0;">
+<strong>TP Bank:</strong>
+<span id="bankNumber">00006481854 </span>
+<button onclick="copyText('bankNumber')" style="margin-left: 8px; padding: 4px 8px; border: none; background: var(--primary); color: white; border-radius: 6px;">📋 Copy</button>
 </div>
-
+</div>
 <div style="margin: 30px auto; max-width: 700px; background: #fff8f8; padding: 20px; border-radius: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); text-align: center; color: #333;">
-  <h2 style="color: #f76da4;">🌟 Giới Thiệu Website</h2>
-  <p style="line-height: 1.6; font-size: 16px;">
-    <strong>Audio Truyện Online</strong> là nền tảng nghe truyện miễn phí, hỗ trợ nhiều thể loại hấp dẫn như tiên hiệp, kiếm hiệp, ngôn tình, huyền huyễn và hơn thế nữa. Người dùng có thể nghe mọi lúc mọi nơi, không cần đăng ký. Chúng mình luôn cập nhật truyện mới mỗi ngày để mang đến trải nghiệm tốt nhất cho bạn!
+<h2 style="color: #f76da4;">🌟 Giới Thiệu Website</h2>
+<p style="line-height: 1.6; font-size: 16px;">
+<strong>Audio Truyện Online</strong> là nền tảng nghe truyện miễn phí, hỗ trợ nhiều thể loại hấp dẫn như tiên hiệp, kiếm hiệp, ngôn tình, huyền huyễn và hơn thế nữa. Người dùng có thể nghe mọi lúc mọi nơi, không cần đăng ký. Chúng mình luôn cập nhật truyện mới mỗi ngày để mang đến trải nghiệm tốt nhất cho bạn!
   </p>
-  <p style="font-size: 15px; color: #555;">
+<p style="font-size: 15px; color: #555;">
     Chúc bạn có những phút giây thư giãn vui vẻ cùng Audio Truyện! 🎧📚
   </p>
 </div>
-  <div id="sidebarOverlay" onclick="hideMenu()"></div>
-  <div id="sidebar"></div>
-  <div id="toast"></div>
-
-  <!-- 🔴 ĐIỂM A: Kết thúc phần khung HTML & CSS -->
+<div id="sidebarOverlay" onclick="hideMenu()"></div>
+<div id="sidebar"></div>
+<div id="toast"></div>
+<!-- 🔴 ĐIỂM A: Kết thúc phần khung HTML & CSS -->
 <!-- PHẦN 2: SCRIPT CHÍNH -->
 <script>
 // ========== CẤU HÌNH ==========
@@ -1332,7 +1330,11 @@ function follow(i) {
     list.push(id);
     stories[i].followCount = (stories[i].followCount || 0) + 1;
     saveList("stories", stories);
+    saveStoriesToFirebase(stories);
     saveList(key, list);
+  if (key.startsWith('history_')) saveHistoryToFirebase(currentUser, list);
+  if (key.startsWith('followed_')) saveFollowedToFirebase(currentUser, list);
+  saveLibraryToFirebase(currentUser, list);
     showToast("Đã theo dõi");
     viewDetail(i);
   } else {
@@ -1350,7 +1352,11 @@ function unfollow(i) {
     if (index > -1) list.splice(index, 1);
     stories[i].followCount = Math.max(0, (stories[i].followCount || 0) - 1);
     saveList("stories", stories);
+    saveStoriesToFirebase(stories);
     saveList(key, list);
+  if (key.startsWith('history_')) saveHistoryToFirebase(currentUser, list);
+  if (key.startsWith('followed_')) saveFollowedToFirebase(currentUser, list);
+  saveLibraryToFirebase(currentUser, list);
     showToast("Đã bỏ theo dõi");
     viewDetail(i);
   }
@@ -1366,7 +1372,11 @@ function addToLibrary(i) {
     list.push(id);
     stories[i].libraryCount = (stories[i].libraryCount || 0) + 1;
     saveList("stories", stories);
+    saveStoriesToFirebase(stories);
     saveList(key, list);
+  if (key.startsWith('history_')) saveHistoryToFirebase(currentUser, list);
+  if (key.startsWith('followed_')) saveFollowedToFirebase(currentUser, list);
+  saveLibraryToFirebase(currentUser, list);
     showToast("Đã thêm vào tủ truyện");
     viewDetail(i);
   } else {
@@ -1384,7 +1394,11 @@ function removeFromLibrary(i) {
     if (index > -1) list.splice(index, 1);
     stories[i].libraryCount = Math.max(0, (stories[i].libraryCount || 0) - 1);
     saveList("stories", stories);
+    saveStoriesToFirebase(stories);
     saveList(key, list);
+  if (key.startsWith('history_')) saveHistoryToFirebase(currentUser, list);
+  if (key.startsWith('followed_')) saveFollowedToFirebase(currentUser, list);
+  saveLibraryToFirebase(currentUser, list);
     showToast("Đã xoá khỏi tủ truyện");
     viewDetail(i);
   }
@@ -1395,6 +1409,9 @@ function logHistory(title) {
   const list = getList(key);
   if (!list.includes(title)) list.push(title);
   saveList(key, list);
+  if (key.startsWith('history_')) saveHistoryToFirebase(currentUser, list);
+  if (key.startsWith('followed_')) saveFollowedToFirebase(currentUser, list);
+  saveLibraryToFirebase(currentUser, list);
 }
 
 let currentStoryIndex = null;
@@ -1617,6 +1634,7 @@ function changeEpisode(storyIndex, epIndex) {
     s.viewLogs.push(Date.now());
     stories[storyIndex] = s;
     saveList("stories", stories);
+    saveStoriesToFirebase(stories);
   }
 
   if (player && ep) {
@@ -1692,6 +1710,7 @@ function addEpisode(i) {
   if (!stories[i].episodes) stories[i].episodes = [];
   stories[i].episodes.push({ name, audio });
   saveList("stories", stories);
+    saveStoriesToFirebase(stories);
 
   alert("✅ Đã thêm tập mới!");
   viewDetail(i); // Cập nhật lại giao diện
@@ -1738,6 +1757,7 @@ function addStory() {
     const stories = getList("stories");
     stories.push({ title, desc, image: imgBase64, category: cat, uploader: currentUser, isHot: hot, isFull: full, views: 0, stars: 0, votes: 0, episodes });
     saveList("stories", stories);
+    saveStoriesToFirebase(stories);
     alert("Đã thêm truyện!");
     switchTab("home");
   };
@@ -1823,6 +1843,7 @@ function saveEdit(i) {
     s.episodes = episodes;
     stories[i] = s;
     saveList("stories", stories);
+    saveStoriesToFirebase(stories);
     alert("Đã lưu!");
     showEditList();
   };
@@ -1835,6 +1856,7 @@ function deleteStory(i) {
     const stories = getList("stories");
     stories.splice(i, 1);
     saveList("stories", stories);
+    saveStoriesToFirebase(stories);
     showEditList();
   }
 }
@@ -1988,6 +2010,7 @@ function changeTopTab(tab) {
       }
     ];
     saveList("stories", stories);
+    saveStoriesToFirebase(stories);
   }
 
   const users = getList("users");
@@ -2219,8 +2242,18 @@ function closeUserSpace() {
   document.getElementById("userProfileSpace").style.display = "none";
   switchTab(currentTab);
 }
-</script>
 
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
+</script>
 <script>
 (function(){
   const stories = [
@@ -2368,6 +2401,7 @@ function lamMoiDuLieuCongKhai() {
   try {
     const stories = JSON.parse(congKhai);
     saveList("stories", stories);
+    saveStoriesToFirebase(stories);
     showToast("✅ Đã làm mới dữ liệu!");
     showStories();
   } catch (e) {
@@ -2441,9 +2475,18 @@ function closeUserSpace() {
   document.getElementById("userProfileSpace").style.display = "none";
   switchTab(currentTab);
 }
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
-
-
 <!-- Floating Theme Toggle -->
 <button id="toggleTheme" onclick="toggleTheme()" style="
   position: fixed;
@@ -2459,7 +2502,6 @@ function closeUserSpace() {
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   z-index: 1000;
 ">🌙</button>
-
 <script>
 let isRegisterMode = false;
 
@@ -2559,19 +2601,28 @@ function closeUserSpace() {
   document.getElementById("userProfileSpace").style.display = "none";
   switchTab(currentTab);
 }
-</script>
 
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
+</script>
 <!-- Avatar Crop Modal -->
 <div id="cropModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000a;z-index:9999;justify-content:center;align-items:center;">
-  <div style="background:#fff;padding:20px;border-radius:10px;max-width:90%;max-height:90%;overflow:auto;">
-    <h3>✂️ Cắt ảnh đại diện</h3>
-    <img id="cropImage" style="max-width:100%;max-height:400px;">
-    <br><br>
-    <button onclick="applyCrop()">✅ Lưu ảnh</button>
-    <button onclick="closeCrop()">❌ Hủy</button>
-  </div>
+<div style="background:#fff;padding:20px;border-radius:10px;max-width:90%;max-height:90%;overflow:auto;">
+<h3>✂️ Cắt ảnh đại diện</h3>
+<img id="cropImage" style="max-width:100%;max-height:400px;"/>
+<br/><br/>
+<button onclick="applyCrop()">✅ Lưu ảnh</button>
+<button onclick="closeCrop()">❌ Hủy</button>
 </div>
-
+</div>
 <script>
 let cropper;
 function applyCrop() {
@@ -2659,9 +2710,18 @@ function closeUserSpace() {
   document.getElementById("userProfileSpace").style.display = "none";
   switchTab(currentTab);
 }
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
-
-
 <script>
 function getRealmClass(level) {
   if (level >= 80) return "realm-tiennhan";
@@ -2730,9 +2790,18 @@ function closeUserSpace() {
   document.getElementById("userProfileSpace").style.display = "none";
   switchTab(currentTab);
 }
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
-
-
 <script>
 
 function changeTopTab(type) {
@@ -2803,22 +2872,29 @@ function closeUserSpace() {
   document.getElementById("userProfileSpace").style.display = "none";
   switchTab(currentTab);
 }
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
-
-
 <!-- User Profile Modal -->
 <div id="userProfileModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
 background:rgba(0,0,0,0.6);z-index:9999;justify-content:center;align-items:center;">
-  <div style="background:white;padding:20px;border-radius:12px;max-width:90%;max-height:90%;text-align:center;">
-    <img id="profileAvatar" src="" style="width:100px;height:100px;border-radius:50%;border:3px solid #ccc;">
-    <div id="profileName" style="margin:10px 0;font-size:20px;"></div>
-    <div id="profileLevel" style="margin:5px 0;"></div>
-    <div id="profileRole" style="margin:5px 0;"></div>
-    <button onclick="closeProfile()">❌ Đóng</button>
-  </div>
+<div style="background:white;padding:20px;border-radius:12px;max-width:90%;max-height:90%;text-align:center;">
+<img id="profileAvatar" src="" style="width:100px;height:100px;border-radius:50%;border:3px solid #ccc;"/>
+<div id="profileName" style="margin:10px 0;font-size:20px;"></div>
+<div id="profileLevel" style="margin:5px 0;"></div>
+<div id="profileRole" style="margin:5px 0;"></div>
+<button onclick="closeProfile()">❌ Đóng</button>
 </div>
-
-
+</div>
 <script>
 function showUserProfile(username) {
   const users = getList("users");
@@ -2894,18 +2970,25 @@ function closeUserSpace() {
   document.getElementById("userProfileSpace").style.display = "none";
   switchTab(currentTab);
 }
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
-
-
 <!-- User Space -->
 <div id="userSpace" style="display:none;padding:20px;">
-  <button onclick="closeUserSpace()">← Quay lại</button>
-  <div id="userSpaceInfo" style="margin-top:10px;"></div>
-  <hr>
-  <div id="userSpaceContent"></div>
+<button onclick="closeUserSpace()">← Quay lại</button>
+<div id="userSpaceInfo" style="margin-top:10px;"></div>
+<hr/>
+<div id="userSpaceContent"></div>
 </div>
-
-
 <script>
 function openUserSpace(username) {
   const user = getList("users").find(u => u.user === username);
@@ -3024,13 +3107,22 @@ function closeUserSpace() {
   document.getElementById("userProfileSpace").style.display = "none";
   switchTab(currentTab);
 }
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
-
-
 <!-- Không gian cá nhân -->
 <div id="userProfileSpace" style="display:none;padding:15px;">
-  <button onclick="closeUserSpace()">← Quay lại</button>
-  <div id="userProfileContent"></div>
+<button onclick="closeUserSpace()">← Quay lại</button>
+<div id="userProfileContent"></div>
 </div>
 <script>
   function copyText(id) {
@@ -3039,9 +3131,18 @@ function closeUserSpace() {
       alert("Đã copy: " + text);
     });
   }
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
-
-
 <script>
 let currentStoryTitle = "";
 
@@ -3205,12 +3306,43 @@ function replyToComment(parentId, userName) {
   input.focus();
   window.replyingToStory = parentId;
 }
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
-
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js">
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
 
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js">
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
+</script>
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyDLBCD_NF9fy5mRePgyLy1hSUZwwieAvo0",
@@ -3241,13 +3373,43 @@ function replyToComment(parentId, userName) {
       statusBox.innerText = "❌ Lỗi Firebase: " + err.message;
       statusBox.style.background = "#f8d7da";
     });
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
-
-
 <!-- Firebase SDK & Đồng bộ -->
-<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js">
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
 
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-database-compat.js">
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
+</script>
 <script>
   const firebaseConfig = {
   apiKey: "AIzaSyC3efxhC604ByozYywtQknTRbLeeSxtrlo",
@@ -3313,9 +3475,175 @@ function showBackupRestore() {
     document.getElementById("storyDetailView").style.display = "block";
     document.querySelector(".content").style.display = "none";
   }
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
+</script>
+<script type="module">
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDLBCD_NF9fy5mRePgyLy1hSUZwwieAvo0",
+  authDomain: "nghe-truyen-caf0c.firebaseapp.com",
+  databaseURL: "https://nghe-truyen-caf0c-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "nghe-truyen-caf0c",
+  storageBucket: "nghe-truyen-caf0c.firebasestorage.app",
+  messagingSenderId: "400321522390",
+  appId: "1:400321522390:web:7392ff8e8e26586695f777"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Đồng bộ truyện về localStorage
+const storyRef = ref(db, 'stories');
+onValue(storyRef, (snapshot) => {
+  const data = snapshot.val();
+  const stories = Object.values(data || {});
+  localStorage.setItem("stories", JSON.stringify(stories));
+  if (typeof showStories === "function") showStories();
+  console.log("✅ Đồng bộ danh sách truyện!");
+});
+
+// Đồng bộ tủ truyện khi user đăng nhập
+setTimeout(() => {
+  const currentUser = localStorage.getItem("currentUser");
+  if (currentUser) {
+    const libPath = ref(db, "users/" + currentUser + "/library");
+    onValue(libPath, (snapshot) => {
+      const data = snapshot.val() || [];
+      localStorage.setItem("library_" + currentUser, JSON.stringify(data));
+      console.log("✅ Đồng bộ tủ truyện!");
+    });
+  }
+}, 2000);
+
+// Ghi tủ truyện khi thêm
+window.saveLibraryToFirebase = function(user, list) {
+  if (!user || !list) return;
+  const path = ref(db, "users/" + user + "/library");
+  set(path, list);
+};
+
+// Đồng bộ danh sách truyện theo dõi khi đăng nhập
+const followPath = ref(db, "users/" + currentUser + "/followed");
+onValue(followPath, (snapshot) => {
+  const data = snapshot.val() || [];
+  localStorage.setItem("followed_" + currentUser, JSON.stringify(data));
+  console.log("✅ Đồng bộ truyện theo dõi!");
+});
+
+// Ghi truyện theo dõi khi thêm
+window.saveFollowedToFirebase = function(user, list) {
+  if (!user || !list) return;
+  const path = ref(db, "users/" + user + "/followed");
+  set(path, list);
+};
+
+
+// Đồng bộ lịch sử nghe truyện khi đăng nhập
+const historyPath = ref(db, "users/" + currentUser + "/history");
+onValue(historyPath, (snapshot) => {
+  const data = snapshot.val() || [];
+  localStorage.setItem("history_" + currentUser, JSON.stringify(data));
+  console.log("✅ Đồng bộ lịch sử nghe!");
+});
+
+// Ghi lịch sử nghe khi thêm
+window.saveHistoryToFirebase = function(user, list) {
+  if (!user || !list) return;
+  const path = ref(db, "users/" + user + "/history");
+  set(path, list);
+};
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
+</script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
+</script>
+
+<script>
+// 🚀 Cấu hình Firebase - Thay bằng thông tin dự án thật của bạn
+const firebaseConfig = {
+  apiKey: "AIzaSyYOUR-KEY-HERE",
+  authDomain: "your-project.firebaseapp.com",
+  databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "YOUR-ID",
+  appId: "YOUR-APP-ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+function saveHistoryToFirebase(user, list) {
+  if (!user) return;
+  db.ref("history/" + user).set(list);
+}
+
+function saveFollowedToFirebase(user, list) {
+  if (!user) return;
+  db.ref("followed/" + user).set(list);
+}
+
+function saveLibraryToFirebase(user, list) {
+  if (!user) return;
+  db.ref("library/" + user).set(list);
+}
+
+function saveStoriesToFirebase(storyList) {
+  db.ref("stories").set(storyList);
+}
+
+// 🔄 Tải danh sách truyện từ Firebase khi mở web
+firebase.database().ref("stories").once("value").then(snapshot => {
+  const stories = snapshot.val() || [];
+  localStorage.setItem("stories", JSON.stringify(stories));
+});
+
 </script>
 
 </body>
-
 </html>
-
