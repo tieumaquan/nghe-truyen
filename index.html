@@ -1840,6 +1840,15 @@ function deleteStory(i) {
 }
 
 // ========== BACKUP / RESTORE ==========
+
+// 🔄 Tự động đồng bộ mỗi 5 phút
+setInterval(() => {
+  if (currentUser) {
+    syncToFirebase();
+    console.log("✅ Auto synced to Firebase");
+  }
+}, 5 * 60 * 1000); // 5 phút
+
 function showBackupRestore() {
   const html = `
     <h2>💾 Backup / Restore</h2>
@@ -3234,6 +3243,79 @@ function replyToComment(parentId, userName) {
     });
 </script>
 
+
+<!-- Firebase SDK & Đồng bộ -->
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+  apiKey: "AIzaSyC3efxhC604ByozYywtQknTRbLeeSxtrlo",
+  authDomain: "tieumaquan-app-1304e.firebaseapp.com",
+  projectId: "tieumaquan-app-1304e",
+  storageBucket: "tieumaquan-app-1304e.firebasestorage.app",
+  messagingSenderId: "469506665618",
+  appId: "1:469506665618:web:ae11398f57297b90b04a4b"
+};
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  function syncToFirebase() {
+    if (!currentUser) return;
+    const userData = {
+      stories: getList("stories"),
+      posts: getList("posts"),
+      follow: getList(getKey("follow")),
+      library: getList(getKey("library")),
+      history: getList(getKey("history"))
+    };
+    db.ref("users/" + currentUser).set(userData);
+    showToast("Đã đồng bộ lên Firebase!");
+  }
+
+  function loadFromFirebase() {
+    if (!currentUser) return;
+    db.ref("users/" + currentUser).once("value").then(snapshot => {
+      const data = snapshot.val();
+      if (!data) return;
+      saveList("stories", data.stories || []);
+      saveList("posts", data.posts || []);
+      saveList(getKey("follow"), data.follow || []);
+      saveList(getKey("library"), data.library || []);
+      saveList(getKey("history"), data.history || []);
+      showToast("Đã tải dữ liệu từ Firebase!");
+      switchTab("home");
+    });
+  }
+
+  if (currentUser) {
+    loadFromFirebase();
+  }
+
+  
+// 🔄 Tự động đồng bộ mỗi 5 phút
+setInterval(() => {
+  if (currentUser) {
+    syncToFirebase();
+    console.log("✅ Auto synced to Firebase");
+  }
+}, 5 * 60 * 1000); // 5 phút
+
+function showBackupRestore() {
+    const html = `
+      <div style="padding:20px;">
+        <h2>✨ Backup & Phục hồi</h2>
+        <button onclick="syncToFirebase()">⇩ Đồng bộ lên Firebase</button>
+        <button onclick="loadFromFirebase()" style="margin-left:10px;">⇧ Tải từ Firebase</button>
+      </div>
+    `;
+    document.getElementById("storyDetailView").innerHTML = html;
+    document.getElementById("storyDetailView").style.display = "block";
+    document.querySelector(".content").style.display = "none";
+  }
+</script>
+
 </body>
 
 </html>
+
