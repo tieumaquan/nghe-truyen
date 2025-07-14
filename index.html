@@ -1,193 +1,304 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Audio Truyện Online</title>
+  <title>📖 Nghe Truyện Audio</title>
   <style>
+    :root {
+      --bg: #121212;
+      --text: #ffffff;
+      --primary: #3a3a3a;
+      --card: #1e1e1e;
+      --border: #2c2c2c;
+    }
+
     body {
-      background-color: #f2f2f2;
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 1rem;
+      font-family: sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
     }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    .story-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-    }
-    .story {
-      background: #fff;
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      width: 300px;
-    }
-    .story h3 {
-      margin: 0;
-      font-size: 1.2rem;
-      color: #111;
-    }
-    .story p {
-      font-size: 0.9rem;
-      color: #555;
-    }
-    audio {
-      width: 100%;
-      margin-top: 0.5rem;
-    }
-    .pagination {
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .pagination button {
-      margin: 0 5px;
-      padding: 6px 12px;
-      font-size: 16px;
-      border: none;
-      background-color: #333;
+
+    header {
+      background: var(--primary);
       color: white;
-      border-radius: 5px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #menuToggle {
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: white;
       cursor: pointer;
     }
-    .pagination button.active {
-      background-color: #666;
+
+    #searchInput {
+      flex: 1;
+      padding: 6px;
+      border-radius: 4px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+    }
+
+    main {
+      padding: 10px;
+      margin-bottom: 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .story-card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .story-card:hover {
+      transform: scale(1.01);
+    }
+
+    .story-header {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .story-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #444;
+    }
+
+    .story-info h3 {
+      margin: 0 0 5px;
+      font-size: 18px;
+    }
+
+    .story-info p {
+      margin: 0;
+      font-size: 14px;
+      color: #bbb;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #1c1c1c;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid var(--border);
+    }
+
+    footer button {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    button.back-btn {
+      margin-top: 20px;
+      padding: 10px 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    /* Sidebar styles */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100vh;
+      background: #2a2a2a;
+      color: white;
+      z-index: 999;
+      transition: left 0.3s ease;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+    }
+
+    #sidebar.active {
+      left: 0;
+    }
+
+    #sidebar h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    #sidebar ul li {
+      margin: 14px 0;
+      cursor: pointer;
+    }
+
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 998;
+    }
+
+    #overlay.active {
+      display: block;
+    }
+
+    h3, h2 {
+      margin: 0;
     }
   </style>
 </head>
-
 <body>
-  <nav style="background-color:#333; padding: 0.5rem; color:white; display:flex; align-items:center;">
-    <div style="font-size: 1.5rem; cursor:pointer;" onclick="toggleMenu()">☰</div>
-    <div style="margin-left: 1rem;">Audio Truyện Online</div>
-  </nav>
-  <div id="sidebar" style="display:none; background:#444; color:white; padding:1rem; position:absolute; top:3rem; left:0; width:200px; z-index:10;">
-    <a href="index.html" style="color:white; display:block; margin-bottom: 0.5rem;">🏠 Trang chủ</a>
-    <a href="login.html" style="color:white; display:block; margin-bottom: 0.5rem;">🔐 Đăng nhập</a>
-    <a href="admin.html" style="color:white; display:block;">➕ Thêm truyện (admin)</a>
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <h2>📚 Menu</h2>
+    <ul>
+      <li onclick="showTab('home')">🏠 Trang chủ</li>
+      <li onclick="showTab('favorites')">⭐ Tủ truyện</li>
+      <li onclick="alert('Tính năng đang phát triển')">⚙️ Cài đặt</li>
+      <li onclick="closeMenu()">✕ Đóng</li>
+    </ul>
   </div>
+  <div id="overlay" onclick="closeMenu()"></div>
+
+  <!-- Header -->
+  <header>
+    <button id="menuToggle">☰</button>
+    <input type="text" id="searchInput" placeholder="Tìm truyện..." />
+  </header>
+
+  <!-- Main -->
+  <main id="storyList"></main>
+
+  <!-- Footer -->
+  <footer>
+    <button onclick="showTab('home')">🏠 Trang chủ</button>
+    <button onclick="showTab('favorites')">📚 Tủ truyện</button>
+  </footer>
+
+  <!-- Script -->
   <script>
-    function toggleMenu() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.style.display = sidebar.style.display === "block" ? "none" : "block";
+    const stories = [
+      {
+        id: "1",
+        title: "Đêm Khuya Kể Chuyện Ma",
+        description: "Tổng hợp các chuyện ma rùng rợn kể lúc nửa đêm.",
+        cover: "https://picsum.photos/seed/truyen1/300/300",
+        audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+      },
+      {
+        id: "2",
+        title: "Truyện Ngắn Ý Nghĩa",
+        description: "Những câu chuyện đời thường đầy tính nhân văn.",
+        cover: "https://picsum.photos/seed/truyen2/300/300",
+        audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+      }
+    ];
+
+    const storyListEl = document.getElementById('storyList');
+    const searchInput = document.getElementById('searchInput');
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.add('active');
+      overlay.classList.add('active');
+    });
+
+    function closeMenu() {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
     }
+
+    function renderStories(list) {
+      storyListEl.innerHTML = '';
+      list.forEach(story => {
+        const card = document.createElement('div');
+        card.className = 'story-card';
+        card.onclick = () => openPlayer(story);
+        card.innerHTML = `
+          <div class="story-header">
+            <img src="${story.cover}" alt="${story.title}" />
+            <div class="story-info">
+              <h3>${story.title}</h3>
+              <p>${story.description || ""}</p>
+            </div>
+          </div>
+        `;
+        storyListEl.appendChild(card);
+      });
+    }
+
+    function openPlayer(story) {
+      closeMenu();
+      storyListEl.innerHTML = `
+        <h2>${story.title}</h2>
+        <img src="${story.cover}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px;" />
+        <audio controls>
+          <source src="${story.audio}" type="audio/mpeg">
+        </audio>
+        <button class="back-btn" onclick="init()">🔙 Quay lại</button>
+      `;
+    }
+
+    function init() {
+      renderStories(stories);
+    }
+
+    searchInput.addEventListener('input', () => {
+      const keyword = searchInput.value.toLowerCase();
+      const filtered = stories.filter(s => s.title.toLowerCase().includes(keyword));
+      renderStories(filtered);
+    });
+
+    function showTab(tab) {
+      closeMenu();
+      if (tab === 'home') {
+        init();
+      } else if (tab === 'favorites') {
+        alert("Tính năng Tủ truyện sẽ sớm có!");
+      }
+    }
+
+    init();
   </script>
-
-  <h1>📖 Audio Truyện Online</h1>
-
-  <div style="text-align:center; margin-bottom:1rem;">
-    <input id="searchInput" type="text" placeholder="Tìm truyện..." style="padding: 0.5rem; width: 60%; max-width: 400px;">
-    <select id="genreSelect" style="padding: 0.5rem;">
-      <option value="">Tất cả thể loại</option>
-    </select>
-  </div>
-
-  <div class="story-list" id="storyList"></div>
-  <div class="pagination" id="pagination"></div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAslYezollz_yiD3PpmO7lsgXgaBA7jqqc",
-  authDomain: "audio-truyen-online.firebaseapp.com",
-  projectId: "audio-truyen-online",
-  storageBucket: "audio-truyen-online.appspot.com",
-  messagingSenderId: "916409519249",
-  appId: "1:916409519249:web:3960e2f922e7660191c330"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const storyList = document.getElementById("storyList");
-const pagination = document.getElementById("pagination");
-const searchInput = document.getElementById("searchInput");
-const genreSelect = document.getElementById("genreSelect");
-
-let allDocs = [];
-let pageSize = 9;
-let currentPage = 1;
-let totalPages = 0;
-
-async function loadAllDocs() {
-  const q = query(collection(db, "stories"), orderBy("title"));
-  const snapshot = await getDocs(q);
-  allDocs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  updateGenreOptions();
-  filterAndRender();
-}
-
-function updateGenreOptions() {
-  const genres = new Set();
-  allDocs.forEach(doc => {
-    if (doc.genre) genres.add(doc.genre.trim());
-  });
-  genreSelect.innerHTML = '<option value="">Tất cả thể loại</option>';
-  [...genres].sort().forEach(genre => {
-    const opt = document.createElement("option");
-    opt.value = genre;
-    opt.textContent = genre;
-    genreSelect.appendChild(opt);
-  });
-}
-
-function filterAndRender(page = 1) {
-  currentPage = page;
-  const keyword = searchInput.value.toLowerCase().trim();
-  const selectedGenre = genreSelect.value;
-
-  let filtered = allDocs.filter(doc => {
-    const matchKeyword = doc.title.toLowerCase().includes(keyword);
-    const matchGenre = !selectedGenre || doc.genre === selectedGenre;
-    return matchKeyword && matchGenre;
-  });
-
-  totalPages = Math.ceil(filtered.length / pageSize);
-  const start = (currentPage - 1) * pageSize;
-  const pageDocs = filtered.slice(start, start + pageSize);
-
-  renderStories(pageDocs);
-  renderPagination(totalPages);
-}
-
-function renderStories(docs) {
-  storyList.innerHTML = "";
-  docs.forEach(doc => {
-    const div = document.createElement("div");
-    div.className = "story";
-    div.innerHTML = `
-      <h3>${doc.title}</h3>
-      <p>${doc.description}</p>
-      <p><i>Thể loại: ${doc.genre}</i></p>
-      <audio controls src="${doc.audioUrl}"></audio>
-    `;
-    storyList.appendChild(div);
-  });
-}
-
-function renderPagination(total) {
-  pagination.innerHTML = "";
-  for (let i = 1; i <= total; i++) {
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    if (i === currentPage) btn.classList.add("active");
-    btn.addEventListener("click", () => filterAndRender(i));
-    pagination.appendChild(btn);
-  }
-}
-
-searchInput.addEventListener("input", () => filterAndRender(1));
-genreSelect.addEventListener("change", () => filterAndRender(1));
-
-loadAllDocs();
-</script>
 </body>
 </html>
