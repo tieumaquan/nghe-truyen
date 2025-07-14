@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin – Thêm Truyện</title>
+  <style>
+    body {
+      background-color: #e0e0e0;
+      font-family: sans-serif;
+      padding: 1rem;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 0.6rem;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #999;
+    }
+  </style>
+</head>
+<body>
+  <h1>➕ Thêm Truyện Mới</h1>
+  <form id="storyForm">
+    <input type="text" id="title" placeholder="Tên truyện" required>
+    <textarea id="description" placeholder="Mô tả" required></textarea>
+    <input type="text" id="genre" placeholder="Thể loại (ví dụ: Tiên hiệp)" required>
+    <input type="file" id="audioFile" accept="audio/*" required>
+    <button type="submit">Thêm truyện</button>
+  </form>
+
+  <script type="module">
+    import {{ initializeApp }} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {{ getFirestore, collection, addDoc }} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {{ getStorage, ref, uploadBytes, getDownloadURL }} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const firebaseConfig = {{
+      apiKey: "AIzaSyAslYezollz_yiD3PpmO7lsgXgaBA7jqqc",
+      authDomain: "audio-truyen-online.firebaseapp.com",
+      projectId: "audio-truyen-online",
+      storageBucket: "audio-truyen-online.appspot.com",
+      messagingSenderId: "916409519249",
+      appId: "1:916409519249:web:3960e2f922e7660191c330"
+    }};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const form = document.getElementById("storyForm");
+
+    form.addEventListener("submit", async (e) => {{
+      e.preventDefault();
+      const title = document.getElementById("title").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const genre = document.getElementById("genre").value.trim();
+      const file = document.getElementById("audioFile").files[0];
+      if (!title || !description || !genre || !file) return alert("Vui lòng điền đầy đủ");
+
+      const fileRef = ref(storage, "audio/" + file.name);
+      const snapshot = await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(snapshot.ref);
+
+      await addDoc(collection(db, "stories"), {{
+        title,
+        description,
+        genre,
+        audioUrl: url
+      }});
+
+      alert("🎉 Thêm truyện thành công!");
+      form.reset();
+    }});
+  </script>
+</body>
+</html>
